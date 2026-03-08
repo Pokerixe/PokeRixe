@@ -1,13 +1,13 @@
-import {Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input} from '@angular/core';
+import {Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import * as echarts from 'echarts';
-import {PokeStats} from '../../services/model/pokeStats';
+import {PokeStats} from '../../model/pokeStats';
 
 @Component({
   selector: 'app-star-stats',
   templateUrl: './star-stats.html',
   styleUrls: ['./star-stats.css'], // Note : `styleUrls` (pluriel) et non `styleUrl`
 })
-export class StarStats implements AfterViewInit, OnDestroy {
+export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('chartContainer', { static: false })
   chartContainer!: ElementRef<HTMLDivElement>;
 
@@ -15,79 +15,84 @@ export class StarStats implements AfterViewInit, OnDestroy {
 
   @Input() stats: PokeStats = {} as PokeStats; // Typage explicite
 
-  // Exemple d'options pour un graphique ECharts
-  chartOptions: echarts.EChartsOption ={
-    title: {
-      text: 'STATISTIQUES',
-      left: 'center',
-      top: '10%', // Positionne le titre plus haut
-      textStyle: {
-        color: '#FFDE00',
-        fontSize: 50, // Taille de police réduite pour s'adapter
-        fontWeight: 'bold',
-      },
-    },
-    tooltip: {
-      trigger: 'axis',
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      textStyle: {
-        color: '#fff',
-      },
-    },
-    radar: {
-      radius: '60%', // Rayon du radar (60% de la taille du conteneur)
-      center: ['50%', '55%'], // Centre le radar
-      indicator: [
-        { name: 'PV', max: 255 },
-        { name: 'Attaque Sp.', max: 255 },
-        { name: 'Défense Sp.', max: 255 },
-        { name: 'Attaque Sp.', max: 255 },
-        { name: 'Défense', max: 255 },
-        { name: 'Attaque', max: 255 },
-      ],
-      shape: 'polygon',
-      splitNumber: 5,
-      axisName: {
-        color: '#FFDE00',
-        fontSize: 14, // Taille de police réduite pour les labels
-      },
-      splitLine: {
-        lineStyle: {
-          color: 'rgba(255, 222, 0, 0)',
+  private buildChartOptions(): echarts.EChartsOption {
+    const hp = this.stats?.HP ?? 0;
+    const attack = this.stats?.attack ?? 0;
+    const defense = this.stats?.defense ?? 0;
+    const spAtk = this.stats?.special_attack ?? 0;
+    const spDef = this.stats?.special_defense ?? 0;
+    const speed = this.stats?.speed ?? 0;
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        textStyle: {
+          color: '#fff',
         },
       },
-      splitArea: {
-        areaStyle: {
-          color: ['rgba(255, 222, 0, 0.1)', 'rgba(255, 222, 0, 0.05)'],
-        },
-      },
-      axisLine: {
-        lineStyle: {
-          color: 'rgba(255, 222, 0, 0.5)',
-        },
-      },
-    },
-    series: [
-      {
-        name: 'Stats',
-        type: 'radar',
-        data: [
-          {
-            value: [this.stats.special_attack, 80, 50, 75, 65, 90],
-            name: 'Pikachu',
-            areaStyle: {
-              color: 'rgba(255, 222, 0, 0.5)',
-            },
-            lineStyle: {
-              color: '#FFDE00',
-              width: 2,
-            },
-            symbol: 'none',
-          },
+      radar: {
+        radius: '90%', // agrandir l'étoile (plus proche des bords du container)
+        center: ['50%', '50%'],
+        indicator: [
+          { name: 'PV', max: 255 },
+          { name: 'Attaque', max: 255 },
+          { name: 'Défense', max: 255 },
+          { name: 'Attaque Sp.', max: 255 },
+          { name: 'Défense Sp.', max: 255 },
+          { name: 'Vitesse', max: 255 },
         ],
+        shape: 'polygon',
+        splitNumber: 5,
+        axisName: {
+          color: '#FFDE00',
+          fontSize: 14,
+        },
+        splitLine: {
+          lineStyle: {
+            color: 'rgba(255, 222, 0, 0.05)',
+          },
+        },
+        splitArea: {
+          areaStyle: {
+            color: ['rgba(255, 222, 0, 0.06)', 'rgba(255, 222, 0, 0.03)'],
+          },
+        },
+        axisLine: {
+          lineStyle: {
+            color: 'rgba(255, 222, 0, 0.5)',
+          },
+        },
       },
-    ],
-  };
+      series: [
+        {
+          name: 'Stats',
+          type: 'radar',
+          data: [
+            {
+              value: [14, 23, 141, 121, 255, speed],
+              name: 'Pokémon',
+              label: {
+                show: true,
+                formatter: (params: any) => `${params.value}`,
+                color: '#fff',
+                fontSize: 12,
+                fontWeight: 'bold',
+              },
+              areaStyle: {
+                color: 'rgba(255, 222, 0, 0.5)',
+              },
+              lineStyle: {
+                color: '#FFDE00',
+                width: 2,
+              },
+              symbol: 'circle',
+            },
+          ],
+        },
+      ],
+    } as echarts.EChartsOption;
+  }
 
   ngAfterViewInit(): void {
     // Initialiser le chart seulement si l'élément existe
@@ -95,14 +100,26 @@ export class StarStats implements AfterViewInit, OnDestroy {
 
     try {
       this.chart = echarts.init(this.chartContainer.nativeElement);
-      this.chart.setOption(this.chartOptions);
+      // Use the built options which depend on @Input stats
+      this.chart.setOption(this.buildChartOptions());
     } catch (e) {
-      // Si l'initialisation échoue, logguer pour debug mais ne pas casser l'app
+      // Fail silently for UI stability but keep console info commented for dev
       // console.warn('ECharts init failed', e);
     }
 
     // Redimensionnement responsive
     window.addEventListener('resize', this.onWindowResize);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // If stats input changes after init, update the chart
+    if (this.chart && changes['stats']) {
+      try {
+        this.chart.setOption(this.buildChartOptions());
+      } catch (e) {
+        // console.warn('ECharts update failed', e);
+      }
+    }
   }
 
   private onWindowResize = () => {

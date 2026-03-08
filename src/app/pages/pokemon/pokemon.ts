@@ -8,7 +8,6 @@ import {StarStats} from '../../shared/components/star-stats/star-stats';
 @Component({
   selector: 'app-pokemon',
   imports: [
-    Stats,
     Type,
     StarStats
   ],
