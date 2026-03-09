@@ -17,7 +17,7 @@ import {Type} from '../type/type';
 export class Card {
 
   @Input() name: string = '';
-  @Input() pokedex_id: string = '';
+  @Input() pokedex_id: number = 0;
   @Input() sprite: string = '';
-  @Input() apiTypes: { name: string, image: string }[] = []; // Accepte les objets complets
+  @Input() types: string[] = []; // Accepte les objets complets
 }

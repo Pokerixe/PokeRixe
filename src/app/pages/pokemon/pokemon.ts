@@ -14,7 +14,8 @@ import {StarStats} from '../../shared/components/star-stats/star-stats';
   templateUrl: './pokemon.html',
   styleUrl: './pokemon.css',
 })
-export class Pokemon {
+export class PokemonPage {
+    types: any;
 
   constructor(private route: ActivatedRoute,
               private apiPokemon : ApiPokemons,

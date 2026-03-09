@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {ProgressBar} from '../progress-bar/progress-bar';
-import {PokeStats} from '../../model/pokeStats';
+import {PokeStats} from '../../models/pokeStats';
 
 @Component({
   selector: 'app-stats',

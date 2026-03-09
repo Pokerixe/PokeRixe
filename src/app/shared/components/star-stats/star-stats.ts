@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import * as echarts from 'echarts';
-import {PokeStats} from '../../model/pokeStats';
+import {PokeStats} from '../../models/pokeStats';
 
 @Component({
   selector: 'app-star-stats',
