@@ -1,9 +1,8 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, inject} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ApiPokemons} from '../../shared/services/api-pokemons';
-import {Stats} from '../../shared/components/stats/stats';
 import {Type} from '../../shared/components/type/type';
 import {StarStats} from '../../shared/components/star-stats/star-stats';
+import {PokemonService} from '../../shared/services/pokemon.service';
 
 @Component({
   selector: 'app-pokemon',
@@ -15,30 +14,26 @@ import {StarStats} from '../../shared/components/star-stats/star-stats';
   styleUrl: './pokemon.css',
 })
 export class PokemonPage {
-    types: any;
+  private pokemonService = inject(PokemonService);
+
+  types: any;
 
   constructor(private route: ActivatedRoute,
-              private apiPokemon : ApiPokemons,
-              private cdr : ChangeDetectorRef
-  ) {}
+              private cdr: ChangeDetectorRef
+  ) {
+  }
 
-  isLoading : boolean = true;
-  pokemon : any;
+  isLoading: boolean = true;
+  pokemon: any;
 
   ngOnInit() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    this.apiPokemon.getPokemon(id).subscribe({
-      next: (pokemon) => {
-        this.pokemon = pokemon;
-        console.log(pokemon);
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération du Pokémon:', err);
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
+    this.pokemonService.getById(Number(id)).subscribe(pokemon => {
+      this.pokemon = pokemon;
+      this.isLoading = false;
+      console.log("loaded pokemon : ", this.pokemon);
+      this.cdr.detectChanges();
+
     });
 
   }

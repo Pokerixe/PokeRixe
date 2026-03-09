@@ -6,9 +6,24 @@ import {Equipes} from './pages/equipes/equipes';
 import {PokemonPage} from './pages/pokemon/pokemon';
 
 export const routes: Routes = [
-  { path: '', component : Home},
-  { path: 'pokedex', component : Pokedex },
-  { path: 'equipes', component : Equipes },
-  { path: 'pokemon/:id', component : PokemonPage },
-  { path: 'fight', component : Fight }
+  {
+    path: '',
+    loadComponent: () => import('./pages/home/home').then(m => m.Home)
+  },
+  {
+    path: 'pokedex',
+    loadComponent: () => import('./pages/pokedex/pokedex').then(m => m.Pokedex)
+  },
+  {
+    path: 'equipes',
+    loadComponent: () => import('./pages/equipes/equipes').then(m => m.Equipes)
+  },
+  {
+    path: 'pokemon/:id',
+    loadComponent: () => import('./pages/pokemon/pokemon').then(m => m.PokemonPage)
+  },
+  {
+    path: 'fight',
+    loadComponent: () => import('./pages/fight/fight').then(m => m.Fight)
+  }
 ];

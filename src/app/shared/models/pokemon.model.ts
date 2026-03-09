@@ -1,11 +1,4 @@
-export interface PokemonStat {
-  hp: number;
-  attack: number;
-  defense: number;
-  specialAttack: number;
-  specialDefense: number;
-  speed: number;
-}
+import {PokemonStats} from './pokemon-stats.model';
 
 export interface Pokemon {
   id: number;
@@ -14,6 +7,6 @@ export interface Pokemon {
   image: string;
   height: number;
   weight: number;
-  stats: PokemonStat;
+  stats: PokemonStats;
   moves: string[];
 }

@@ -14,6 +14,10 @@ export class PokemonRepository {
     return this.http.get<PokemonListDTO>(`${this.BASE}/pokemon?limit=${limit}`);
   }
 
+  getById(id: number): Observable<RawPokemonDTO> {
+    return this.http.get<RawPokemonDTO>(`${this.BASE}/pokemon/${id}`);
+  }
+
   getByUrl(url: string): Observable<RawPokemonDTO> {
     return this.http.get<RawPokemonDTO>(url);
   }

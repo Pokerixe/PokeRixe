@@ -1,11 +1,11 @@
 import {Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import * as echarts from 'echarts';
-import {PokeStats} from '../../models/pokeStats';
+import {PokemonStats} from '../../models/pokemon-stats.model';
 
 @Component({
   selector: 'app-star-stats',
   templateUrl: './star-stats.html',
-  styleUrls: ['./star-stats.css'], // Note : `styleUrls` (pluriel) et non `styleUrl`
+  styleUrls: ['./star-stats.css'],
 })
 export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('chartContainer', { static: false })
@@ -13,15 +13,16 @@ export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
 
   private chart: echarts.ECharts | null = null;
 
-  @Input() stats: PokeStats = {} as PokeStats; // Typage explicite
+  @Input() stats: PokemonStats = {} as PokemonStats;
 
   private buildChartOptions(): echarts.EChartsOption {
-    const hp = this.stats?.HP ?? 0;
+    const hp = this.stats?.hp ?? 0;
     const attack = this.stats?.attack ?? 0;
     const defense = this.stats?.defense ?? 0;
-    const spAtk = this.stats?.special_attack ?? 0;
-    const spDef = this.stats?.special_defense ?? 0;
+    const spAtk = this.stats?.specialAttack ?? 0;
+    const spDef = this.stats?.specialDefense ?? 0;
     const speed = this.stats?.speed ?? 0;
+    const maximumStatValue = 255; // Valeur max pour les stats de Pokémon
 
     return {
       tooltip: {
@@ -35,12 +36,12 @@ export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
         radius: '90%', // agrandir l'étoile (plus proche des bords du container)
         center: ['50%', '50%'],
         indicator: [
-          { name: 'PV', max: 255 },
-          { name: 'Attaque', max: 255 },
-          { name: 'Défense', max: 255 },
-          { name: 'Attaque Sp.', max: 255 },
-          { name: 'Défense Sp.', max: 255 },
-          { name: 'Vitesse', max: 255 },
+          { name: 'PV', max: maximumStatValue },
+          { name: 'Attaque', max: maximumStatValue },
+          { name: 'Défense', max: maximumStatValue },
+          { name: 'Attaque Sp.', max: maximumStatValue },
+          { name: 'Défense Sp.', max: maximumStatValue },
+          { name: 'Vitesse', max: maximumStatValue },
         ],
         shape: 'polygon',
         splitNumber: 5,
@@ -70,7 +71,7 @@ export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
           type: 'radar',
           data: [
             {
-              value: [14, 23, 141, 121, 255, speed],
+              value: [hp, attack, defense, spAtk, spDef, speed],
               name: 'Pokémon',
               label: {
                 show: true,

@@ -16,4 +16,13 @@ export class PokemonService {
       map(raws => raws.map(PokemonMapper.toModel))
     );
   }
+
+  getById(id: number): Observable<Pokemon> {
+    return this.repo.getById(id).pipe(
+      map(PokemonMapper.toModel)
+    );
+  }
+
+
+
 }
