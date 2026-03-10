@@ -22,10 +22,10 @@ jobs:
         run: npm ci
 
       - name: Builder l'app
-        run: npm run build -- --configuration production --base-href /nom-de-ton-repo/
+        run: npm run build -- --configuration production --base-href /pokerixe/
 
       - name: Déployer sur GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/pokerixe/browser
+          publish_dir: ./dist/client/browser
