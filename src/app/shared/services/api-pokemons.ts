@@ -9,11 +9,13 @@ import {catchError, Observable, throwError } from 'rxjs';
 export class ApiPokemons {
 
   private apiUrl = 'https://pokebuildapi.fr/api/v1';
+  //private apiUrl = 'https://pokeapi.co/api/v2/';
 
   constructor(private http: HttpClient) {}
 
   getPokedex(): Observable<any>{
     return this.http.get<any>(`${this.apiUrl}/pokemon/generation/1`).pipe(
+    //return this.http.get<any>(`${this.apiUrl}/pokemon?limit=151`).pipe(
       catchError(this.handleError)
     );
   }
