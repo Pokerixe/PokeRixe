@@ -19,7 +19,7 @@ jobs:
           cache: 'npm'
 
       - name: Installer les dépendances
-        run: npm ci
+        run: npm install
 
       - name: Builder l'app
         run: npm run build -- --configuration production --base-href /pokerixe/
