@@ -162,20 +162,22 @@ npm run doc
 
 La documentation sera accessible sur [http://localhost:8080](http://localhost:8080).
 
----
-
 ## 🔄 CI/CD — GitHub Actions
 
-Le pipeline est défini dans `.github/workflows/`. Il s'exécute automatiquement à chaque push et pull request.
+Les pipelines sont définis dans `.github/workflows/` et s'exécutent automatiquement à chaque push sur `main`.
 
-Étapes incluses :
+### `ci.yml` — Analyse qualité
+1. **Checkout** — récupération du code avec tout l'historique Git (nécessaire pour SonarQube)
+2. **Analyse SonarQube** — scan statique du code TypeScript/HTML et envoi du rapport sur le serveur SonarQube
 
-1. **Install** — installation des dépendances npm
-2. **Lint / Format** — vérification Prettier
-3. **Build** — compilation Angular en mode production
-4. **SonarQube** — analyse qualité du code
-5. **Compodoc** — génération de la documentation
-6. **Déploiement** — vers l'environnement cible (home lab)
+### `deploy.yml` — Déploiement en production
+1. **Build Docker** — construction de l'image taguée avec la version et `:latest`
+2. **Push GHCR** — publication de l'image sur `ghcr.io/baptouk/pokerixe-front:latest`
+3. **Déploiement SSH** — connexion au serveur perso, redémarrage du container Docker pour mettre le site à jour
+
+### `docs.yml` — Documentation
+1. **Génération Compodoc** — génération de la documentation à partir du code source
+2. **Déploiement GitHub Pages** — publication automatique sur GitHub Pages
 
 ---
 
