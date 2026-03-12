@@ -6,6 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
+  build:
+    environment: pokerixe-front
   build-and-deploy:
     runs-on: ubuntu-latest
 
@@ -23,7 +25,7 @@ jobs:
 
       - name: Notifier le serveur
         run: |
-          echo ${{ secrets.SSH_PRIVATE_KEY }}  > private_key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}"  > private_key
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
             docker pull ghcr.io/baptouk/pokerixe-front:latest &&
