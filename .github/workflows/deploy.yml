@@ -1,4 +1,4 @@
-name:Build & Deploy Pokerixe Front
+name: Build Deploy Pokerixe Front
 
 on:
   push:
@@ -6,9 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    environment: pokerixe-front
   build-and-deploy:
+    environment: pokerixe-front
     runs-on: ubuntu-latest
 
     steps:
