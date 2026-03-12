@@ -1,4 +1,4 @@
-name: Build & Deploy Pokerixe Front
+name:Build & Deploy Pokerixe Front
 
 on:
   push:
