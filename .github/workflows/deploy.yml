@@ -1,29 +1,33 @@
-name: Build & Deploy Angular → GitHub Pages
+name: Build & Deploy Pokerixe Front
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+
     steps:
       - name: Récupérer le code
         uses: actions/checkout@v4
-      - name: Configurer Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - name: Installer les dépendances
-        run: npm install
-      - name: Builder l'app
-        run: npm run build -- --configuration production --base-href /PokeRixe/
-      - name: Copier index.html en 404.html
-        run: cp ./dist/client/browser/index.html ./dist/client/browser/404.html
-      - name: Déployer sur GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/client/browser
+
+      - name: Login ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build & Push image
+        run: |
+          docker build -t ghcr.io/baptouk/pokerixe-front:latest .
+          docker push ghcr.io/baptouk/pokerixe-front:latest
+
+      - name: Notifier le serveur
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
+            docker pull ghcr.io/baptouk/pokerixe-front:latest &&
+            cd /chemin/vers/ton/compose &&
+            docker compose up -d
+          "
+          rm private_key
