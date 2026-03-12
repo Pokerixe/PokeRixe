@@ -2,6 +2,10 @@
 
 Interface web du projet **PokéRixe**, un jeu de combat de créatures au tour par tour en JCJ (Joueur contre Joueur).
 
+Site web toujours en développement : ``pokerixe.baptouk.live/``
+
+Documentation technique : ``baptouk.github.io/PokeRixe/``
+
 > Le front-end communiqueras avec le back-end via une **API REST** (Java Spring).
 ---
 
