@@ -94,7 +94,7 @@
 }
 
 
-.card:hover #animation {
+.card:hover .animation {
   color: var(--card-outline);
 }
 

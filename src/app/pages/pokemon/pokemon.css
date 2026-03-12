@@ -121,14 +121,14 @@ app-star-stats {
   max-height: 8rem;
 }
 
-.pokemon .left #desc {
+.pokemon .left .desc {
   margin: 0;
   padding: 0;
   font-size: 1.3rem;
 
 }
 
-.pokemon .left #value {
+.pokemon .left .value {
   margin: 0;
   padding: 0;
   font-size: 1rem;

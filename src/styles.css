@@ -46,7 +46,7 @@ body {
   position: relative;
   overflow: auto; /* Permet aux enfants de défiler */
 
-  font-family: "8Bit";
+  font-family: "8Bit", monospace;
 }
 
 #pokeFont {
