@@ -23,9 +23,12 @@ jobs:
 
       - name: Notifier le serveur
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/private_key
-          chmod 600 ~/.ssh/private_key
-          ssh -i ~/.ssh/private_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "docker pull ghcr.io/baptouk/pokerixe-front:latest && cd ~/pokerixe/ && docker compose up -d"
-          rm -f ~/.ssh/private_key
+          echo "prout}" > private_key
+          chmod 600 private_key
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
+            docker pull ghcr.io/baptouk/pokerixe-front:latest &&
+            cd ~/pokerixe/ &&
+            docker compose up -d
+          "
+          rm private_key
 
