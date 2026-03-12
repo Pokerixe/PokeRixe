@@ -1,59 +1,184 @@
-# Client
+# 🎮 PokéRixe — Front-End
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.5.
+Interface web du projet **PokéRixe**, un jeu de combat de créatures au tour par tour en JCJ (Joueur contre Joueur).
 
-## Development server
+> Le front-end communiqueras avec le back-end via une **API REST** (Java Spring).
+---
 
-To start a local development server, run:
+## 📋 Fonctionnalités
+
+- Consultation du Pokédex et des fiches détaillées de chaque créature
+- Création et gestion des équipes du joueur
+- Défi et combat tour par tour entre joueurs
+
+---
+
+## 🏗️ Stack technique
+
+| Technologie | Version | Usage |
+|---|---|---|
+| [Angular](https://angular.io/) | 21 | Framework front-end |
+| TypeScript | ~5.9 | Langage principal |
+| CSS custom | — | Styles |
+| [ECharts](https://echarts.apache.org/) + [ngx-echarts](https://xieziyu.github.io/ngx-echarts/) | 6 / 21 | Graphiques de statistiques |
+| [RxJS](https://rxjs.dev/) | ~7.8 | Gestion des flux asynchrones |
+| [Compodoc](https://compodoc.app/) | ^1.2 | Documentation du code |
+| [SonarQube](https://www.sonarsource.com/products/sonarqube/) | — | Qualité du code |
+| [GitHub Actions](https://github.com/features/actions) | — | CI/CD |
+| [Prettier](https://prettier.io/) | — | Formatage du code |
+
+---
+
+## 🚀 Installation et démarrage
+
+### Prérequis
+
+- [Node.js](https://nodejs.org/) >= 18
+- [npm](https://www.npmjs.com/) `11.6.2` (version fixée via `packageManager`)
+- [Angular CLI](https://angular.io/cli) `^21`
 
 ```bash
+npm install -g @angular/cli
+```
+
+### Cloner le dépôt
+
+```bash
+git clone https://github.com/BaptouK/pokerixe-frontend.git
+cd pokerixe-frontend
+```
+
+### Installer les dépendances
+
+```bash
+npm install
+```
+
+### Lancer en développement
+
+```bash
+npm start
+# ou
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+L'application sera disponible sur [http://localhost:4200](http://localhost:4200).
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Build de production
 
 ```bash
-ng generate component component-name
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Les fichiers compilés se trouvent dans le dossier `dist/`.
+
+
+---
+
+## 📁 Structure du projet
+
+```
+src/
+└── app/
+    ├── core/
+    │   ├── interceptors/       # Intercepteurs HTTP (auth, erreurs...)
+    │   └── store/              # Gestion d'état global
+    │
+    ├── pages/                  # Pages principales de l'application
+    │   ├── equipes/            # Gestion des équipes du joueur
+    │   ├── fight/              # Interface de combat JCJ
+    │   ├── home/               # Page d'accueil
+    │   ├── pokedex/            # Liste des créatures
+    │   └── pokemon/            # Fiche détaillée d'une créature
+    │
+    └── shared/                 # Éléments réutilisables
+        ├── components/
+        │   ├── card/           # Carte créature
+        │   ├── header/         # En-tête global
+        │   ├── progress-bar/   # Barre de progression (HP, stats...)
+        │   ├── star-stats/     # Affichage stats en étoiles
+        │   ├── stats/          # Bloc statistiques (ECharts)
+        │   └── type/           # Badge de type de créature
+        ├── mappers/            # Transformation API → modèle interne
+        ├── models/
+        │   └── dto/            # Types des réponses API
+        ├── repositories/       # Couche d'accès aux données (appels HTTP)
+        └── services/           # Logique métier partagée
+```
+
+---
+
+## 📊 Qualité du code — SonarQube
+
+L'analyse qualité est déclenchée automatiquement via la CI/CD à chaque push.
+
+Pour lancer une analyse manuellement :
 
 ```bash
-ng generate --help
+npm run sonar
 ```
 
-## Building
+> Requiert un fichier `sonar-project.properties` à la racine avec la configuration du projet, et de avoir un server soanrQube dédié.
 
-To build the project run:
+Exemple de `sonar-project.properties` :
+
+```properties
+sonar.projectKey=pokerixe-frontend
+sonar.sources=src
+sonar.host.url=http://<sonarqube-url>
+sonar.login=<token>
+```
+
+Exemple de `docker-compose.yml` pour SonarQube local :
+
+```yaml
+services:
+  sonarqube:
+    image: sonarqube:community
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+```
+---
+
+## 📚 Documentation — Compodoc
+
+La documentation est générée automatiquement à partir des commentaires du code source.
 
 ```bash
-ng build
+# Générer et servir la documentation
+npm run doc
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+La documentation sera accessible sur [http://localhost:8080](http://localhost:8080).
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 🔄 CI/CD — GitHub Actions
 
-```bash
-ng test
-```
+Le pipeline est défini dans `.github/workflows/`. Il s'exécute automatiquement à chaque push et pull request.
 
-## Running end-to-end tests
+Étapes incluses :
 
-For end-to-end (e2e) testing, run:
+1. **Install** — installation des dépendances npm
+2. **Lint / Format** — vérification Prettier
+3. **Build** — compilation Angular en mode production
+4. **SonarQube** — analyse qualité du code
+5. **Compodoc** — génération de la documentation
+6. **Déploiement** — vers l'environnement cible (home lab)
 
-```bash
-ng e2e
-```
+---
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 📄 Licence
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Usage interne — projet scolaire.
