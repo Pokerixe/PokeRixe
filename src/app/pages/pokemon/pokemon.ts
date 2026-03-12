@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Type} from '../../shared/components/type/type';
 import {StarStats} from '../../shared/components/star-stats/star-stats';
@@ -13,13 +13,13 @@ import {PokemonService} from '../../shared/services/pokemon.service';
   templateUrl: './pokemon.html',
   styleUrl: './pokemon.css',
 })
-export class PokemonPage {
-  private pokemonService = inject(PokemonService);
+export class PokemonPage implements OnInit {
+  private readonly pokemonService = inject(PokemonService);
 
   types: any;
 
-  constructor(private route: ActivatedRoute,
-              private cdr: ChangeDetectorRef
+  constructor(private readonly route: ActivatedRoute,
+              private readonly cdr: ChangeDetectorRef
   ) {
   }
 

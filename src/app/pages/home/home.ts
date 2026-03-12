@@ -1,5 +1,4 @@
-import {Component, OnInit, OnDestroy, inject} from '@angular/core';
-import { Subscription } from 'rxjs';
+import {Component, inject, OnInit} from '@angular/core';
 import {PokemonService} from '../../shared/services/pokemon.service';
 
 @Component({
@@ -9,8 +8,8 @@ import {PokemonService} from '../../shared/services/pokemon.service';
   styleUrl: './home.css',
 })
 
-export class Home {
-  private pokemonService = inject(PokemonService);
+export class Home implements OnInit{
+  private readonly pokemonService = inject(PokemonService);
 
   ngOnInit() {
     this.pokemonService.getFirst150().subscribe({

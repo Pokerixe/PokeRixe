@@ -1,16 +1,16 @@
-import { inject, Injectable, signal, computed } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Pokemon } from '../../shared/models/pokemon.model';
 import { PokemonService } from '../../shared/services/pokemon.service';
 
 @Injectable({ providedIn: 'root' })
 export class PokemonStore {
-  private pokemonService = inject(PokemonService);
+  private readonly pokemonService = inject(PokemonService);
 
   // État
-  private _pokemons = signal<Pokemon[]>([]);
-  private _loading = signal(false);
-  private _error = signal<string | null>(null);
-  private _lastFetch = signal<number | null>(null);
+  private readonly _pokemons = signal<Pokemon[]>([]);
+  private readonly _loading = signal(false);
+  private readonly _error = signal<string | null>(null);
+  private readonly _lastFetch = signal<number | null>(null);
 
   // Exposé en lecture seule
   pokemons = this._pokemons.asReadonly();

@@ -11,6 +11,8 @@
   color: var(--card-outline);
 
   overflow: hidden;
+
+  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 
@@ -98,6 +100,3 @@
   color: var(--card-outline);
 }
 
-.card {
-  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}

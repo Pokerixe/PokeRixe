@@ -4,15 +4,10 @@ import {
   ComponentRef, DestroyRef,
   effect, EffectRef,
   inject,
-  OnInit,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {Card} from '../../shared/components/card/card';
-import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {ApiPokemons} from '../../shared/services/api-pokemons';
-import {PokemonService} from '../../shared/services/pokemon.service';
 import {Pokemon} from '../../shared/models/pokemon.model';
 import {PokemonStore} from '../../core/store/pokemon.store';
 
@@ -24,13 +19,13 @@ import {PokemonStore} from '../../core/store/pokemon.store';
 })
 
 export class Pokedex implements AfterViewInit {
-  private store = inject(PokemonStore);
-  private destroyRef = inject(DestroyRef);
+  private readonly store = inject(PokemonStore);
+  private readonly destroyRef = inject(DestroyRef);
 
   @ViewChild('pokemonContainer', { read: ViewContainerRef })
   pokemonContainer!: ViewContainerRef;
 
-  private pokemonEffect!: EffectRef;
+  private readonly pokemonEffect!: EffectRef;
 
   constructor() {
     this.pokemonEffect = effect(() => {

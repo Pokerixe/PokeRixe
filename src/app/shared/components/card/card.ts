@@ -1,5 +1,4 @@
-import {Component, Input, input} from '@angular/core';
-import { NgOptimizedImage} from '@angular/common';
+import {Component, Input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {Type} from '../type/type';
 
