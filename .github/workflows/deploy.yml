@@ -31,7 +31,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
-            docker pull ghcr.io/${{ github.repository_owner }}/pokerixe-front:latest &&
+            docker pull ghcr.io/baptouk/pokerixe-front:latest &&
             cd ~/pokerixe/ &&
             docker compose down &&
             docker compose up -d
