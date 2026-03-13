@@ -20,5 +20,9 @@ export const routes: Routes = [
   {
     path: 'fight',
     loadComponent: () => import('./pages/fight/fight').then(m => m.Fight)
+  },
+  {
+    path: 'user',
+    loadComponent: () => import('./pages/user/user').then(m => m.User)
   }
 ];

@@ -24,5 +24,13 @@ export class PokemonService {
   }
 
 
+  getRange(offset: number, limit: number): Observable<Pokemon[]> {
+    // Exemple si tu charges par IDs (1 à 150)
+    const ids = Array.from({ length: limit }, (_, i) => offset + i + 1)
+      .filter(id => id <= 150);
+    return forkJoin(ids.map(id => this.getById(id)));
 
+    // Ou si ton API supporte offset/limit :
+    // return this.http.get<Pokemon[]>(`${this.apiUrl}?offset=${offset}&limit=${limit}`);
+  }
 }

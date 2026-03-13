@@ -14,6 +14,21 @@
 }
 
 :root {
+
+  /* Variables utilisé  */
+  --color-gray-800: oklch(27.8% 0.033 256.848);
+  --light-gray: #8a8a8a;
+  --backgroud-gray: #2A2A2A;
+  --border-yellow: #FFCB05;
+  --border-gray: #8a8a8a;
+  --button-hover: rgba(255, 255, 255, 0.1);
+  --card-bg-color: rgba(0, 0, 0, 0.53);
+  --card-bg-color-hover: rgba(0, 0, 0, 0.7);
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+
+  /* ========== Déprécié: Couleurs de base (HSL) ========== */
+
   /* Couleur de base (noir) */
   --base-h: 0;
   --base-s: 0%;
@@ -25,11 +40,8 @@
   --base-darker: hsl(var(--base-h), var(--base-s), calc(var(--base-l) - 5%));
   --base-black: hsl(var(--base-h), var(--base-s), calc(var(--base-l) - 10%));
 
-  /* Autres variables (correctes) */
-  --color-gray-800: oklch(27.8% 0.033 256.848);
-  --light-gray: #8a8a8a;
-  --card-outline: #FFCB05;
-  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+
 }
 
 
@@ -51,7 +63,7 @@ body {
 
 #pokeFont {
   font-family: var(--font-sans);
-  color: var(--card-outline);
+  color: var(--border-yellow);
   -webkit-text-stroke: 1.5px rgb(42, 69, 128);
 }
 
@@ -66,7 +78,9 @@ body::before {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  filter: blur(30px) saturate(0.3);
+  filter: blur(30px) saturate(0.5) brightness(0.8);
+  /* filter: blur(30px) saturate(0.3); */
+
   transform: scale(1.03); /* grow slightly so blur doesn't show transparent edges */
   transform-origin: center;
   z-index: -1;
@@ -78,8 +92,7 @@ body::before {
 
 * {
   text-decoration: none;
-  /* color:white; */
-
+  color:white;
 }
 
 *:visited {
@@ -90,6 +103,15 @@ body::before {
 .separator {
   height: 3px;
   border-radius: 3px;
-  background-color: var(--card-outline);
+  background-color: var(--border-yellow);
   margin: 1rem 0.4rem;
+}
+
+.basic-container {
+  max-width: 100rem;
+  border: 1px solid var(--border-yellow);
+  width: 100%;
+  border-radius: 8px;
+  background-color: var(--card-bg-color);
+  padding: 1rem;
 }

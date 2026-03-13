@@ -7,7 +7,6 @@
   display: flex;
   align-items: center;
 
-  color : white;
 }
 
 .nav {
@@ -23,7 +22,6 @@
 }
 
 .nav-left {
-  color: white;
   font-size: 5rem;
   font-weight: 500;
   margin-right: auto;
@@ -35,7 +33,6 @@
   align-items: center;
   gap: 24px;
   list-style: none;
-  color: white;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -43,39 +40,47 @@
   padding: 0;
 }
 
-.nav-item {
+.nav-item{
+  font-size: 2rem;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover  {
+  background: var(--button-hover);
+  border-bottom: 2px solid var(--border-yellow);
+  transform: translateY(-2px);
+}
+
+.nav-item.active {
+  background: var(--button-hover);
+  border-bottom: 2px solid var(--border-yellow);
+  transform: translateY(-2px);
+}
+
+.nav-user {
   font-size: 2rem;
   color: white;
   cursor: pointer;
   font-weight: 500;
-  padding: 0.5rem 1rem; /* Espace autour du texte */
-  border-radius: 4px; /* Coins légèrement arrondis */
-  transition: all 0.3s ease; /* Animation fluide */
-}
-
-.nav-item:hover  {
-  background: rgba(255, 255, 255, 0.1); /* Fond légèrement transparent */
-  border-bottom: 2px solid var(--card-outline); /* Bordure rouge en bas */
-  transform: translateY(-2px); /* Légère élévation */
-}
-
-.nav-item.active {
-  background: rgba(255, 255, 255, 0.1); /* Fond légèrement transparent */
-  border-bottom: 2px solid var(--card-outline); /* Bordure rouge en bas */
-  transform: translateY(-2px); /* Légère élévation */
-}
-
-.nav-user {
-  color: white;
-  font-size: 2rem;
-  font-weight: 500;
-  margin-left: auto;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 .nav-user:hover  {
-  background: rgba(255, 255, 255, 0.1); /* Fond légèrement transparent */
-  border-bottom: 2px solid var(--card-outline); /* Bordure rouge en bas */
-  transform: translateY(-2px); /* Légère élévation */
+  background: var(--button-hover);
+  border-bottom: 2px solid var(--border-yellow);
+  transform: translateY(-2px);
+}
+
+.nav-user.active {
+  background: var(--button-hover);
+  border-bottom: 2px solid var(--border-yellow);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
