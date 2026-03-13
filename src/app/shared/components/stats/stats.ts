@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ProgressBar} from '../progress-bar/progress-bar';
 import {PokemonStats} from '../../models/pokemon-stats.model';
 
@@ -10,9 +10,8 @@ import {PokemonStats} from '../../models/pokemon-stats.model';
   templateUrl: './stats.html',
   styleUrl: './stats.css',
 })
-export class Stats {
-  @Input() stats: PokemonStats = {} as PokemonStats; // Typage explicite
-  //statistiques  = new PokemonStats();
+export class Stats implements OnInit {
+  @Input() stats: PokemonStats = {} as PokemonStats;
 
   ngOnInit() {
     console.log("baba",this.stats);
