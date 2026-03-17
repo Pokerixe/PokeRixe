@@ -36,10 +36,14 @@ export class Pokedex implements AfterViewInit {
       }
     });
 
-    this.destroyRef.onDestroy(() => this.renderedCount = 0);
+    this.destroyRef.onDestroy(() => {
+      this.renderedCount = 0;
+      this.pokemonContainer?.clear();
+    });
   }
 
   ngAfterViewInit(): void {
+    this.store.reset();
     this.store.loadFirst150();
   }
 

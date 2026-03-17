@@ -55,4 +55,12 @@ export class PokemonStore {
   getById(id: number): Pokemon | undefined {
     return this._pokemons().find(p => p.id === id);
   }
+
+  reset(): void {
+    this._pokemons.set([]);
+    this._currentOffset.set(0);
+    this._hasMore.set(true);
+    this._loading.set(false);
+    this._error.set(null);
+  }
 }
