@@ -27,6 +27,16 @@
   --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
 
+  /* couleurs du form */
+
+  --input-focus: var(--border-yellow);
+  --font-color: white;
+  --font-color-dark: var(--card-bg-color);
+  --font-color-sub: #666;
+  --bg-color: #fff;
+  --bg-color-alt: #666;
+  --main-color: var(--color-gray-800);
+
   /* ========== Déprécié: Couleurs de base (HSL) ========== */
 
   /* Couleur de base (noir) */

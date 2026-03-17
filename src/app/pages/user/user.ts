@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import {Form} from '../../shared/components/form/form';
 
 @Component({
   selector: 'app-user',
-  imports: [],
+  imports: [
+    Form
+  ],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
