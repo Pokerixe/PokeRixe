@@ -9,6 +9,6 @@ import {Form} from '../../shared/components/form/form';
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
-export class User {
+export class UserPage {
 
 }
