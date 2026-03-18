@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  useMockApi: false,
+  useMockApi: true,
   apiUrl: 'https://backend.com/api/'
 };
