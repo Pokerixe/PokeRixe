@@ -1,0 +1,86 @@
+.home-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 860px;
+  margin: 2rem auto;
+}
+
+.home-title {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: 1px;
+  color: #f7d046;
+  text-shadow: 0 3px 0 #000;
+}
+
+.home-description {
+  margin: 0;
+  text-align: center;
+  color: #f5f5f5;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.home-card {
+  border: 3px solid #f7d046;
+  border-radius: 14px;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, rgba(29, 37, 56, 0.92), rgba(18, 24, 38, 0.95));
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.home-tagline,
+.home-github {
+  margin: 0.35rem 0;
+  color: #ffffff;
+  text-align: center;
+}
+
+.home-github {
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.home-actions {
+  margin-top: 1.2rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.home-btn {
+  display: inline-block;
+  padding: 0.65rem 1.1rem;
+  border: 2px solid #f7d046;
+  border-radius: 10px;
+  color: #111;
+  background: #f7d046;
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(247, 208, 70, 0.3);
+}
+
+.home-btn-secondary {
+  background: transparent;
+  color: #f7d046;
+}
+
+@media (max-width: 640px) {
+  .home-shell {
+    margin: 1rem auto;
+    gap: 1rem;
+  }
+
+  .home-card {
+    padding: 1rem;
+  }
+}
+
