@@ -78,23 +78,24 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production",
-          "serve": {
-            "builder": "@angular/build:dev-server",
-            "configurations": {
-              "production": {
-                "buildTarget": "client:build:production"
-              },
-              "development": {
-                "buildTarget": "client:build:development"
-              }
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "client:build:production"
             },
-            "defaultConfiguration": "development"
+            "development": {
+              "buildTarget": "client:build:development"
+            }
           },
-          "test": {
-            "builder": "@angular/build:unit-test"
-          }
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
         }
       }
     }
   }
+}

@@ -118,13 +118,17 @@ body::before {
 }
 
 .basic-container {
-  max-width: 100rem;
-  border: 1px solid var(--border-yellow);
   width: 100%;
+  max-width: none;
+  min-height: calc(100dvh - 8rem - 40px);
+  box-sizing: border-box;
+  border: 1px solid var(--border-yellow);
   border-radius: 8px;
   background-color: var(--card-bg-color);
   padding: 1rem;
 }
+
+/* =================== Form styles ============================= */
 
 .form {
   width: 100%;
@@ -163,7 +167,8 @@ body::before {
 
 .form input {
   width: 100%;
-  padding: 0.85rem 0.95rem;
+  box-sizing: border-box;
+  padding: 0.9rem 1rem;
   border: 2px solid var(--light-gray);
   border-radius: 8px;
   background: rgba(22, 22, 22, 0.85);
@@ -186,6 +191,7 @@ body::before {
 .form button {
   margin-top: 0.7rem;
   width: 100%;
+  box-sizing: border-box;
   padding: 0.9rem 1rem;
   border: 2px solid var(--border-yellow);
   border-radius: 8px;
