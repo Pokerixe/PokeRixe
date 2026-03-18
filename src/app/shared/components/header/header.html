@@ -2,13 +2,26 @@
   <nav class="nav">
     <div class="nav-left" id="pokeFont">PokéRixe</div>
 
-    <ul class="nav-list">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><a routerLink="">Home</a></li>
-      <li class="nav-item" routerLinkActive="active"><a routerLink="pokedex">Pokedex</a></li>
-      <li class="nav-item" routerLinkActive="active"><a routerLink="equipes">Equipes</a></li>
-      <li class="nav-item" routerLinkActive="active"><a routerLink="fight">Fight</a></li>
-    </ul>
 
-    <div class="nav-user" routerLinkActive="active"><a routerLink="user">User</a></div>
+    @if (!auth.isAuthenticated()) {
+      <ul class="nav-list">
+        <li class="nav-item font-basic" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><a
+          routerLink="">Home</a></li>
+        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="pokedex">Pokedex</a></li>
+      </ul>
+
+      <div class="nav-user font-basic" routerLinkActive="active"><a routerLink="login">Se connecter</a></div>
+      <div class="nav-user font-basic" routerLinkActive="active"><a routerLink="register">Inscription</a></div>
+
+    } @else if (auth.isAuthenticated()) {
+      <ul class="nav-list">
+        <li class="nav-item font-basic" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><a routerLink="">Home</a></li>
+        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="pokedex">Pokedex</a></li>
+        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="equipes">Equipes</a></li>
+        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="fight">Fight</a></li>
+      </ul>
+      <div class="nav-user font-basic" routerLinkActive="active"><a routerLink="user">User</a></div>
+    }
+
   </nav>
 </header>

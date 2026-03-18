@@ -1,0 +1,47 @@
+<div class="user-container basic-container">
+  <div class="left">
+
+    <div class="charizard-wrapper">
+      <img src="/charizard-flying.png" alt="charizard flying" class="charizard-flying">
+
+      <svg class="arc-text" viewBox="0 0 500 300">
+        <defs>
+          <path id="arc" d="M 20,50 Q 200,-50 450,10"/>
+        </defs>
+        <text font-family="'Press Start 2P', cursive" font-size="40" fill="white" font-weight="bold">
+          <textPath href="#arc" startOffset="40%" text-anchor="middle">JOIN THE FIGHT</textPath>
+        </text>
+      </svg>
+    </div>
+
+
+  </div>
+  <div class="right">
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
+      <h2 class="form-title">Connexion Dresseur</h2>
+      <p class="form-subtitle">Entre dans l'arene et reprends ton equipe.</p>
+
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email" placeholder="ex: red@poke.com" autocomplete="email">
+      @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')) {
+        <span class="error">Email obligatoire</span>
+      }
+      @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')) {
+        <span class="error">Format email invalide</span>
+      }
+
+      <label for="password">Mot de passe</label>
+      <input id="password" formControlName="password" type="password" placeholder="Minimum 6 caracteres" autocomplete="current-password">
+      @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
+        <span class="error">Mot de passe obligatoire</span>
+      }
+      @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')) {
+        <span class="error">Minimum 6 caracteres</span>
+      }
+
+      <button type="submit" [disabled]="loginForm.invalid">Se connecter</button>
+    </form>
+
+  </div>
+</div>

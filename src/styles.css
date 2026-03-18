@@ -125,3 +125,92 @@ body::before {
   background-color: var(--card-bg-color);
   padding: 1rem;
 }
+
+.form {
+  width: 100%;
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 2rem;
+  border: 2px solid var(--border-yellow);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(42, 42, 42, 0.95) 0%, rgba(0, 0, 0, 0.75) 100%);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35);
+}
+
+.form-title {
+  margin: 0;
+  color: var(--border-yellow);
+  font-size: 2rem;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+.form-subtitle {
+  margin: 0 0 1rem;
+  color: #f2f2f2;
+  font-family: "8Bitbis", sans-serif;
+  font-size: 1.05rem;
+  text-align: center;
+}
+
+.form label {
+  color: #ffffff;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.form input {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border: 2px solid var(--light-gray);
+  border-radius: 8px;
+  background: rgba(22, 22, 22, 0.85);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.form input::placeholder {
+  color: #bbbbbb;
+}
+
+.form input:focus-visible {
+  outline: none;
+  border-color: var(--border-yellow);
+  box-shadow: 0 0 0 3px rgba(255, 203, 5, 0.2);
+  transform: translateY(-1px);
+}
+
+.form button {
+  margin-top: 0.7rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--border-yellow);
+  border-radius: 8px;
+  background: rgba(255, 203, 5, 0.1);
+  color: var(--border-yellow);
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form button:hover:not(:disabled) {
+  background: rgba(255, 203, 5, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.form button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.error {
+  margin-top: -0.2rem;
+  margin-bottom: 0.2rem;
+  color: #ff6b6b;
+  font-family: "8Bitbis", sans-serif;
+  font-size: 0.9rem;
+}

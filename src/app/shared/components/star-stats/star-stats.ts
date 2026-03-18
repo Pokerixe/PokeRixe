@@ -7,6 +7,10 @@ import {PokemonStats} from '../../models/pokemon-stats.model';
   templateUrl: './star-stats.html',
   styleUrls: ['./star-stats.css'],
 })
+
+/**
+ * Affichage de statistiques de Pokémon sous forme d'étoile (radar chart) avec ECharts.
+ */
 export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('chartContainer', { static: false })
   chartContainer!: ElementRef<HTMLDivElement>;

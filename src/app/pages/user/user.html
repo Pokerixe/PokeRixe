@@ -1,23 +1,42 @@
-<div class="user-container basic-container">
-  <div class="left">
+<section class="user-page basic-container">
+  <header class="user-header">
+    <h1 class="user-title">Profil Dresseur</h1>
+    @if (auth.isAuthenticated()) {
+      <p class="user-welcome">Bienvenue {{ auth.currentUser()?.name }}</p>
+      <p class="user-meta">Role: {{ currentRoleLabel() }}</p>
+    }
+  </header>
 
-    <div class="charizard-wrapper">
-      <img src="/charizard-flying.png" alt="charizard flying" class="charizard-flying">
-
-      <svg class="arc-text" viewBox="0 0 500 300">
-        <defs>
-          <path id="arc" d="M 20,50 Q 200,-50 450,10" />
-        </defs>
-        <text font-family="'Press Start 2P', cursive" font-size="40" fill="white" font-weight="bold">
-          <textPath href="#arc" startOffset="40%" text-anchor="middle">JOIN THE FIGHT</textPath>
-        </text>
-      </svg>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="user-form">
+    <div class="field">
+      <label for="name">Nom</label>
+      <input id="name" formControlName="name" type="text" placeholder="Nom du dresseur" autocomplete="name">
+      @if (profileForm.get('name')?.touched && profileForm.get('name')?.hasError('required')) {
+        <span class="error">Le nom est obligatoire.</span>
+      }
+      @if (profileForm.get('name')?.touched && profileForm.get('name')?.hasError('minlength')) {
+        <span class="error">Le nom doit contenir au moins 2 caracteres.</span>
+      }
     </div>
 
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email" placeholder="email@exemple.com" autocomplete="email">
+      @if (profileForm.get('email')?.touched && profileForm.get('email')?.hasError('required')) {
+        <span class="error">L'email est obligatoire.</span>
+      }
+      @if (profileForm.get('email')?.touched && profileForm.get('email')?.hasError('email')) {
+        <span class="error">Le format de l'email est invalide.</span>
+      }
+    </div>
 
+    <div class="actions">
+      <button type="submit" [disabled]="profileForm.invalid">Enregistrer</button>
+      <button type="button" class="secondary" (click)="onReset()">Reinitialiser</button>
+    </div>
 
-  </div>
-  <div class="right">
-    <app-form ></app-form>
-  </div>
-</div>
+    @if (saveMessage) {
+      <p class="save-message">{{ saveMessage }}</p>
+    }
+  </form>
+</section>

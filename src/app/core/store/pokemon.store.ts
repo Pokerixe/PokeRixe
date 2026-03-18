@@ -2,6 +2,12 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Pokemon } from '../../shared/models/pokemon.model';
 import { PokemonService } from '../../shared/services/pokemon.service';
 
+/** Store pour gérer l'état global des pokémons
+ * Permet de centraliser la logique de chargement, de pagination, de cache, etc.
+ * Les composants peuvent s'abonner aux signaux exposés par ce store pour réagir aux changements d'état
+ * Exemple d'utilisation : dans un composant, injecter le store et s'abonner au signal pokemons pour afficher la liste des pokémons
+ * Ce store gère le chargement des 150 premiers pokémons avec pagination, un cache de 5 minutes, et expose des signaux pour l'état de chargement et les erreurs
+ */
 @Injectable({ providedIn: 'root' })
 export class PokemonStore {
   private readonly pokemonService = inject(PokemonService);

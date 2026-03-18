@@ -1,5 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {PokemonService} from '../../shared/services/pokemon.service';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -9,12 +8,7 @@ import {PokemonService} from '../../shared/services/pokemon.service';
 })
 
 export class Home implements OnInit{
-  private readonly pokemonService = inject(PokemonService);
 
   ngOnInit() {
-    this.pokemonService.getFirst150().subscribe({
-      next: (pokemons) => console.log('✅ Pokémons récupérés :', pokemons),
-      error: (err) => console.error('❌ Erreur :', err)
-    });
   }
 }

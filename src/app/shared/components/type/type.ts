@@ -6,6 +6,11 @@ import {Component, Input, computed, signal} from '@angular/core';
   templateUrl: './type.html',
   styleUrl: './type.css',
 })
+/**
+ * Composant pour afficher le type d'un Pokémon avec une couleur de fond correspondante.
+ * Accepte la propriété suivante :
+ * - type : Le type du Pokémon (ex: "fire", "water", etc.).
+ */
 export class Type {
 
   @Input() type: string = "";

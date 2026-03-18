@@ -6,6 +6,9 @@ import { Component } from '@angular/core';
   templateUrl: './form.html',
   styleUrl: './form.css',
 })
+/**
+ * Non utilisé a supprimer
+ */
 export class Form {
 
 }

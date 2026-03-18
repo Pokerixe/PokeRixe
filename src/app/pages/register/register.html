@@ -1,0 +1,34 @@
+<div class="basic-container">
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form">
+    <h2 class="form-title">Inscription Dresseur</h2>
+    <p class="form-subtitle">Entre dans l'arene et reprends ton equipe.</p>
+
+    <label for="name">name</label>
+    <input id="name" formControlName="name" type="text" placeholder="ex: DarkSasuke666" autocomplete="name">
+    @if (registerForm.get('name')?.touched && registerForm.get('name')?.hasError('required')) {
+      <span class="error">name obligatoire</span>
+    }
+
+    <label for="email">Email</label>
+    <input id="email" formControlName="email" type="email" placeholder="ex: red@poke.com" autocomplete="email">
+    @if (registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')) {
+      <span class="error">Email obligatoire</span>
+    }
+    @if (registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')) {
+      <span class="error">Format email invalide</span>
+    }
+
+    <label for="password">Mot de passe</label>
+    <input id="password" formControlName="password" type="password" placeholder="Minimum 6 caracteres"
+           autocomplete="current-password">
+    @if (registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')) {
+      <span class="error">Mot de passe obligatoire</span>
+    }
+    @if (registerForm.get('password')?.touched && registerForm.get('password')?.hasError('minlength')) {
+      <span class="error">Minimum 6 caracteres</span>
+    }
+
+    <button type="submit" [disabled]="registerForm.invalid">S'inscrire</button>
+  </form>
+</div>

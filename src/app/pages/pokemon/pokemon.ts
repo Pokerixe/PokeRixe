@@ -26,6 +26,9 @@ export class PokemonPage implements OnInit {
   isLoading: boolean = true;
   pokemon: any;
 
+  /**
+   * Récupère les informations du Pokémon
+   */
   ngOnInit() {
     const id = String(this.route.snapshot.paramMap.get('id'));
     this.pokemonService.getById(Number(id)).subscribe(pokemon => {
@@ -33,7 +36,6 @@ export class PokemonPage implements OnInit {
       this.isLoading = false;
       console.log("loaded pokemon : ", this.pokemon);
       this.cdr.detectChanges();
-
     });
 
   }

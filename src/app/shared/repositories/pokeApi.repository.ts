@@ -4,6 +4,11 @@ import {Observable} from 'rxjs';
 import {PokemonListDTO} from '../models/dto/pokemon-list.dto';
 import {RawPokemonDTO} from '../models/dto/pokemon.dto';
 
+/**
+ * Repository pour accéder à l'API pokeApi
+ * Permet de récupérer la liste des pokemons, les détails d'un pokemon par son id ou par son url
+ * Exemple d'utilisation : dans un service, injecter ce repository et appeler les méthodes pour récupérer les données de l'API
+ */
 @Injectable({ providedIn: 'root' })
 export class PokemonRepository {
   private readonly BASE = 'https://pokeapi.co/api/v2';

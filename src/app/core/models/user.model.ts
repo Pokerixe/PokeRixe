@@ -1,9 +1,4 @@
 
-/** * Enumération des rôles d'utilisateur
- * - Admin : Utilisateur avec tous les droits
- * - User : Utilisateur standard avec des droits limités
- * - Guest : Utilisateur invité avec des droits très limités
- */
 export enum Role {
   Admin,
   User,

@@ -10,11 +10,15 @@ import {PokemonStats} from '../../models/pokemon-stats.model';
   templateUrl: './stats.html',
   styleUrl: './stats.css',
 })
+
+/**
+ * Non utilisé
+ * composant pour afficher les stats d'un pokemon avec des progress-bar
+ */
 export class Stats implements OnInit {
   @Input() stats: PokemonStats = {} as PokemonStats;
 
   ngOnInit() {
-    console.log("baba",this.stats);
   }
 
 }

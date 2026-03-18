@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
-import {UserPage} from './pages/user/user';
+import {authGuard} from './core/auth/auth.guard';
+import {Role} from './core/models/user.model';
+import {roleGuard} from './core/auth/role.guard';
+import {authResolver} from './core/auth/auth.resolver';
+import {RegisterPage} from './pages/register/register';
 
 export const routes: Routes = [
   {
@@ -12,6 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'equipes',
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/equipes/equipes').then(m => m.Equipes)
   },
   {
@@ -20,10 +25,34 @@ export const routes: Routes = [
   },
   {
     path: 'fight',
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/fight/fight').then(m => m.Fight)
   },
   {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login').then(m => m.LoginPage)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./pages/register/register').then(m => m.RegisterPage)
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard, roleGuard(Role.Admin)],
+    loadComponent: () => import('./pages/admin/admin').then(m => m.AdminPage)
+  },
+  {
     path: 'user',
+    canActivate: [authGuard],
+    //resolve: { user: authResolver },
     loadComponent: () => import('./pages/user/user').then(m => m.UserPage)
+  },
+  {
+    path: 'forbidden',
+    loadComponent: () => import('./pages/forbidden/forbidden').then(m => m.Forbidden)
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];

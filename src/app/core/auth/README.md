@@ -1,6 +1,6 @@
-# AuthService & Session Management — Angular 21
+# Auth & Session Management — Angular 21
 
-> **Pattern utilisé :** JWT Stateless AuthService avec Cookie HttpOnly
+> **Pattern utilisé :** JWT Stateless Auth avec Cookie HttpOnly
 
 ---
 
@@ -12,14 +12,16 @@ Une architecture qui sépare proprement la logique d'auth (invisible) des pages 
 
 ## Les 4 choix techniques
 
-### ✅1. État utilisateur → Signals
+### 1. État utilisateur → Signals
 
 Un Signal est une valeur réactive : quand l'utilisateur connecté change, tout ce qui l'écoute se met à jour automatiquement.
 
-On aura 3 signals principaux :
-- `currentUser` — qui est connecté (`null` si personne)
-- `isAuthenticated` — booléen dérivé du signal ci-dessus
-- `userRole` — le rôle (`admin`, `user`, `guest`)
+3 signals dans `AuthService` :
+- `_currentUser` — signal privé en écriture (`User | null`)
+- `isAuthenticated` — computed, booléen dérivé automatiquement
+- `userRole` — computed, retourne le rôle ou `null`
+
+> Les composants lisent les signals avec `auth.currentUser()` — les `()` sont obligatoires pour lire la valeur.
 
 ---
 
@@ -43,15 +45,24 @@ Les guards s'exécutent dans cet ordre : **Resolver → AuthGuard → RoleGuard*
 
 | Guard | Question posée | Si refus |
 |---|---|---|
-| `AuthGuard` | Es-tu connecté ? | Redirect `/login` |
-| `RoleGuard` | As-tu le bon rôle ? | Redirect `/forbidden` |
-| `AuthResolver` | Les données sont-elles prêtes ? | Attend (pas de redirect) |
+| `authGuard` | Es-tu connecté ? | Redirect `/login` |
+| `roleGuard(Role.X)` | As-tu le bon rôle ? | Redirect `/forbidden` |
+| `authResolver` | Les données sont-elles prêtes ? | Attend (pas de redirect) |
+
+Le `roleGuard` utilise une **hiérarchie de privilèges** :
+```
+Guest (0) < User (1) < Admin (2)
+```
+Un Admin a accès à tout ce qu'un User peut voir, et ainsi de suite.
 
 ---
 
 ### 4. Simulation du back-end → Mock Interceptor
 
-L'interceptor se place entre Angular et le réseau. En dev, il répond lui-même aux appels HTTP avec de fausses données.
+L'interceptor se place entre Angular et le réseau. En dev, il répond lui-même aux appels HTTP avec de fausses données. Un utilisateur de test est disponible :
+
+- **Email** : `test@gmail.com`
+- **Password** : `password`
 
 ```
 environment.ts       → useMockApi: true   (développement)
@@ -68,44 +79,125 @@ Quand le back-end est prêt : **on change une seule ligne**. Tout le reste reste
 src/app/
 ├── core/
 │   ├── auth/
-│   │   ├── auth.service.ts       ← cerveau de l'auth
-│   │   ├── auth.interceptor.ts   ← mock HTTP
-│   │   ├── auth.guard.ts
-│   │   ├── role.guard.ts
-│   │   └── auth.resolver.ts
+│   │   ├── auth.service.ts            ← cerveau de l'auth (Signals + HTTP)
+│   │   ├── auth.mock.interceptor.ts   ← simulation du back-end
+│   │   ├── auth.interceptor.ts        ← interceptor de production (withCredentials)
+│   │   ├── auth.guard.ts              ← vérifie si connecté
+│   │   ├── role.guard.ts              ← vérifie le niveau de privilège
+│   │   └── auth.resolver.ts           ← charge le user avant affichage
+│   ├── interceptors/
+│   │   └── error.interceptor.ts       ← gestion globale des erreurs HTTP
 │   └── models/
-│       ├── user.model.ts
-│       └── auth.model.ts
+│       ├── user.model.ts              ← enum Role + interface User
+│       └── auth.model.ts              ← LoginDTO, RegisterDTO, AuthResponse
 │
-├── features/
-│   ├── auth/
-│   │   ├── login/
-│   │   ├── register/
-│   │   └── profile/
-│   └── admin/
+├── pages/
+│   ├── login/                         ← formulaire de connexion
+│   ├── register/                      ← formulaire d'inscription
+│   ├── user/                          ← profil utilisateur connecté
+│   ├── forbidden/                     ← page d'accès refusé
+│   └── admin/                         ← page admin (Role.Admin requis)
 │
-├── shared/
-│   └── unauthorized.component.ts
-│
-├── app.routes.ts
-└── app.config.ts
+├── app.routes.ts                      ← routes avec guards
+└── app.config.ts                      ← configuration globale + interceptors
 
 environments/
-├── environment.ts       ← useMockApi: true
-└── environment.prod.ts  ← useMockApi: false
+├── environment.ts                     ← useMockApi: true
+└── environment.prod.ts                ← useMockApi: false
 ```
 
 ---
 
-## Ordre de construction
+## Les models
 
-1. **Models** — définir les types (`User`, `LoginDto`, `AuthResponse`...)
-2. **AuthService** — logique centrale avec Signals
-3. **Mock Interceptor** — simuler les appels HTTP
-4. **Guards** — protéger les routes
-5. **app.config** — tout brancher ensemble
-6. **app.routes** — déclarer les routes avec les guards
-7. **Pages** — Login, Register, Profile
+### `user.model.ts`
+```typescript
+export enum Role {
+  Guest,
+  User,
+  Admin
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+```
+
+### `auth.model.ts`
+```typescript
+export interface LoginDTO {
+  email: string;
+  password: string;
+}
+
+export interface RegisterDTO {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: User;
+}
+```
+
+---
+
+## Les routes protégées
+
+```typescript
+// Page connectés seulement
+{ path: 'equipes', canActivate: [authGuard], ... }
+
+// Page avec chargement du user avant affichage
+{ path: 'user', canActivate: [authGuard], resolve: { user: authResolver }, ... }
+
+// Page admin seulement
+{ path: 'admin', canActivate: [authGuard, roleGuard(Role.Admin)], ... }
+
+// Pages publiques
+{ path: 'login', ... }
+{ path: 'forbidden', ... }
+
+// Fallback — toujours en dernier
+{ path: '**', redirectTo: '' }
+```
+
+---
+
+## Récupérer les infos du user dans un composant
+
+```typescript
+export class MonComposant {
+  auth = inject(AuthService);
+}
+```
+
+```html
+{{ auth.currentUser()?.name }}
+{{ auth.currentUser()?.email }}
+
+@if (auth.isAuthenticated()) {
+  <p>Bienvenue {{ auth.currentUser()?.name }}</p>
+}
+
+@if (auth.userRole() === Role.Admin) {
+  <a routerLink="/admin">Panel admin</a>
+}
+```
+
+---
+
+## Points techniques importants
+
+- Les requêtes HTTP doivent avoir `withCredentials: true` pour envoyer le cookie — géré automatiquement par `auth.interceptor.ts` en production
+- `loadCurrentUser()` est appelé au démarrage via `provideAppInitializer` pour restaurer la session après un refresh de page
+- Le mock stocke l'utilisateur **en mémoire** dans une variable `mockCurrentUser` pour simuler le comportement du cookie
+- Les formulaires utilisent **Reactive Forms** (`FormBuilder`, `Validators`)
+- La nouvelle syntaxe Angular 17+ est utilisée partout : `@if`, `@for` au lieu de `*ngIf`, `*ngFor`
 
 ---
 
@@ -114,5 +206,6 @@ environments/
 - ✅ `AuthService` → rien à changer
 - ✅ Guards → rien à changer
 - ✅ Pages → rien à changer
+- ✅ Models → rien à changer
 - 🔧 `environment.ts` → passer `useMockApi` à `false`
-- 🔧 Back-end → configurer les cookies HttpOnly + CORS
+- 🔧 Back-end → configurer les cookies HttpOnly + CORS avec `credentials: true`
