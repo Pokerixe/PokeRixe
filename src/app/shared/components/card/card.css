@@ -1,7 +1,4 @@
 .card{
-  /* background: var(--base-color); */
-  /*background: rgba(129, 127, 127, 0.53); */
-  /*background-color: hsl(from var(--primary-color) h s l / 0.5);*/
   background-color: var(--card-bg-color);
   height: 14rem;
   width: 14rem;
@@ -27,7 +24,6 @@
 }
 
 .top img {
-  /* border: 1px solid #ddd; */
   border-radius: 4px;
   padding: 8%;
   width: 50%;
@@ -36,7 +32,6 @@
 }
 
 .bottom img {
-  /* border: 1px solid #ddd; */
   height: 4rem;
   width: auto;
   object-fit: contain ;

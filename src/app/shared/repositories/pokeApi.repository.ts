@@ -13,7 +13,7 @@ import {RawPokemonDTO} from '../models/dto/pokemon.dto';
 export class PokemonRepository {
   private readonly BASE = 'https://pokeapi.co/api/v2';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getList(limit = 150): Observable<PokemonListDTO> {
     return this.http.get<PokemonListDTO>(`${this.BASE}/pokemon?limit=${limit}`);

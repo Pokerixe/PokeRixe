@@ -10,8 +10,8 @@ import {Router} from '@angular/router';
 })
 export class AuthService {
 
-  private http = inject(HttpClient);
-  private router = inject(Router);
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
 
   private readonly API_URL = environment.apiUrl;
 

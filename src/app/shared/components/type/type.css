@@ -24,6 +24,5 @@
 
 :host {
   display: flex;
-  /* justify-content: center; */ /* Décommenter si nécessaire */
   align-items: center;
 }

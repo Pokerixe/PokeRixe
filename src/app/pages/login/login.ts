@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {AuthService} from '../../core/auth/auth.service';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -12,8 +12,8 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} fr
 })
 export class LoginPage {
 
-  private auth = inject(AuthService);
-  private fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
 
   /**
    * Formulaire de connexion avec validation des champs

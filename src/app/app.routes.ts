@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import {authGuard} from './core/auth/auth.guard';
 import {Role} from './core/models/user.model';
 import {roleGuard} from './core/auth/role.guard';
-import {authResolver} from './core/auth/auth.resolver';
-import {RegisterPage} from './pages/register/register';
 
 export const routes: Routes = [
   {

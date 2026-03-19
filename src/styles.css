@@ -60,7 +60,6 @@ body {
   background-color: var(--base-darker);
   margin: 0;
   padding: 0;
-  /*color : var(--primary-color); */
 
   /* supprimé: background-image / background-size / background-position / background-attachment
    pour laisser le pseudo-élément ::before gérer l'image floutée */

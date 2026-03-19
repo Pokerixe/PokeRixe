@@ -90,7 +90,6 @@
 .actions .secondary {
   border-color: var(--light-gray);
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .actions .secondary:hover {

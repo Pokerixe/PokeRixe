@@ -44,7 +44,6 @@ export const mockAuthInterceptor: HttpInterceptorFn = (req, next) => {
         body: { user: mockCurrentUser }
       })).pipe(delay(300));
     }
-    //return of(new HttpResponse({ status: 401, body: { message: 'Invalid credentials' } })).pipe(delay(300));
     return of(new HttpResponse({ status: 200, body: { user: null } })).pipe(delay(300));
   }
 

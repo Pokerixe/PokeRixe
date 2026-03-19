@@ -12,7 +12,7 @@ import {Role} from '../../core/models/user.model';
 export class UserPage {
 
   auth = inject(AuthService);
-  private fb = inject(FormBuilder);
+  private readonly fb= inject(FormBuilder);
 
   private readonly initialName = this.auth.currentUser()?.name ?? '';
   private readonly initialEmail = this.auth.currentUser()?.email ?? '';

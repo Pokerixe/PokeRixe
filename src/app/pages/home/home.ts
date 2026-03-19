@@ -7,8 +7,6 @@ import {Component, OnInit} from '@angular/core';
   styleUrl: './home.css',
 })
 
-export class Home implements OnInit{
+export class Home {
 
-  ngOnInit() {
-  }
 }

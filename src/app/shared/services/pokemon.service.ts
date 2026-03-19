@@ -6,7 +6,7 @@ import {PokemonMapper} from '../mappers/pokemon.mapper';
 
 @Injectable({ providedIn: 'root' })
 export class PokemonService {
-  constructor(private repo: PokemonRepository) {}
+  constructor(private readonly repo: PokemonRepository) {}
 
   getFirst150(amount : number = 150): Observable<Pokemon[]> {
     return this.repo.getList(amount).pipe(

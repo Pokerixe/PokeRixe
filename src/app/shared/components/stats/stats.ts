@@ -15,10 +15,7 @@ import {PokemonStats} from '../../models/pokemon-stats.model';
  * Non utilisé
  * composant pour afficher les stats d'un pokemon avec des progress-bar
  */
-export class Stats implements OnInit {
+export class Stats {
   @Input() stats: PokemonStats = {} as PokemonStats;
-
-  ngOnInit() {
-  }
 
 }

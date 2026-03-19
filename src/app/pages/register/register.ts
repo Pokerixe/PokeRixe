@@ -13,8 +13,8 @@ import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 export class RegisterPage {
 
 
-  private auth = inject(AuthService);
-  private fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
 
   /**
    * Formulaire d'inscription

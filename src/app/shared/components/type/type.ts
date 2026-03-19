@@ -1,4 +1,4 @@
-import {Component, Input, computed, signal} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-type',
@@ -15,7 +15,7 @@ export class Type {
 
   @Input() type: string = "";
 
-  private colors: Record<string, string> = {
+  private readonly colors: Record<string, string> = {
     normal: '#A8A77A',
     fire: '#EE8130',
     water: '#6390F0',

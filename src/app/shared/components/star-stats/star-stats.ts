@@ -101,15 +101,14 @@ export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
 
   ngAfterViewInit(): void {
     // Initialiser le chart seulement si l'élément existe
-    if (!this.chartContainer || !this.chartContainer.nativeElement) return;
+    if (!this.chartContainer?.nativeElement) return;
 
     try {
       this.chart = echarts.init(this.chartContainer.nativeElement);
       // Use the built options which depend on @Input stats
       this.chart.setOption(this.buildChartOptions());
     } catch (e) {
-      // Fail silently for UI stability but keep console info commented for dev
-      // console.warn('ECharts init failed', e);
+      console.warn('ECharts init failed', e);
     }
 
     // Redimensionnement responsive
@@ -122,12 +121,12 @@ export class StarStats implements AfterViewInit, OnDestroy, OnChanges {
       try {
         this.chart.setOption(this.buildChartOptions());
       } catch (e) {
-        // console.warn('ECharts update failed', e);
+        console.warn('ECharts update failed', e);
       }
     }
   }
 
-  private onWindowResize = () => {
+  private readonly onWindowResize = () => {
     if (this.chart) {
       this.chart.resize();
     }
