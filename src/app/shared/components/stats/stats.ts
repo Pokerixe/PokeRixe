@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ProgressBar} from '../progress-bar/progress-bar';
 import {PokemonStats} from '../../models/pokemon-stats.model';
 

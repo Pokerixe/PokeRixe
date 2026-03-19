@@ -15,7 +15,7 @@ export class AuthService {
 
   private readonly API_URL = environment.apiUrl;
 
-  private _currentUser = signal<User | null>(null);
+  private readonly _currentUser = signal<User | null>(null);
   readonly currentUser = this._currentUser.asReadonly();
 
   readonly isAuthenticated = computed(() => this._currentUser() !== null);
