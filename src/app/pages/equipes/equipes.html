@@ -1,10 +1,26 @@
 <div class="team-container basic-container">
   <div class="left">
-    <!-- Mode-specific panels -->
+
+    @if (selectedMode === Mode.AFFICHAGE_POKEMON && this.selected_card() != 0) {
+      <div class="mode-panel affichage-pokemon">
+        <h3>Affichage Pokémon</h3>
+        <p>Vous avez placé le pokémon #{{ team()[selected_card() - 1] }} sur la carte numéro {{ this.selected_card() }}.</p>
+      </div>
+    }
+
     @if(selectedMode === Mode.CHOIX_POKEMON) {
       <div class="mode-panel choix-pokemon">
         <h3>Choix Pokémon</h3>
-        <p>Interface pour choisir les pokémons dans l'équipe.</p>
+        <p>Choisissez le pokémon à placer sur la carte numéro : {{ this.selected_card() || '-' }}</p>
+
+        <div class="choix-pokemon-grid">
+          @for (poke of choixPokemons; track poke.id) {
+            <button type="button" class="choix-pokemon-item" (click)="choosePokemon(poke.id)">
+              <img [src]="poke.sprite" [alt]="poke.name">
+              <span>#{{ poke.id }} - {{ poke.name }}</span>
+            </button>
+          }
+        </div>
       </div>
     }
     @if(selectedMode === Mode.CHOIX_ATTACK) {
@@ -14,27 +30,68 @@
       </div>
     }
 
-    @if (selectedMode === Mode.AFFICHAGE_POKEMON) {
-      <div class="mode-panel affichage-pokemon">
-        <h3>Affichage Pokémon</h3>
-        <p>Affichage des détails du pokémon sélectionné.</p>
+
+
+    @if (selectedMode === Mode.AUCUN) {
+      <div class="mode-panel aucun">
+        <h3>Sélectionnez une carte à droite pour choisir votre pokémon</h3>
       </div>
     }
-
     <div class="controls">
-      <button type="button" (click)="cycleMode()">Changer le mode (gauche)</button>
     </div>
   </div>
 
   <div class="right">
     <div class="cards-grid" role="list">
-      <app-card [interrogation]="true"></app-card>
-      <app-card [interrogation]="true"></app-card>
-      <app-card [interrogation]="true"></app-card>
-      <app-card [interrogation]="true"></app-card>
-      <app-card [interrogation]="true"></app-card>
-      <app-card [interrogation]="true"></app-card>
+      <app-card
+        [cardNumber]="1"
+        [interrogation]="cardState"
+        [pokedex_id]="team()[0] ?? 0"
+        [redirect]="team()[0] !== null"
+        (interrogationChange)="toggleCard($event)"
+      ></app-card>
+
+      <app-card
+        [cardNumber]="2"
+        [interrogation]="cardState"
+        [pokedex_id]="team()[1] ?? 0"
+        [redirect]="team()[1] !== null"
+        (interrogationChange)="toggleCard($event)"
+      ></app-card>
+
+      <app-card
+        [cardNumber]="3"
+        [interrogation]="cardState"
+        [pokedex_id]="team()[2] ?? 0"
+        [redirect]="team()[2] !== null"
+        (interrogationChange)="toggleCard($event)"
+      ></app-card>
+
+      <app-card
+        [cardNumber]="4"
+        [interrogation]="cardState"
+        [pokedex_id]="team()[3] ?? 0"
+        [redirect]="team()[3] !== null"
+        (interrogationChange)="toggleCard($event)"
+      ></app-card>
+
+      <app-card
+        [cardNumber]="5"
+        [interrogation]="cardState"
+        [pokedex_id]="team()[4] ?? 0"
+        [redirect]="team()[4] !== null"
+        (interrogationChange)="toggleCard($event)"
+      ></app-card>
+
+      <app-card
+        [cardNumber]="6"
+        [interrogation]="cardState"
+        [pokedex_id]="team()[5] ?? 0"
+        [redirect]="team()[5] !== null"
+        (interrogationChange)="toggleCard($event)"
+      ></app-card>
     </div>
+
 
   </div>
 </div>

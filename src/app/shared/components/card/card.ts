@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, input, Output} from '@angular/core';
 import {Type} from '../type/type';
 import {RouterLink} from '@angular/router';
 import {NgTemplateOutlet} from '@angular/common';
@@ -25,10 +25,19 @@ import {NgTemplateOutlet} from '@angular/common';
  */
 export class Card {
 
-  @Input() redirect: boolean = false;
-  @Input() interrogation: boolean = false;
-  @Input() name: string = '';
-  @Input() pokedex_id: number = 0;
-  @Input() sprite: string = '';
-  @Input() types: string[] = [];
+  cardNumber = input<number>(-1); // Pour les cartes dans pokedex
+
+  redirect = input<boolean>(false);
+  interrogation = input<number>(0);
+
+  @Output() interrogationChange = new EventEmitter<number>();
+
+  name = input<string>('');
+  pokedex_id = input<number>(0);
+  sprite = input<string>('');
+  types = input<string[]>([]);
+
+  onClick() {
+    this.interrogationChange.emit(this.cardNumber());
+  }
 }

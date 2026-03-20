@@ -94,7 +94,46 @@
 }
 
 .affichage-pokemon{
-  background: #e048cd;
+  background: #915988;
+}
+
+.aucun {
+  background: #484848;
+}
+
+.choix-pokemon-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.choix-pokemon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #fff;
+  cursor: pointer;
+}
+
+.choix-pokemon-item img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.choix-pokemon-item span {
+  font-size: 0.85rem;
+  color: #111;
+}
+
+.choix-pokemon-item:hover {
+  filter: brightness(0.95);
 }
 
 
