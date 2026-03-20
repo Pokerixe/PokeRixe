@@ -93,3 +93,17 @@
 .card:hover .animation {
   color: var(--border-yellow);
 }
+
+.interrogation-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.interrogation {
+  font-size: 8rem;
+  margin: 0;
+  padding: 0;
+}

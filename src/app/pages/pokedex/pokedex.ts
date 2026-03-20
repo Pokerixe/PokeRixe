@@ -55,10 +55,13 @@ export class Pokedex implements AfterViewInit {
   }
 
   /**
-   * Crée une carte pour un pokémon et l'ajoute au conteneur
+   * Crée une carte pour un pokémon et l'ajoute au conteneur.
+   * On passe aussi un lien de navigation pour que la card puisse être entourée
+   * d'une balise <a [routerLink]="..."> dans son propre template.
    */
   private addPokemonCard(pokemon: Pokemon): void {
     const cardRef: ComponentRef<Card> = this.pokemonContainer.createComponent(Card);
+    cardRef.setInput('redirect', true);
     cardRef.setInput('name', pokemon.name);
     cardRef.setInput('sprite', pokemon.image);
     cardRef.setInput('pokedex_id', pokemon.id.toString());

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
 import {Card} from '../../shared/components/card/card';
 
 export enum EquipeMode {
@@ -12,7 +11,6 @@ export enum EquipeMode {
   selector: 'app-equipes',
   imports: [
     Card,
-    NgIf
   ],
   templateUrl: './equipes.html',
   styleUrl: './equipes.css',

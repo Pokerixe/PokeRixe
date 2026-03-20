@@ -1,22 +1,35 @@
-<a routerLink="/pokemon/{{pokedex_id}}">
-<div class="card">
-  <div class="top">
-      <img id="card" [src]="sprite" alt="{{ name }}">
+
+
+<ng-template #cardContent>
+  <div class="card">
+    @if(!interrogation){
+      <div class="top">
+        <img id="card" [src]="sprite" [alt]="name">
+      </div>
+      <div class="bottom">
+        <div class="desc-top">
+          <p class="animation">{{ name }}</p>
+          <p class="animation">#{{ pokedex_id }}</p>
+        </div>
+        <div class="desc-bottom">
+          @for (type of types; track type) {
+            <app-type [type]="type"></app-type>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="interrogation-container">
+        <h1 class="interrogation" id="pokeFont">?</h1>
+      </div>
+    }
+
   </div>
+</ng-template>
 
-  <div class="bottom">
-
-    <div class="desc-top">
-    <p class="animation">{{name}}</p>
-    <p class="animation">#{{pokedex_id}}</p>
-    </div>
-    <div class="desc-bottom">
-      @for (type of types ;  track type) {
-        <app-type type="{{type}}"></app-type>
-      }
-    </div>
-
-  </div>
-
-</div>
-</a>
+@if (redirect) {
+  <a [routerLink]="['/pokemon', pokedex_id]">
+    <ng-container *ngTemplateOutlet="cardContent"></ng-container>
+  </a>
+} @else {
+  <ng-container *ngTemplateOutlet="cardContent"></ng-container>
+}

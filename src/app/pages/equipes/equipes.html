@@ -1,20 +1,25 @@
 <div class="team-container basic-container">
   <div class="left">
     <!-- Mode-specific panels -->
-    <div *ngIf="selectedMode === Mode.CHOIX_POKEMON" class="mode-panel choix-pokemon">
-      <h3>Choix Pokémon</h3>
-      <p>Interface pour choisir les pokémons dans l'équipe.</p>
-    </div>
+    @if(selectedMode === Mode.CHOIX_POKEMON) {
+      <div class="mode-panel choix-pokemon">
+        <h3>Choix Pokémon</h3>
+        <p>Interface pour choisir les pokémons dans l'équipe.</p>
+      </div>
+    }
+    @if(selectedMode === Mode.CHOIX_ATTACK) {
+       <div class="mode-panel choix-attack">
+        <h3>Choix Attack</h3>
+        <p>Interface pour choisir les attaques.</p>
+      </div>
+    }
 
-    <div *ngIf="selectedMode === Mode.CHOIX_ATTACK" class="mode-panel choix-attack">
-      <h3>Choix Attack</h3>
-      <p>Interface pour choisir les attaques.</p>
-    </div>
-
-    <div *ngIf="selectedMode === Mode.AFFICHAGE_POKEMON" class="mode-panel affichage-pokemon">
-      <h3>Affichage Pokémon</h3>
-      <p>Affichage des détails du pokémon sélectionné.</p>
-    </div>
+    @if (selectedMode === Mode.AFFICHAGE_POKEMON) {
+      <div class="mode-panel affichage-pokemon">
+        <h3>Affichage Pokémon</h3>
+        <p>Affichage des détails du pokémon sélectionné.</p>
+      </div>
+    }
 
     <div class="controls">
       <button type="button" (click)="cycleMode()">Changer le mode (gauche)</button>
@@ -23,12 +28,12 @@
 
   <div class="right">
     <div class="cards-grid" role="list">
-      <div class="card-slot" role="listitem"><app-card></app-card></div>
-      <div class="card-slot" role="listitem"><app-card></app-card></div>
-      <div class="card-slot" role="listitem"><app-card></app-card></div>
-      <div class="card-slot" role="listitem"><app-card></app-card></div>
-      <div class="card-slot" role="listitem"><app-card></app-card></div>
-      <div class="card-slot" role="listitem"><app-card></app-card></div>
+      <app-card [interrogation]="true"></app-card>
+      <app-card [interrogation]="true"></app-card>
+      <app-card [interrogation]="true"></app-card>
+      <app-card [interrogation]="true"></app-card>
+      <app-card [interrogation]="true"></app-card>
+      <app-card [interrogation]="true"></app-card>
     </div>
 
   </div>
