@@ -1,38 +1,32 @@
 <div class="team-container basic-container">
   <div class="left">
 
-    @if (selectedMode === Mode.AFFICHAGE_POKEMON && this.selected_card() != 0) {
+    @if (selectedMode() === Mode.AFFICHAGE_POKEMON && selected_card() != 0) {
       <div class="mode-panel affichage-pokemon">
         <h3>Affichage Pokémon</h3>
-        <p>Vous avez placé le pokémon #{{ team()[selected_card() - 1] }} sur la carte numéro {{ this.selected_card() }}.</p>
+        <p>Vous avez placé le pokémon #{{ team()[selected_card() - 1] }} sur la carte numéro {{ selected_card() }}.</p>
       </div>
     }
 
-    @if(selectedMode === Mode.CHOIX_POKEMON) {
+    @if(selectedMode() === Mode.CHOIX_POKEMON) {
       <div class="mode-panel choix-pokemon">
         <h3>Choix Pokémon</h3>
-        <p>Choisissez le pokémon à placer sur la carte numéro : {{ this.selected_card() || '-' }}</p>
+        <p>Choisissez le pokémon à placer sur la carte numéro : {{ selected_card() || '-' }}</p>
 
-        <div class="choix-pokemon-grid">
-          @for (poke of choixPokemons; track poke.id) {
-            <button type="button" class="choix-pokemon-item" (click)="choosePokemon(poke.id)">
-              <img [src]="poke.sprite" [alt]="poke.name">
-              <span>#{{ poke.id }} - {{ poke.name }}</span>
-            </button>
-          }
+        <div class="pokemons">
+          <app-pokemon-card-list (cardSelected)="onPokemonChosen($event)" ></app-pokemon-card-list>
+
         </div>
       </div>
     }
-    @if(selectedMode === Mode.CHOIX_ATTACK) {
+    @if(selectedMode() === Mode.CHOIX_ATTACK) {
        <div class="mode-panel choix-attack">
         <h3>Choix Attack</h3>
         <p>Interface pour choisir les attaques.</p>
       </div>
     }
 
-
-
-    @if (selectedMode === Mode.AUCUN) {
+    @if (selectedMode() === Mode.AUCUN) {
       <div class="mode-panel aucun">
         <h3>Sélectionnez une carte à droite pour choisir votre pokémon</h3>
       </div>
@@ -46,48 +40,60 @@
       <app-card
         [cardNumber]="1"
         [interrogation]="cardState"
-        [pokedex_id]="team()[0] ?? 0"
-        [redirect]="team()[0] !== null"
+        [pokedex_id]="team()[0]?.pokedex_id ?? 0"
+        [sprite]="team()[0]?.sprite ?? '' "
+        [types]="team()[0]?.types ?? []"
+        [name]="team()[0]?.name ?? ''"
         (interrogationChange)="toggleCard($event)"
       ></app-card>
 
       <app-card
         [cardNumber]="2"
         [interrogation]="cardState"
-        [pokedex_id]="team()[1] ?? 0"
-        [redirect]="team()[1] !== null"
+        [pokedex_id]="team()[1]?.pokedex_id ?? 0"
+        [sprite]="team()[1]?.sprite ?? '' "
+        [types]="team()[1]?.types ?? []"
+        [name]="team()[1]?.name ?? ''"
         (interrogationChange)="toggleCard($event)"
       ></app-card>
 
       <app-card
         [cardNumber]="3"
         [interrogation]="cardState"
-        [pokedex_id]="team()[2] ?? 0"
-        [redirect]="team()[2] !== null"
+        [pokedex_id]="team()[2]?.pokedex_id ?? 0"
+        [sprite]="team()[2]?.sprite ?? '' "
+        [types]="team()[2]?.types ?? []"
+        [name]="team()[2]?.name ?? ''"
         (interrogationChange)="toggleCard($event)"
       ></app-card>
 
       <app-card
         [cardNumber]="4"
         [interrogation]="cardState"
-        [pokedex_id]="team()[3] ?? 0"
-        [redirect]="team()[3] !== null"
+        [pokedex_id]="team()[3]?.pokedex_id ?? 0"
+        [sprite]="team()[3]?.sprite ?? '' "
+        [types]="team()[3]?.types ?? []"
+        [name]="team()[3]?.name ?? ''"
         (interrogationChange)="toggleCard($event)"
       ></app-card>
 
       <app-card
         [cardNumber]="5"
         [interrogation]="cardState"
-        [pokedex_id]="team()[4] ?? 0"
-        [redirect]="team()[4] !== null"
+        [pokedex_id]="team()[4]?.pokedex_id ?? 0"
+        [sprite]="team()[4]?.sprite ?? '' "
+        [types]="team()[4]?.types ?? []"
+        [name]="team()[4]?.name ?? ''"
         (interrogationChange)="toggleCard($event)"
       ></app-card>
 
       <app-card
         [cardNumber]="6"
         [interrogation]="cardState"
-        [pokedex_id]="team()[5] ?? 0"
-        [redirect]="team()[5] !== null"
+        [pokedex_id]="team()[5]?.pokedex_id ?? 0"
+        [sprite]="team()[5]?.sprite ?? '' "
+        [types]="team()[5]?.types ?? []"
+        [name]="team()[5]?.name ?? ''"
         (interrogationChange)="toggleCard($event)"
       ></app-card>
     </div>

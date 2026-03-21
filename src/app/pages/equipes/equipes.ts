@@ -1,5 +1,20 @@
-import {Component, signal} from '@angular/core';
+import {
+  Component,
+  ComponentRef,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+  ViewContainerRef,
+  AfterViewInit
+} from '@angular/core';
 import {Card} from '../../shared/components/card/card';
+import {PokemonStore} from '../../core/store/pokemon.store';
+import {Pokemon} from '../../shared/models/pokemon.model';
+import {PokemonCardList} from '../../shared/components/pokemon-card-list/pokemon-card-list';
+import {PokemonCardModel} from '../../shared/models/pokemon.card.model';
 
 export enum EquipeMode {
   CHOIX_ATTACK = 'choix attack',
@@ -12,24 +27,20 @@ export enum EquipeMode {
   selector: 'app-equipes',
   imports: [
     Card,
+    PokemonCardList,
   ],
   templateUrl: './equipes.html',
   styleUrl: './equipes.css',
 })
 export class Equipes {
+
   public Mode = EquipeMode;
-  public selectedMode: EquipeMode = EquipeMode.AUCUN;
+
+  // selectedMode devient un signal au lieu d une simple propriete
+  public selectedMode = signal<EquipeMode>(EquipeMode.AUCUN);
 
   public selected_card = signal<number>(0);
-
-  public team = signal<(number | null)[]>([null, null, null, null, null, null]);
-
-  public choixPokemons = [
-    { id: 1, name: 'Bulbizarre', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png' },
-    { id: 4, name: 'Salamèche', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png' },
-    { id: 7, name: 'Carapuce', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png' },
-    { id: 25, name: 'Pikachu', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png' },
-  ];
+  public team = signal<(PokemonCardModel | null)[]>([null, null, null, null, null, null]);
 
   get cardState(): number {
     return this.selected_card();
@@ -37,12 +48,15 @@ export class Equipes {
 
   cycleMode() {
     const modes = Object.values(EquipeMode) as EquipeMode[];
-    const idx = modes.indexOf(this.selectedMode);
-    this.selectedMode = modes[(idx + 1) % modes.length];
+    const idx = modes.indexOf(this.selectedMode());
+    this.selectedMode.set(modes[(idx + 1) % modes.length]);
   }
 
   setMode(mode: EquipeMode) {
-    this.selectedMode = mode;
+    const previous = this.selectedMode();
+    this.selectedMode.set(mode);
+    if (mode === EquipeMode.CHOIX_POKEMON && previous !== EquipeMode.CHOIX_POKEMON) {
+    }
   }
 
   toggleCard(index: number) {
@@ -50,7 +64,7 @@ export class Equipes {
 
     if (currentSelected === index) {
       this.selected_card.set(0);
-      this.selectedMode = EquipeMode.AUCUN;
+      this.selectedMode.set(EquipeMode.AUCUN);
       return;
     }
 
@@ -59,25 +73,28 @@ export class Equipes {
     const slotIndex = index - 1;
     const teamSnapshot = this.team();
     if (teamSnapshot[slotIndex] !== null) {
-      // Carte deja remplie: on passe directement en affichage
-      this.selectedMode = EquipeMode.AFFICHAGE_POKEMON;
+      this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
     } else {
-      // Carte vide: on reste en choix pokemon
-      this.selectedMode = EquipeMode.CHOIX_POKEMON;
+      const previous = this.selectedMode();
+      this.selectedMode.set(EquipeMode.CHOIX_POKEMON);
+
     }
   }
 
-  choosePokemon(pokedexId: number) {
+  choosePokemon(pokemon: PokemonCardModel) {
     const slot = this.selected_card();
-    if (!slot) {
-      return;
-    }
+    if (!slot) return;
 
     const current = this.team();
     const updated = [...current];
-    updated[slot - 1] = pokedexId;
+    updated[slot - 1] = pokemon;  // on stocke l'objet complet
     this.team.set(updated);
 
-    this.selectedMode = EquipeMode.AFFICHAGE_POKEMON;
+    this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
+  }
+
+  protected onPokemonChosen(pokemon: PokemonCardModel) {
+    console.log(pokemon);
+    this.choosePokemon(pokemon);  // on passe juste pokemon
   }
 }

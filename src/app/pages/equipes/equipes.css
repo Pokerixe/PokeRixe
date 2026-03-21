@@ -13,15 +13,16 @@
   border: 2px dashed rgba(0,0,0,0.06);
   border-radius: 6px;
   padding: 12px;
+  width: 65%;
 }
 
 .right{
+  padding: 0.5rem 0rem;
   width: 40rem;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  height: 100%;
 }
 
 .cards-grid{
@@ -31,9 +32,10 @@
   gap: 1.5rem;
   width: 100%;
   padding: 1.5rem;
-  height: calc(100% - 4rem);
+  height: 100% ;
   justify-items: center;
   align-items: center;
+  overflow-y: auto;
 }
 
 .card-slot{
@@ -61,6 +63,7 @@
   margin-bottom: 1rem;
   color: #111;
   height: 90%;
+  max-height: 90%;
 }
 
 .mode-panel h3{
@@ -87,7 +90,20 @@
 
 .choix-pokemon {
   background: #854646;
+  overflow-y: auto;    /* scrollbar verticale si ça dépasse */
 }
+
+.pokemons{
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap:1rem;
+}
+
+
 
 .choix-attack{
   background: #464685;
@@ -130,6 +146,7 @@
 .choix-pokemon-item span {
   font-size: 0.85rem;
   color: #111;
+
 }
 
 .choix-pokemon-item:hover {
@@ -156,3 +173,4 @@
     min-height: 220px;
   }
 }
+

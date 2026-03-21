@@ -1,5 +1,6 @@
 <ng-template #cardContent>
   <div class="card" [class.selected]="interrogation() === cardNumber()" (click)="onClick()">
+
     @if(pokedex_id() > 0) {
       <div class="top">
         @if (redirect()) {

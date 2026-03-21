@@ -1,7 +1,8 @@
-import {Component, EventEmitter, input, Output} from '@angular/core';
+import {Component, EventEmitter, input, OnInit, Output} from '@angular/core';
 import {Type} from '../type/type';
 import {RouterLink} from '@angular/router';
 import {NgTemplateOutlet} from '@angular/common';
+import {PokemonCardModel} from '../../models/pokemon.card.model';
 
 @Component({
   selector: 'app-card',
@@ -32,12 +33,28 @@ export class Card {
 
   @Output() interrogationChange = new EventEmitter<number>();
 
+  sendData = input<boolean>(false);
+  @Output() sendCardData = new EventEmitter<PokemonCardModel>();
+
   name = input<string>('');
   pokedex_id = input<number>(0);
   sprite = input<string>('');
   types = input<string[]>([]);
 
   onClick() {
-    this.interrogationChange.emit(this.cardNumber());
+    if (this.sendData()) {
+      this.onClickSendData();
+    } else {
+      this.interrogationChange.emit(this.cardNumber());
+    }
+  }
+
+  onClickSendData() {
+    this.sendCardData.emit({
+      pokedex_id: this.pokedex_id(),
+      name: this.name(),
+      types: this.types(),
+      sprite: this.sprite()
+    });
   }
 }

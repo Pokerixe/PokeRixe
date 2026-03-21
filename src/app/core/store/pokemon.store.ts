@@ -32,7 +32,7 @@ export class PokemonStore {
   loading = this._loading.asReadonly();
   hasMore = this._hasMore.asReadonly();
 
-  loadFirst150(): void {
+  loadFirst150( nombre :number = 150): void {
     if (this._pokemons().length > 0 || this._loading()) return;
     this.loadNextBatch();
   }

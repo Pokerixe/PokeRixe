@@ -60,14 +60,3 @@
   padding: 0;
   font-size: 1.5rem;
 }
-
-.pokemons{
-  height: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap:1rem;
-}
-
