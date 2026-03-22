@@ -67,6 +67,7 @@ export class AuthService {
     this.http.post<void>(this.API_URL + 'logout', {}).subscribe({
       next: () => {
         this._currentUser.set(null);
+        this.router.navigateByUrl('/');
       },
       error: (err) => {
         console.error('Logout failed', err);

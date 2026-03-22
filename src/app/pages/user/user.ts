@@ -2,6 +2,7 @@ import {Component, computed, inject} from '@angular/core';
 import {AuthService} from '../../core/auth/auth.service';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Role} from '../../core/models/user.model';
+import {routes} from '../../app.routes';
 
 @Component({
   selector: 'app-user',
@@ -59,5 +60,10 @@ export class UserPage {
       email: this.auth.currentUser()?.email ?? this.initialEmail,
     });
     this.saveMessage = '';
+  }
+
+  onDeconnect() {
+    this.auth.logout();
+
   }
 }

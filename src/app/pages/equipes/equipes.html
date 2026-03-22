@@ -3,25 +3,25 @@
 
     @if (selectedMode() === Mode.AFFICHAGE_POKEMON && selected_card() != 0) {
       <div class="mode-panel affichage-pokemon">
-        <app-pokemon-information [pokemon_id]="team()[selected_card()-1]?.pokedex_id ?? 0"></app-pokemon-information>
+        <app-pokemon-information (changeToMoveMode)="changeToMoveMode($event)"
+                                 [pokemon_id]="team()[selected_card()-1]?.pokedex_id ?? 0"></app-pokemon-information>
       </div>
     }
 
-    @if(selectedMode() === Mode.CHOIX_POKEMON) {
+    @if (selectedMode() === Mode.CHOIX_POKEMON) {
       <div class="mode-panel choix-pokemon">
         <h3>Choix Pokémon</h3>
         <p>Choisissez le pokémon à placer sur la carte numéro : {{ selected_card() || '-' }}</p>
 
         <div class="pokemons">
-          <app-pokemon-card-list (cardSelected)="onPokemonChosen($event)" ></app-pokemon-card-list>
+          <app-pokemon-card-list (cardSelected)="onPokemonChosen($event)"></app-pokemon-card-list>
 
         </div>
       </div>
     }
-    @if(selectedMode() === Mode.CHOIX_ATTACK) {
-       <div class="mode-panel choix-attack">
-        <h3>Choix Attack</h3>
-        <p>Interface pour choisir les attaques.</p>
+    @if (selectedMode() === Mode.CHOIX_ATTACK) {
+      <div class="mode-panel choix-attack">
+        <app-pokemon-move-selector></app-pokemon-move-selector>
       </div>
     }
 

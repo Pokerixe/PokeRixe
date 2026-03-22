@@ -14,19 +14,59 @@
 .move {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.9rem;
   border-radius: 10px;
-  border: 3px solid var(--border-yellow);
+  border: 3px solid var(--border-gray);
   background-color: var(--backgroud-gray);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 
   box-sizing: border-box;
   min-width: 0;
   width: 100%;
+  height: 100%;
+}
+
+.move-change-button {
+  flex: 0 0 auto;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  border: 3px solid var(--border-yellow);
+  background-color: #f7c843;
+  color: #111;
+  font-family: "8-bit", system-ui, sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.move-change-button:hover {
+  background-color: #ffd95c;
+  transform: translateY(-1px);
+}
+
+.move-change-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.move-change-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #ffffff, 0 0 0 6px var(--border-yellow);
+}
+
+.move-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
 }
 
 .move-main {
@@ -38,10 +78,9 @@
 
 .move-name {
   font-family: "8-bit", system-ui, sans-serif;
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #111;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -60,6 +99,7 @@
   padding: 0.1rem 0.4rem;
   border-radius: 999px;
   border: 2px solid var(--border-gray);
+  background-color: rgba(0, 0, 0, 0.06);
 }
 
 .move-type {
@@ -70,9 +110,9 @@
 .move-stats {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 0.15rem;
-  font-size: 0.75rem;
+  align-items: flex-start;
+  gap: 0.1rem;
+  font-size: 1rem;
 }
 
 .move-power,
@@ -81,3 +121,10 @@
   padding: 0;
 }
 
+.move-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  height: 100%;
+}

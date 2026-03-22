@@ -1,6 +1,14 @@
-import {ChangeDetectorRef, Component, inject, input, OnChanges, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  inject,
+  input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {PokemonService} from '../../services/pokemon.service';
-import {StarStats} from '../star-stats/star-stats';
 import {Type} from '../type/type';
 import {Pokemon} from '../../models/pokemon.model';
 import {Stats} from '../stats/stats';
@@ -30,6 +38,9 @@ export class PokemonInformation implements OnChanges {
 
   // Liste courte d'attaques à afficher (extraites de pokemon.moves)
   displayedMoves: string[] = [];
+
+
+
 
   constructor(private readonly cdr: ChangeDetectorRef) {
   }
@@ -69,6 +80,13 @@ export class PokemonInformation implements OnChanges {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  // Permet de basculer en mode de changement d'attaque
+  @Output() changeToMoveMode = new EventEmitter<number>();
+
+  setModeToChangeMove(moveNumber: number) {
+    this.changeToMoveMode.emit(moveNumber);
   }
 
   protected readonly String = String;

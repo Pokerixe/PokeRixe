@@ -1,21 +1,31 @@
-<div class="move">
+@if (isDefined()) {
+  <div class="move">
 
-  <button></button>
+    <div class="move-content">
+      <div class="move-main">
+        <div class="move-name">{{ name() }}</div>
+        <div class="move-meta">
+          <span class="move-damage-class">{{ damage_class() }}</span>
+          <div class="move-type">
+            <app-type [type]="type()"></app-type>
+          </div>
+        </div>
+      </div>
 
-
-  <div class="move-main">
-    <div class="move-name">{{ name }}</div>
-    <div class="move-meta">
-      <span class="move-damage-class">{{ damage_class }}</span>
-      <div class="move-type">
-        <app-type [type]="type"></app-type>
+      <div class="move-stats">
+        <div class="move-power">PUISSANCE : {{ power() }}</div>
+        <div class="move-accuracy">PRÉCISION : {{ accuracy() }}%</div>
       </div>
     </div>
+
+    <button class="move-change-button" type="button" (click)="onCLick()" >
+      Modifier
+    </button>
   </div>
 
-  <div class="move-stats">
-    <div class="move-power">PUISSANCE : {{ power }}</div>
-    <div class="move-accuracy">PRÉCISION : {{ accuracy }}%</div>
-  </div>
-</div>
 
+} @else {
+  <div class="move move-placeholder">
+    <button class="move-change-button" type="button" (click)="onCLick()">Choisir la capacité</button>
+  </div>
+}

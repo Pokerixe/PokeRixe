@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, input, Output} from '@angular/core';
 import {Type} from '../type/type';
 
 @Component({
@@ -10,9 +10,17 @@ import {Type} from '../type/type';
   styleUrl: './move.css',
 })
 export class Move {
-  @Input() name: string = 'Draco-Rage';
-  @Input() damage_class: string = 'Physique';
-  @Input() power: number = 90;
-  @Input() accuracy: number = 100;
-  @Input() type: string = 'normal';
+  isDefined= input<boolean>(false);
+
+  name = input<string>('Draco-Rage');
+  damage_class = input<string>('Physique');
+  power = input<number>(90);
+  accuracy = input<number>(100);
+  type = input<string>('Dragon');
+
+  @Output() changeMove = new EventEmitter<boolean>();
+
+  onCLick() {
+    this.changeMove.emit(true);
+  }
 }

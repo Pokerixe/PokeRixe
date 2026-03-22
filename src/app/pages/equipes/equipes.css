@@ -83,12 +83,10 @@
 }
 
 .choix-pokemon {
-  background: #854646;
   overflow-y: auto;    /* scrollbar verticale si ça dépasse */
 }
 
 .choix-attack{
-  background: #464685;
 }
 
 .affichage-pokemon{

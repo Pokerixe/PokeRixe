@@ -33,6 +33,7 @@
     <div class="actions">
       <button type="submit" [disabled]="profileForm.invalid">Enregistrer</button>
       <button type="button" class="secondary" (click)="onReset()">Reinitialiser</button>
+      <button type="button" class="secondary" (click)="onDeconnect()">Deconnexion</button>
     </div>
 
     @if (saveMessage) {
