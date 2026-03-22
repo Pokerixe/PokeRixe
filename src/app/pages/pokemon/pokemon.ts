@@ -16,12 +16,12 @@ import {PokemonService} from '../../shared/services/pokemon.service';
 export class PokemonPage implements OnInit {
   private readonly pokemonService = inject(PokemonService);
 
-  types: any;
-
   constructor(private readonly route: ActivatedRoute,
               private readonly cdr: ChangeDetectorRef
   ) {
   }
+
+  types: any;
 
   isLoading: boolean = true;
   pokemon: any;

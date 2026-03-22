@@ -1,20 +1,11 @@
 import {
   Component,
-  ComponentRef,
-  DestroyRef,
-  effect,
-  inject,
-  OnInit,
   signal,
-  ViewChild,
-  ViewContainerRef,
-  AfterViewInit
 } from '@angular/core';
 import {Card} from '../../shared/components/card/card';
-import {PokemonStore} from '../../core/store/pokemon.store';
-import {Pokemon} from '../../shared/models/pokemon.model';
 import {PokemonCardList} from '../../shared/components/pokemon-card-list/pokemon-card-list';
 import {PokemonCardModel} from '../../shared/models/pokemon.card.model';
+import {PokemonInformation} from '../../shared/components/pokemon-information/pokemon-information';
 
 export enum EquipeMode {
   CHOIX_ATTACK = 'choix attack',
@@ -28,6 +19,7 @@ export enum EquipeMode {
   imports: [
     Card,
     PokemonCardList,
+    PokemonInformation,
   ],
   templateUrl: './equipes.html',
   styleUrl: './equipes.css',
@@ -44,19 +36,6 @@ export class Equipes {
 
   get cardState(): number {
     return this.selected_card();
-  }
-
-  cycleMode() {
-    const modes = Object.values(EquipeMode) as EquipeMode[];
-    const idx = modes.indexOf(this.selectedMode());
-    this.selectedMode.set(modes[(idx + 1) % modes.length]);
-  }
-
-  setMode(mode: EquipeMode) {
-    const previous = this.selectedMode();
-    this.selectedMode.set(mode);
-    if (mode === EquipeMode.CHOIX_POKEMON && previous !== EquipeMode.CHOIX_POKEMON) {
-    }
   }
 
   toggleCard(index: number) {

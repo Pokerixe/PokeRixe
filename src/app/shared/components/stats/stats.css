@@ -1,38 +1,47 @@
-
 .stats{
-  border: 4px solid #ddd;
   display: flex;
   flex-direction: column;
-  justify-content: right;
+  /* align all rows so numbers on the right form a straight column */
+  align-items: stretch;
   margin: 0;
-  padding: 2rem;
-  gap: 1rem;
+  padding: 1rem;
+  padding-bottom: 0;
+  gap: 0.75rem;
 }
 
 .stat{
-  gap: 1.5rem;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: right;
+  display: grid;
+  /* name | bar | value */
+  grid-template-columns: auto 1fr auto;
+  column-gap: 0.75rem;
   align-items: center;
-
-  margin: 0;
-  padding: 0;
-  padding-right: 1.5rem;
-}
-
-.statValue{
-  display: flex;
-  justify-content: right;
-  font: bold 2.5rem "Roboto", sans-serif;
-  width: 4rem;
   margin: 0;
   padding: 0;
 }
 
 .statName {
-  font-size : 2.5rem;
+  font-size: 1.4rem;
   margin: 0;
   padding: 0;
+  /* text glued to the right */
+  font: bold 1.6rem "Roboto", sans-serif;
+
+  width: 8rem;
+
+  text-align: left;
+  white-space: nowrap;
+}
+
+.statValue{
+  display: flex;
+  justify-content: flex-end;
+  font: bold 1.6rem "Roboto", sans-serif;
+  min-width: 3.5rem; /* ensure all numbers align in a straight column */
+  margin: 0;
+  padding: 0;
+}
+
+/* Make sure the progress bar fills the middle column consistently */
+app-progress-bar {
+  width: 100%;
 }

@@ -3,17 +3,14 @@
   justify-content: space-between;
   align-items: stretch;
   width: 100%;
-  gap: 1rem;
+  gap: 0.2rem;
   max-height: 70vh;
 }
 
 .left{
-  background-color: #9be98f;
-  flex: 1 1 auto;
   border: 2px dashed rgba(0,0,0,0.06);
-  border-radius: 6px;
-  padding: 12px;
   width: 65%;
+  max-width: 65%;
 }
 
 .right{
@@ -59,11 +56,9 @@
 .mode-panel{
   background: rgba(255,255,255,0.06);
   border-radius: 6px;
-  padding: 1rem;
   margin-bottom: 1rem;
   color: #111;
-  height: 90%;
-  max-height: 90%;
+  height: 100%;
 }
 
 .mode-panel h3{
@@ -80,7 +75,6 @@
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   border: 1px solid rgba(0,0,0,0.12);
-  background: #fff;
   cursor: pointer;
 }
 
@@ -93,24 +87,19 @@
   overflow-y: auto;    /* scrollbar verticale si ça dépasse */
 }
 
-.pokemons{
-  height: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap:1rem;
-}
-
-
-
 .choix-attack{
   background: #464685;
 }
 
 .affichage-pokemon{
-  background: #915988;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+
+
+  overflow-y: auto;
+
 }
 
 .aucun {

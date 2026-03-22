@@ -3,8 +3,7 @@
 
     @if (selectedMode() === Mode.AFFICHAGE_POKEMON && selected_card() != 0) {
       <div class="mode-panel affichage-pokemon">
-        <h3>Affichage Pokémon</h3>
-        <p>Vous avez placé le pokémon #{{ team()[selected_card() - 1] }} sur la carte numéro {{ selected_card() }}.</p>
+        <app-pokemon-information [pokemon_id]="team()[selected_card()-1]?.pokedex_id ?? 0"></app-pokemon-information>
       </div>
     }
 

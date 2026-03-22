@@ -1,0 +1,66 @@
+@if (isLoading) {
+  <div class="poke-info-loading">
+    <h2>Chargement du Pokémon...</h2>
+  </div>
+} @else if (error) {
+  <div class="poke-info-error">
+    <h2>{{ error }}</h2>
+  </div>
+} @else if (pokemon) {
+
+  <div class="pokemon-info-card">
+    <div class="pokemon-info-header">
+      <div class="pokemon-info-header-left">
+
+        <div class="pokemon-image-wrapper">
+          <img [src]="pokemon.image" [alt]="pokemon.name"/>
+        </div>
+
+
+        <div class="pokemon-size-weight">
+          <div class="size-weight-item">
+            <h3 class="label">Taille</h3>
+            <p class="value">{{ pokemon.height / 10 }} m</p>
+          </div>
+          <div class="size-weight-item">
+            <h3 class="label">Poids</h3>
+            <p class="value">{{ pokemon.weight / 10 }} kg</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pokemon-info-header-right">
+        <h2 class="pokemon-id">#{{ pokemon.id }}</h2>
+        <h1 class="pokemon-name">{{ pokemon.name }}</h1>
+        <div class="pokemon-types">
+          @for (type of pokemon.types; track type) {
+            <app-type type="{{ type }}"></app-type>
+          }
+        </div>
+        <p>Machin bidule fait truc muqche prout et vit dans les marraiscages </p>
+      </div>
+    </div>
+
+    <div class="pokemon-info-body">
+
+      <app-stats [stats]="pokemon.stats"></app-stats>
+
+      @if (displayedMoves.length > 0) {
+        <div class="pokemon-moves">
+          <h2 class="section-title">Attaques principales</h2>
+          <div class="moves-list">
+            <app-move [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"></app-move>
+            <app-move [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"></app-move>
+            <app-move [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"></app-move>
+            <app-move [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"></app-move>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+} @else {
+  <div class="poke-info-empty">
+    <h2>Aucun Pokémon sélectionné.</h2>
+  </div>
+}
