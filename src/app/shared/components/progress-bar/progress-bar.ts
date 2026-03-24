@@ -9,10 +9,6 @@ import {NgStyle} from '@angular/common';
   templateUrl: './progress-bar.html',
   styleUrl: './progress-bar.css',
 })
-/**
- * Non utilisé
- * Barre de prgression
- */
 export class ProgressBar {
   @Input () value: number = 0;
   protected readonly Math = Math;

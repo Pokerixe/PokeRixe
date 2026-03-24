@@ -10,6 +10,9 @@ import {Type} from '../type/type';
   styleUrl: './move.css',
 })
 export class Move {
+
+  inFight = input<boolean>(false);
+
   isDefined= input<boolean>(false);
 
   name = input<string>('Draco-Rage');

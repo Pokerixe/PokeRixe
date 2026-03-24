@@ -18,9 +18,12 @@
       </div>
     </div>
 
-    <button class="move-change-button" type="button" (click)="onCLick()" >
-      Modifier
-    </button>
+    @if (!inFight()) {
+      <button class="move-change-button" type="button" (click)="onCLick()" >
+        Modifier
+      </button>
+    }
+
   </div>
 
 

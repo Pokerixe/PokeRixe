@@ -4,6 +4,7 @@ import {User} from '../models/user.model';
 import {AuthResponse, LoginDTO, RegisterDTO} from '../models/auth.model';
 import {environment} from '../../../environments/environment';
 import {Router} from '@angular/router';
+import { TeamService } from "../team/team.service";
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ export class AuthService {
 
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly team = inject(TeamService);
 
   private readonly API_URL = environment.apiUrl;
 
@@ -35,8 +37,9 @@ export class AuthService {
   login(loginDTO: LoginDTO) {
     this.http.post<AuthResponse>(this.API_URL + 'login', loginDTO).subscribe({
       next: (response: AuthResponse) => {
-        this._currentUser.set(response.user); // Mise a jour du signal
+        this._currentUser.set(response.user);
         this.router.navigateByUrl('/');
+        this.team.loadTeam(this.currentUser.name); // TODO : mettre l'id
       },
       error: (err) => {
         console.error('Login failed', err);

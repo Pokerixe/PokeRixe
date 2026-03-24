@@ -1,0 +1,172 @@
+.fight-main {
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0.85rem;
+
+  position: relative; /* Assure que les divs enfants flottent dans les limites de cette div */
+}
+
+
+.fight-top {
+  display: flex;
+  flex-direction: row;
+  gap: 0.85rem;
+  padding: 1rem 0.2rem;
+  padding-bottom: 0;
+  height: 28rem;
+}
+
+.fight-menu{
+  width: 75%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+
+  position: relative; /* Assure que les divs enfants flottent dans les limites de cette div */
+}
+
+.fight-log {
+  margin: 0;
+  padding: 0;
+  width: 25%;
+  height: 100%;
+  background-color: rgba(223, 241, 83, 0.23);
+}
+
+.fight-menu-moves {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 colonnes de taille égale */
+  gap: 1rem; /* Espacement entre les moves */
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+
+}
+
+.fight-menu-moves app-move {
+  transform: scale(0.9); /* Réduction de 10% de la taille de chaque app-move */
+}
+
+.fight-menu-pokemons {
+  width: 100%;
+  height: 10rem;
+  background-color: #b362c7;
+}
+
+.fight-move-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.fight-player {
+  position: absolute;
+
+  bottom: 1rem;
+  left: 1rem;
+}
+.fight-opponent {
+  position: absolute;
+
+  top: 1rem;
+  right: 1rem;
+}
+
+.player-info {
+  width: 15rem;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+.pokemons-balls {
+  height: 4rem;
+  width: 10rem;
+
+  margin-bottom: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+}
+.player-info h2{
+  margin: 0;
+  padding: 0.75rem;
+  color: #fff;
+}
+
+.fight-player-pokemon {
+  position: absolute;
+
+  bottom: 5rem;
+  left: 18rem;
+}
+
+.fight-opponent-pokemon {
+  position: absolute;
+
+  top: 5rem;
+  right: 18rem;
+}
+
+.pokemon-fighting{
+  width: 15rem;
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 2;
+}
+
+.pokemon-fighting img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+
+}
+
+.img-container {
+  width: 70%;
+  height: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.pokemon-name{
+  font-family: Verdana, sans-serif;
+  font-weight: bold;
+}
+
+.battle-base{
+  width: 17rem;
+  height: 17rem;
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  z-index: 1; /* base derrière le Pokémon */
+}
+
+.fight-opponent-pokemon .battle-base{
+  left: -1rem;
+}

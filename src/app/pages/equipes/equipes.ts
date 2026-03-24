@@ -1,5 +1,5 @@
 import {
-  Component,
+  Component, inject,
   signal,
 } from '@angular/core';
 import {Card} from '../../shared/components/card/card';
@@ -7,6 +7,8 @@ import {PokemonCardList} from '../../shared/components/pokemon-card-list/pokemon
 import {PokemonCardModel} from '../../shared/models/pokemon.card.model';
 import {PokemonInformation} from '../../shared/components/pokemon-information/pokemon-information';
 import {PokemonMoveSelector} from '../../shared/components/pokemon-move-selector/pokemon-move-selector';
+import {Team} from '../../core/team/team.model';
+import {TeamService} from '../../core/team/team.service';
 
 export enum EquipeMode {
   CHOIX_ATTACK = 'choix attack',
@@ -27,6 +29,8 @@ export enum EquipeMode {
   styleUrl: './equipes.css',
 })
 export class Equipes {
+  private readonly teamService = inject(TeamService);
+
 
   public Mode = EquipeMode;
 

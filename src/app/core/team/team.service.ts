@@ -1,27 +1,50 @@
-import {computed, Injectable, signal} from '@angular/core';
+import {computed, inject, Injectable, signal} from '@angular/core';
 import {Team, TeamMove, TeamSlot} from './team.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class TeamService {
+
   private readonly _team = signal<Team>(this.emptyTeam());
   readonly slots = computed(() => this._team().slots);
 
-  // Ces deux méthodes brancheront sur le vrai backend plus tard
   loadTeam(userId: string): void {
     // TODO: this.http.get(`/api/teams/${userId}`)
-    // Pour l'instant : ne rien faire, la team est vide par défaut
+    // Les teams ont bien été chargées, on met à jour le signal
+    this._team.set({
+      userId,
+      slots: [
+        {
+          slotIndex: 1,
+          pokedexId: 25,
+          name: 'Pikachu',
+          sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
+          types: ['Electric'],
+          moves: [
+            {slot: 1, name: 'Thunder Shock', type: 'Electric', power: 40, accuracy: 100, damageClass: 'Special'},
+            {slot: 2, name: 'Quick Attack', type: 'Normal', power: 40, accuracy: 100, damageClass: 'Physical'},
+            {slot: 3, name: 'Iron Tail', type: 'Steel', power: 100, accuracy: 75, damageClass: 'Physical'},
+            {slot: 4, name: 'Electro Ball', type: 'Electric', power: null, accuracy: 100, damageClass: 'Special'},
+          ],
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+      ],
+
+    });
   }
 
   saveTeam(): void {
     // TODO: this.http.put(`/api/teams`, this._team())
-    // Pour l'instant : console.log ou rien
   }
 
   setSlot(index: number, pokemon: TeamSlot): void {
     this._team.update(team => {
       const slots = [...team.slots];
       slots[index] = pokemon;
-      return { ...team, slots };
+      return {...team, slots};
     });
   }
 
@@ -29,7 +52,7 @@ export class TeamService {
     this._team.update(team => {
       const slots = [...team.slots];
       slots[index] = null;
-      return { ...team, slots };
+      return {...team, slots};
     });
   }
 
@@ -41,13 +64,13 @@ export class TeamService {
 
       const moves = [...slot.moves];
       moves[moveIndex] = move;
-      slots[slotIndex] = { ...slot, moves };
-      return { ...team, slots };
+      slots[slotIndex] = {...slot, moves};
+      return {...team, slots};
     });
   }
 
   private emptyTeam(): Team {
-    return { userId: '', slots: Array(6).fill(null) };
+    return {userId: '', slots: Array(6).fill(null)};
   }
 
   resetTeam(): void {

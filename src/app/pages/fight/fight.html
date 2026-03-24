@@ -1,1 +1,70 @@
-<p>fight works!</p>
+<div class="fight-main basic-container">
+
+  <div class="fight-top">
+
+
+    <div class="fight-menu">
+
+      <div class="fight-player player-info">
+        <h2 class="player-name">Baptiste</h2>
+        <div class="pokemons-balls"></div>
+      </div>
+
+      <div class="fight-player-pokemon pokemon-fighting">
+        <div class="pokemon-name">Pikachu</div>
+        <div class="pokemon-hp">----------------</div>
+
+        <div class="battle-base">
+          <img src="battle-base-basic.png" alt="Battle Base">
+        </div>
+
+        <div class="img-container">
+          <img src="https://img.pokemondb.net/sprites/black-white/anim/back-shiny/flaaffy.gif" alt="Flaaffy">
+        </div>
+
+      </div>
+
+      <div class="fight-opponent-pokemon pokemon-fighting">
+        <div class="pokemon-name">Pikachu</div>
+        <div class="pokemon-hp">------------</div>
+
+        <div class="battle-base">
+          <img src="battle-base-basic.png" alt="Battle Base">
+        </div>
+
+        <div class="img-container">
+          <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/flaaffy.gif" alt="Flaaffy">
+        </div>
+      </div>
+
+
+      <div class="fight-opponent player-info">
+        <h2 class="player-name">Meven</h2>
+        <div class="pokemons-balls"></div>
+      </div>
+
+    </div>
+
+
+    <div class="fight-log">
+      <app-fight-log></app-fight-log>
+    </div>
+
+  </div>
+
+
+  <div class="fight-menu-moves">
+    <app-move [inFight]="true" [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"
+              [isDefined]="true"></app-move>
+    <app-move [inFight]="true" [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"
+              [isDefined]="true"></app-move>
+    <app-move [inFight]="true" [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"
+              [isDefined]="true"></app-move>
+    <app-move [inFight]="true" [power]="80" [accuracy]="80" name="Dragon Claw" damage_class="Special" type="dragon"
+              [isDefined]="true"></app-move>
+  </div>
+
+  <div class="fight-menu-pokemons">
+
+  </div>
+</div>
