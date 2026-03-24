@@ -33,7 +33,6 @@
   padding: 0;
   width: 25%;
   height: 100%;
-  background-color: rgba(223, 241, 83, 0.23);
 }
 
 .fight-menu-moves {
@@ -49,13 +48,24 @@
 }
 
 .fight-menu-moves app-move {
-  transform: scale(0.9); /* Réduction de 10% de la taille de chaque app-move */
+  transform: scale(0.9);
 }
 
 .fight-menu-pokemons {
   width: 100%;
   height: 10rem;
-  background-color: #b362c7;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-content: space-evenly;
+  gap: 1rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: var(--border-gray) solid 3px;
 }
 
 .fight-move-card {
@@ -116,14 +126,14 @@
   position: absolute;
 
   bottom: 5rem;
-  left: 18rem;
+  left: 20em;
 }
 
 .fight-opponent-pokemon {
   position: absolute;
 
   top: 5rem;
-  right: 18rem;
+  right: 20rem;
 }
 
 .pokemon-fighting{

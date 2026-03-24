@@ -1,5 +1,5 @@
-import {RawPokemonDTO} from '../models/dto/pokemon.dto';
-import {Pokemon} from '../models/pokemon.model';
+import {RawPokemonDTO} from '../../models/dto/pokemon.dto';
+import {Pokemon} from '../../models/pokemon.model';
 
 /**
  * Mapper pour convertir les données brutes de l'API Pokémon en modèles utilisables dans l'application
