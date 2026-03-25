@@ -17,4 +17,5 @@ export interface PokemonCardModel {
   name: string;
   types: string[];
   sprite: string;
+  stats: PokemonStats;
 }

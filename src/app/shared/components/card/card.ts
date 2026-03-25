@@ -40,6 +40,7 @@ export class Card {
   pokedex_id = input<number>(0);
   sprite = input<string>('');
   types = input<string[]>([]);
+  stats = input<any>();
 
   onClick() {
     if (this.sendData()) {
@@ -54,7 +55,8 @@ export class Card {
       pokedex_id: this.pokedex_id(),
       name: this.name(),
       types: this.types(),
-      sprite: this.sprite()
+      sprite: this.sprite(),
+      stats: this.stats(),
     });
   }
 }

@@ -11,8 +11,13 @@
       </div>
 
       <div class="fight-player-pokemon pokemon-fighting">
-        <div class="pokemon-name">Pikachu</div>
-        <div class="pokemon-hp">----------------</div>
+        <div class="pokemon-name">
+          {{ teamPokemon()[firstPokemon()]?.name || 'Aucun Pokémon' }}
+        </div>
+        <app-hp-bar
+          [hp]="teamPokemon()[firstPokemon()]?.hp ?? 0"
+          [hpMax]="teamPokemon()[firstPokemon()]?.hpMax ?? 0"
+        ></app-hp-bar>
 
         <div class="battle-base">
           <img src="battle-base-basic.png" alt="Battle Base">
@@ -26,7 +31,8 @@
 
       <div class="fight-opponent-pokemon pokemon-fighting">
         <div class="pokemon-name">Pikachu</div>
-        <div class="pokemon-hp">------------</div>
+
+        <app-hp-bar [hp]="35" [hpMax]="35"></app-hp-bar>
 
         <div class="battle-base">
           <img src="battle-base-basic.png" alt="Battle Base">
@@ -65,11 +71,14 @@
   </div>
 
   <div class="fight-menu-pokemons">
-    <app-fight-pokemon-card img="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" name="Dracaufeu" ></app-fight-pokemon-card>
-    <app-fight-pokemon-card img="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" name="Mewtwo" ></app-fight-pokemon-card>
-    <app-fight-pokemon-card img="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" ></app-fight-pokemon-card>
-    <app-fight-pokemon-card img="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" name="Bellsprout" ></app-fight-pokemon-card>
-    <app-fight-pokemon-card img="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" name="Stari" ></app-fight-pokemon-card>
-    <app-fight-pokemon-card img="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" name="Pikachu" ></app-fight-pokemon-card>
+    @for (pokemon of teamPokemon(); track pokemon?.slotIndex) {
+      @if (pokemon) {
+        <app-fight-pokemon-card
+          [img]="pokemon.sprite"
+          [name]="pokemon.name">
+        </app-fight-pokemon-card>
+      }
+    }
   </div>
+
 </div>

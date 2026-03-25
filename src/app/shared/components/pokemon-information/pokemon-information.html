@@ -42,7 +42,7 @@
           <p>Machin bidule fait truc muche et vit dans les marraiscage </p>
         </div>
         <div class="btn-bas-droite">
-          <button  class="little-button baba" type="submit" >Supprimer le pokémon</button>
+          <button  class="little-button baba" (click)="removePoke()" >Supprimer le pokémon</button>
 
         </div>
       </div>
@@ -52,20 +52,24 @@
 
       <app-stats [stats]="pokemon.stats"></app-stats>
 
-      @if (displayedMoves.length > 0) {
-        <div class="pokemon-moves">
-          <div class="moves-list">
-            <app-move (changeMove)="setModeToChangeMove(0)" [accuracy]="80" name="Dragon Claw" damage_class="Special"
-                      type="dragon" [isDefined]="true"></app-move>
-            <app-move (changeMove)="setModeToChangeMove(2)" [accuracy]="80" name="Dragon Claw" damage_class="Special"
-                      type="dragon"></app-move>
-            <app-move (changeMove)="setModeToChangeMove(3)" [accuracy]="80" name="Dragon Claw" damage_class="Special"
-                      type="dragon"></app-move>
-            <app-move (changeMove)="setModeToChangeMove(4)" [power]="80" [accuracy]="80" name="Dragon Claw"
-                      damage_class="Special" type="dragon"></app-move>
-          </div>
+      <div class="pokemon-moves-owned">
+        <h3>Capacités de l'équipe :</h3>
+        <div class="moves-list">
+          @for (move of ownedMoves; track move.slot; let idx = $index) {
+            <app-move
+              [inFight]="false"
+              [isDefined]="move.name !== ''"
+              [name]="move.name || '—'"
+              [type]="move.type || 'normal'"
+              [power]="move.power ?? 0"
+              [accuracy]="move.accuracy"
+              [damage_class]="move.damageClass || 'physical'"
+              (changeMove)="setModeToChangeMove(idx + 1)">
+            </app-move>
+          }
         </div>
-      }
+      </div>
+
     </div>
   </div>
 

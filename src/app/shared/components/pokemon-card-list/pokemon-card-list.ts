@@ -10,9 +10,8 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {PokemonStore} from '../../../core/store/pokemon.store';
-import {Pokemon} from '../../models/pokemon.model';
-import {Card} from '../card/card';
 import {PokemonCardModel} from '../../models/pokemon.card.model';
+import {Card} from '../card/card';
 
 
 @Component({
@@ -72,7 +71,7 @@ export class PokemonCardList {
    * On passe aussi un lien de navigation pour que la card puisse être entourée
    * d'une balise <a [routerLink]="..."> dans son propre template.
    */
-  private addPokemonCard(pokemon: Pokemon): void {
+  private addPokemonCard(pokemon: any): void {
     const cardRef: ComponentRef<Card> = this.pokemonContainer.createComponent(Card);
 
     if (this.redirect()) {
@@ -81,10 +80,10 @@ export class PokemonCardList {
     cardRef.setInput('sendData', true); // active le mode envoi
     cardRef.setInput('name', pokemon.name);
     cardRef.setInput('sprite', pokemon.image);
-    cardRef.setInput('pokedex_id', pokemon.id.toString());
+    cardRef.setInput('pokedex_id', pokemon.id);
     cardRef.setInput('types', pokemon.types);
+    cardRef.setInput('stats', pokemon.stats);
 
-    // Écoute l'output de la card et le retransmet au parent
     cardRef.instance.sendCardData.subscribe(data => {
       this.cardSelected.emit(data);
     });

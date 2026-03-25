@@ -40,6 +40,7 @@ export class AuthService {
         this._currentUser.set(response.user);
         this.router.navigateByUrl('/');
         this.team.loadTeam(this.currentUser.name); // TODO : mettre l'id
+
       },
       error: (err) => {
         console.error('Login failed', err);
@@ -69,6 +70,7 @@ export class AuthService {
   logout() {
     this.http.post<void>(this.API_URL + 'logout', {}).subscribe({
       next: () => {
+        this.team.resetTeam();
         this._currentUser.set(null);
         this.router.navigateByUrl('/');
       },
@@ -91,6 +93,7 @@ export class AuthService {
       next: (response: AuthResponse) => {
         if (response?.user) {
           this._currentUser.set(response.user);
+          this.team.loadTeam(this.currentUser.name); // TODO : mettre l'id
         }
       },
       error: (err) => {

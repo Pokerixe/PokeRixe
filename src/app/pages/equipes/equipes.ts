@@ -4,11 +4,12 @@ import {
 } from '@angular/core';
 import {Card} from '../../shared/components/card/card';
 import {PokemonCardList} from '../../shared/components/pokemon-card-list/pokemon-card-list';
-import {PokemonCardModel} from '../../shared/models/pokemon.card.model';
 import {PokemonInformation} from '../../shared/components/pokemon-information/pokemon-information';
 import {PokemonMoveSelector} from '../../shared/components/pokemon-move-selector/pokemon-move-selector';
-import {Team} from '../../core/team/team.model';
+import {TeamMove, TeamSlot} from '../../core/team/team.model';
 import {TeamService} from '../../core/team/team.service';
+import {PokemonCardModel} from '../../shared/models/pokemon.card.model';
+import {Move as MoveModel} from '../../shared/models/move.model';
 
 export enum EquipeMode {
   CHOIX_ATTACK = 'choix attack',
@@ -31,17 +32,18 @@ export enum EquipeMode {
 export class Equipes {
   private readonly teamService = inject(TeamService);
 
-
   public Mode = EquipeMode;
 
-  // selectedMode devient un signal au lieu d une simple propriete
   public selectedMode = signal<EquipeMode>(EquipeMode.AUCUN);
-
   public selected_card = signal<number>(0);
-  public team = signal<(PokemonCardModel | null)[]>([null, null, null, null, null, null]);
 
+  readonly team = this.teamService.slots;
+
+  // index du move ciblé (1 à 4)
   public idFocusMove = signal<number>(0);
 
+  // Liste des moves disponibles pour le Pokémon actuellement affiché
+  public availableMovesForSelected: MoveModel[] = [];
 
   get cardState(): number {
     return this.selected_card();
@@ -63,9 +65,7 @@ export class Equipes {
     if (teamSnapshot[slotIndex] !== null) {
       this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
     } else {
-      const previous = this.selectedMode();
       this.selectedMode.set(EquipeMode.CHOIX_POKEMON);
-
     }
   }
 
@@ -77,21 +77,83 @@ export class Equipes {
     const slot = this.selected_card();
     if (!slot) return;
 
-    const current = this.team();
-    const updated = [...current];
-    updated[slot - 1] = pokemon;  // on stocke l'objet complet
-    this.team.set(updated);
+    const slotIndex = slot - 1;
+
+    const maxHp = pokemon.stats.hp;
+
+    const teamSlot: TeamSlot = {
+      slotIndex: slot as 0 | 1 | 2 | 3 | 4 | 5,
+      pokedexId: pokemon.pokedex_id,
+      name: pokemon.name,
+      sprite: pokemon.sprite,
+      spriteBack: pokemon.sprite,
+      types: pokemon.types,
+      hp : maxHp,
+      hpMax: maxHp,
+      stats: pokemon.stats,
+      moves: [
+        // initialise les 4 slots de moves vides
+        {slot: 0, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+        {slot: 1, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+        {slot: 2, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+        {slot: 3, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+      ],
+    };
+
+    this.teamService.setSlot(slotIndex, teamSlot);
+    this.teamService.saveTeam();
 
     this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
   }
 
   protected onPokemonChosen(pokemon: PokemonCardModel) {
-    console.log(pokemon);
-    this.choosePokemon(pokemon);  // on passe juste pokemon
+    this.choosePokemon(pokemon);
   }
 
   protected changeToMoveMode(idMove: number) {
+    // on mémorise quel slot de move (1-4) l'utilisateur veut modifier
     this.idFocusMove.set(idMove);
     this.changeMode(this.Mode.CHOIX_ATTACK);
+  }
+
+  protected onMoveSelected(move: MoveModel) {
+    const slot = this.selected_card();
+    const moveIndex = this.idFocusMove();
+    if (!slot || !moveIndex) return;
+
+    const slotIndex = slot - 1;
+    const moveSlotIndex = moveIndex - 1; // 0-based pour TeamMove[]
+
+    const teamMove: TeamMove = {
+      slot: moveIndex as 0| 1 | 2 | 3,
+      name: move.name,
+      type: move.type,
+      power: move.power,
+      accuracy: move.accuracy ?? 100,
+      damageClass: move.damageClass,
+    };
+
+    this.teamService.setMove(slotIndex, moveSlotIndex, teamMove);
+    this.teamService.saveTeam();
+
+    // retour à l'affichage du Pokémon
+    this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
+  }
+
+  protected removePokemon() {
+    const slot = this.selected_card();
+    if (!slot) return;
+
+    const slotIndex = slot - 1;
+    this.teamService.clearSlot(slotIndex);
+    this.teamService.saveTeam();
+
+    this.selectedMode.set(EquipeMode.AUCUN);
+    this.selected_card.set(0);
+    this.idFocusMove.set(0);
+  }
+
+  protected onMovesLoaded(moves: MoveModel[]) {
+    this.availableMovesForSelected = moves;
   }
 }

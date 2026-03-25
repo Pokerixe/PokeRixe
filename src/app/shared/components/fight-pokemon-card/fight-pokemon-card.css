@@ -44,18 +44,3 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.hp-bar{
-  width: 100%; /* prend toute la largeur de la div */
-  height: 1rem;
-  background: rgba(0,0,0,0.2);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.hp-fill{
-  height: 100%;
-  background: linear-gradient(90deg, #4caf50, #8bc34a);
-  border-radius: inherit;
-  transition: width 300ms ease-in-out;
-}

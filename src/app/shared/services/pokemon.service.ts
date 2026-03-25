@@ -2,11 +2,17 @@ import {PokemonRepository} from '../repositories/pokeApi.repository';
 import {Pokemon} from '../models/pokemon.model';
 import {forkJoin, map, Observable, switchMap} from 'rxjs';
 import {Injectable} from '@angular/core';
-import {PokemonMapper} from '../components/mappers/pokemon.mapper';
+import {PokemonMapper} from '../mappers/pokemon.mapper';
+import {Move} from '../models/move.model';
+import {MoveService} from './move.service';
+import {RawPokemonDTO} from '../models/dto/pokemon.dto';
 
 @Injectable({ providedIn: 'root' })
 export class PokemonService {
-  constructor(private readonly repo: PokemonRepository) {}
+  constructor(
+    private readonly repo: PokemonRepository,
+    private readonly moveService: MoveService,
+  ) {}
 
   getFirst150(amount : number = 150): Observable<Pokemon[]> {
     return this.repo.getList(amount).pipe(
@@ -23,6 +29,18 @@ export class PokemonService {
     );
   }
 
+  getByIdWithMoves(id: number): Observable<{ pokemon: Pokemon; moves: Move[] }> {
+    return this.repo.getById(id).pipe(
+      switchMap((raw: RawPokemonDTO) =>
+        this.moveService.loadMovesFromDtos(raw.moves).pipe(
+          map(moves => ({
+            pokemon: PokemonMapper.toModel(raw),
+            moves,
+          }))
+        )
+      )
+    );
+  }
 
   getRange(offset: number, limit: number): Observable<Pokemon[]> {
     // Exemple si tu charges par IDs (1 à 150)
@@ -33,4 +51,7 @@ export class PokemonService {
     // Ou si ton API supporte offset/limit :
     // return this.http.get<Pokemon[]>(`${this.apiUrl}?offset=${offset}&limit=${limit}`);
   }
+
+
+
 }

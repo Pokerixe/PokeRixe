@@ -3,8 +3,12 @@
 
     @if (selectedMode() === Mode.AFFICHAGE_POKEMON && selected_card() != 0) {
       <div class="mode-panel affichage-pokemon">
-        <app-pokemon-information (changeToMoveMode)="changeToMoveMode($event)"
-                                 [pokemon_id]="team()[selected_card()-1]?.pokedex_id ?? 0"></app-pokemon-information>
+        <app-pokemon-information
+          (changeToMoveMode)="changeToMoveMode($event)"
+          [pokemon_id]="team()[selected_card()-1]?.pokedexId ?? 0"
+          (removePokemon)="removePokemon()"
+          (movesLoaded)="onMovesLoaded($event)"
+        ></app-pokemon-information>
       </div>
     }
 
@@ -19,9 +23,13 @@
         </div>
       </div>
     }
-    @if (selectedMode() === Mode.CHOIX_ATTACK) {
+    @if (selectedMode() === Mode.CHOIX_ATTACK && selected_card() != 0 && idFocusMove() != 0) {
       <div class="mode-panel choix-attack">
-        <app-pokemon-move-selector></app-pokemon-move-selector>
+        <app-pokemon-move-selector
+          [currentMove]="team()[selected_card()-1]?.moves?.[idFocusMove()-1] ?? null"
+          [availableMoves]="availableMovesForSelected"
+          (moveSelected)="onMoveSelected($event)">
+        </app-pokemon-move-selector>
       </div>
     }
 
@@ -39,7 +47,7 @@
       <app-card
         [cardNumber]="1"
         [interrogation]="cardState"
-        [pokedex_id]="team()[0]?.pokedex_id ?? 0"
+        [pokedex_id]="team()[0]?.pokedexId ?? 0"
         [sprite]="team()[0]?.sprite ?? '' "
         [types]="team()[0]?.types ?? []"
         [name]="team()[0]?.name ?? ''"
@@ -49,7 +57,7 @@
       <app-card
         [cardNumber]="2"
         [interrogation]="cardState"
-        [pokedex_id]="team()[1]?.pokedex_id ?? 0"
+        [pokedex_id]="team()[1]?.pokedexId ?? 0"
         [sprite]="team()[1]?.sprite ?? '' "
         [types]="team()[1]?.types ?? []"
         [name]="team()[1]?.name ?? ''"
@@ -59,7 +67,7 @@
       <app-card
         [cardNumber]="3"
         [interrogation]="cardState"
-        [pokedex_id]="team()[2]?.pokedex_id ?? 0"
+        [pokedex_id]="team()[2]?.pokedexId ?? 0"
         [sprite]="team()[2]?.sprite ?? '' "
         [types]="team()[2]?.types ?? []"
         [name]="team()[2]?.name ?? ''"
@@ -69,7 +77,7 @@
       <app-card
         [cardNumber]="4"
         [interrogation]="cardState"
-        [pokedex_id]="team()[3]?.pokedex_id ?? 0"
+        [pokedex_id]="team()[3]?.pokedexId ?? 0"
         [sprite]="team()[3]?.sprite ?? '' "
         [types]="team()[3]?.types ?? []"
         [name]="team()[3]?.name ?? ''"
@@ -79,7 +87,7 @@
       <app-card
         [cardNumber]="5"
         [interrogation]="cardState"
-        [pokedex_id]="team()[4]?.pokedex_id ?? 0"
+        [pokedex_id]="team()[4]?.pokedexId ?? 0"
         [sprite]="team()[4]?.sprite ?? '' "
         [types]="team()[4]?.types ?? []"
         [name]="team()[4]?.name ?? ''"
@@ -89,7 +97,7 @@
       <app-card
         [cardNumber]="6"
         [interrogation]="cardState"
-        [pokedex_id]="team()[5]?.pokedex_id ?? 0"
+        [pokedex_id]="team()[5]?.pokedexId ?? 0"
         [sprite]="team()[5]?.sprite ?? '' "
         [types]="team()[5]?.types ?? []"
         [name]="team()[5]?.name ?? ''"

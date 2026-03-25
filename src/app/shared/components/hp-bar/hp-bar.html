@@ -1,0 +1,12 @@
+<div class="hp-bar-container">
+  <div class="hp-bar-track">
+    <div
+      class="hp-bar-fill {{ colorClass() }} {{ isAnimating() ? 'hp-animating' : '' }}"
+      [style.width.%]="width()"
+    ></div>
+  </div>
+
+  <span class="hp-bar-label">
+    {{ percentage() }}%
+  </span>
+</div>

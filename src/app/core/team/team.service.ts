@@ -6,6 +6,7 @@ export class TeamService {
 
   private readonly _team = signal<Team>(this.emptyTeam());
   readonly slots = computed(() => this._team().slots);
+  readonly firstPokemon = computed(() => this._team().firstPokemon);
 
   loadTeam(userId: string): void {
     // TODO: this.http.get(`/api/teams/${userId}`)
@@ -13,28 +14,26 @@ export class TeamService {
     this._team.set({
       userId,
       slots: [
-        {
-          slotIndex: 1,
-          pokedexId: 25,
-          name: 'Pikachu',
-          sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
-          types: ['Electric'],
-          moves: [
-            {slot: 1, name: 'Thunder Shock', type: 'Electric', power: 40, accuracy: 100, damageClass: 'Special'},
-            {slot: 2, name: 'Quick Attack', type: 'Normal', power: 40, accuracy: 100, damageClass: 'Physical'},
-            {slot: 3, name: 'Iron Tail', type: 'Steel', power: 100, accuracy: 75, damageClass: 'Physical'},
-            {slot: 4, name: 'Electro Ball', type: 'Electric', power: null, accuracy: 100, damageClass: 'Special'},
-          ],
-        },
+        null,
         null,
         null,
         null,
         null,
         null,
       ],
-
+      firstPokemon: 0,
     });
   }
+
+  setFirstPokemon(slotIndex: number): void {
+    if (slotIndex <= 0 || slotIndex > 6) {
+      return;
+    } else {
+      this._team.update(team => ({...team, firstPokemon: slotIndex}));
+    }
+  }
+
+
 
   saveTeam(): void {
     // TODO: this.http.put(`/api/teams`, this._team())
@@ -70,7 +69,7 @@ export class TeamService {
   }
 
   private emptyTeam(): Team {
-    return {userId: '', slots: Array(6).fill(null)};
+    return {userId: '', slots: Array(6).fill(null), firstPokemon: 1};
   }
 
   resetTeam(): void {
