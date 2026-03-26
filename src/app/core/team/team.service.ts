@@ -1,39 +1,42 @@
-import {computed, inject, Injectable, signal} from '@angular/core';
+import {computed, Injectable, signal} from '@angular/core';
 import {Team, TeamMove, TeamSlot} from './team.model';
+import {HttpClient} from '@angular/common/http';
+import {Observable, tap} from 'rxjs';
+import {environment} from '../../../environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class TeamService {
+
+  private readonly BASE = environment.apiUrl;
+
+  constructor(private http: HttpClient) {}
 
   private readonly _team = signal<Team>(this.emptyTeam());
   readonly slots = computed(() => this._team().slots);
   readonly firstPokemon = computed(() => this._team().firstPokemon);
 
-  loadTeam(userId: string): void {
-    // TODO: this.http.get(`/api/teams/${userId}`)
-    // Les teams ont bien été chargées, on met à jour le signal
-    this._team.set({
-      userId,
-      slots: [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-      ],
-      firstPokemon: 0,
-    });
+  /**
+   * Charge la team de l utilisateur depuis l API (mockée par l interceptor)
+   * et met à jour le signal _team avec la valeur retournée.
+   */
+  loadTeam(userId: string): Observable<Team> {
+    console.log('Loading team...');
+    return this.http.get<Team>(`${this.BASE}/team`).pipe(
+      tap((team) => {
+        this._team.set({
+          ...team,
+          userId: team.userId ?? userId,
+        });
+      }),
+    );
   }
 
   setFirstPokemon(slotIndex: number): void {
-    if (slotIndex <= 0 || slotIndex > 6) {
+    if (slotIndex < 0 || slotIndex >= this._team().slots.length) {
       return;
-    } else {
-      this._team.update(team => ({...team, firstPokemon: slotIndex}));
     }
+    this._team.update(team => ({...team, firstPokemon: slotIndex}));
   }
-
-
 
   saveTeam(): void {
     // TODO: this.http.put(`/api/teams`, this._team())
@@ -69,7 +72,11 @@ export class TeamService {
   }
 
   private emptyTeam(): Team {
-    return {userId: '', slots: Array(6).fill(null), firstPokemon: 1};
+    return {
+      userId: '',
+      slots: Array(6).fill(null),
+      firstPokemon: 0,
+    };
   }
 
   resetTeam(): void {

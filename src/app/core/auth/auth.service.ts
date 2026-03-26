@@ -38,9 +38,13 @@ export class AuthService {
     this.http.post<AuthResponse>(this.API_URL + 'login', loginDTO).subscribe({
       next: (response: AuthResponse) => {
         this._currentUser.set(response.user);
-        this.router.navigateByUrl('/');
-        this.team.loadTeam(this.currentUser.name); // TODO : mettre l'id
 
+        const user = this._currentUser();
+        if (user) {
+          this.team.loadTeam(user.id).subscribe();
+        }
+
+        this.router.navigateByUrl('/');
       },
       error: (err) => {
         console.error('Login failed', err);
@@ -93,7 +97,10 @@ export class AuthService {
       next: (response: AuthResponse) => {
         if (response?.user) {
           this._currentUser.set(response.user);
-          this.team.loadTeam(this.currentUser.name); // TODO : mettre l'id
+          const user = this._currentUser();
+          if (user) {
+            this.team.loadTeam(user.id).subscribe();
+          }
         }
       },
       error: (err) => {

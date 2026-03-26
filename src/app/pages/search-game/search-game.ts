@@ -1,5 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { TeamService } from '../../core/team/team.service';
+import {GameService} from '../../core/game/game.service';
+import {Game} from '../../core/game/game.model';
 
 @Component({
   selector: 'app-search-game',
@@ -8,6 +10,11 @@ import { TeamService } from '../../core/team/team.service';
   styleUrl: './search-game.css',
 })
 export class SearchGame {
+
+  private readonly gamesService = inject(GameService);
+
+  readonly games = signal<Game[]>([]);
+
   createModalOpen = signal<boolean>(false);
   description = signal<string>('');
 
@@ -15,6 +22,12 @@ export class SearchGame {
   selectedTeamSlot = signal<number | null>(null);
 
   private readonly teamService = inject(TeamService);
+
+  constructor() {
+    this.gamesService.getGames().subscribe((games) => {
+      this.games.set(games);
+    });
+  }
 
   get teamSlots() {
     return this.teamService.slots();

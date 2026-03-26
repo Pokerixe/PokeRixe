@@ -28,7 +28,6 @@ export class PokemonRepository {
   }
 
   getSpecies(id: number): Observable<any> {
-    // The species DTO shape varies; use any to avoid tight coupling with a missing DTO.
     return this.http.get<any>(`${this.BASE}/pokemon-species/${id}`);
   }
 }

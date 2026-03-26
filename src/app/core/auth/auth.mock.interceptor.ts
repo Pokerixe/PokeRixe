@@ -79,5 +79,78 @@ export const mockAuthInterceptor: HttpInterceptorFn = (req, next) => {
     return of(new HttpResponse({ status: 200, body: { user: null } })).pipe(delay(300));
   }
 
+  // GET /games
+  if (req.url.endsWith('/games') && req.method === 'GET') {
+    const mockGames = [
+      {
+        id: 1,
+        username: 'Ash',
+        description: 'Match amical à Jadielle',
+        nombrePokemon: 3,
+      },
+      {
+        id: 2,
+        username: 'Misty',
+        description: 'Tournoi arène eau',
+        nombrePokemon: 6,
+      },
+      {
+        id: 3,
+        username: 'Brock',
+        description: 'Duel d\'entraînement',
+        nombrePokemon: 4,
+      },
+    ];
+
+    return of(new HttpResponse({
+      status: 200,
+      body: mockGames,
+    })).pipe(delay(300));
+  }
+
+  // GET /team
+  if (req.url.endsWith('/team') && req.method === 'GET') {
+    const mockTeam = {
+      userId: mockCurrentUser?.id ?? '1',
+      firstPokemon: 0,
+      slots: [
+        {
+          slotIndex: 0,
+          pokedexId: 6,
+          name: 'charizard',
+          sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png',
+          spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png',
+          types: ['fire', 'flying'],
+          hp: 78,
+          hpMax: 78,
+          stats: {
+            hp: 78,
+            attack: 84,
+            defense: 78,
+            specialAttack: 109,
+            specialDefense: 85,
+            speed: 100,
+          },
+          moves: [
+            { slot: 0, name: 'Flamethrower', type: 'fire', power: 90, accuracy: 100, damageClass: 'special' },
+            { slot: 1, name: 'Fire Blast', type: 'fire', power: 110, accuracy: 85, damageClass: 'special' },
+            { slot: 2, name: 'Wing Attack', type: 'flying', power: 60, accuracy: 100, damageClass: 'physical' },
+            { slot: 3, name: 'Slash', type: 'normal', power: 70, accuracy: 100, damageClass: 'physical' },
+          ],
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+      ],
+    };
+
+    return of(new HttpResponse({
+      status: 200,
+      body: mockTeam,
+    })).pipe(delay(300));
+  }
+
   return next(req);
 };
