@@ -50,6 +50,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/forbidden/forbidden').then(m => m.Forbidden)
   },
   {
+    path: 'searchGame',
+    loadComponent: () => import('./pages/search-game/search-game').then(m => m.SearchGame)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

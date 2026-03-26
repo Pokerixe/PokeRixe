@@ -43,15 +43,24 @@ export class PokemonService {
   }
 
   getRange(offset: number, limit: number): Observable<Pokemon[]> {
-    // Exemple si tu charges par IDs (1 à 150)
     const ids = Array.from({ length: limit }, (_, i) => offset + i + 1)
       .filter(id => id <= 150);
     return forkJoin(ids.map(id => this.getById(id)));
-
-    // Ou si ton API supporte offset/limit :
-    // return this.http.get<Pokemon[]>(`${this.apiUrl}?offset=${offset}&limit=${limit}`);
   }
 
-
-
+  getDescription(id: number): Observable<string> {
+    return this.repo.getSpecies(id).pipe(
+      map((species: any) => {
+        if (!species || !Array.isArray(species.flavor_text_entries)) return '';
+        // find first english flavor_text
+        const entry = species.flavor_text_entries.find((e: any) => e.language?.name === 'en');
+        if (!entry || !entry.flavor_text) return '';
+        // normalize whitespace and remove form-feed characters \f
+        let txt = entry.flavor_text as string;
+        txt = txt.replace(/\f/g, ' ');
+        txt = txt.replace(/\s+/g, ' ').trim();
+        return txt;
+      })
+    );
+  }
 }

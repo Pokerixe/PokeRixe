@@ -60,7 +60,7 @@
   justify-content: center;
   flex-wrap: wrap;
   flex-direction: column;
-  align-content: space-evenly;
+  align-content: start;
   gap: 1rem;
   padding: 1rem;
   box-sizing: border-box;
@@ -170,9 +170,9 @@
 
 .battle-base{
   width: 17rem;
-  height: 17rem;
+  height: auto;
   position: absolute;
-  top: 1rem;
+  top: 5rem;
   left: 0;
   z-index: 1; /* base derrière le Pokémon */
 }

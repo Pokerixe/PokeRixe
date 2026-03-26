@@ -9,9 +9,9 @@ import {Component, computed, effect, input, signal} from '@angular/core';
 })
 export class HpBar {
   // HP courant du Pokémon
-  hp = input.required<number>();
+  hp = input<number>();
   // HP maximum du Pokémon
-  hpMax = input.required<number>();
+  hpMax = input<number>();
 
   // Pourcentage de vie, calculé à partir de hp et hpMax
   percentage = computed(() => {

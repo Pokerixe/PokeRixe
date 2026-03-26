@@ -13,6 +13,13 @@
   box-sizing: border-box;
 }
 
+.fight-pokemon-card:hover {
+  background-color: var(--card-bg-color-hover);
+  border-color: var(--border-yellow);
+  transform: scale(1.1);
+}
+
+
 .card-top{
   display: flex;
   align-items: center;

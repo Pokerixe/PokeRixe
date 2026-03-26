@@ -39,10 +39,8 @@ export class Equipes {
 
   readonly team = this.teamService.slots;
 
-  // index du move ciblé (1 à 4)
   public idFocusMove = signal<number>(0);
 
-  // Liste des moves disponibles pour le Pokémon actuellement affiché
   public availableMovesForSelected: MoveModel[] = [];
 
   get cardState(): number {
@@ -111,9 +109,12 @@ export class Equipes {
   }
 
   protected changeToMoveMode(idMove: number) {
-    // on mémorise quel slot de move (1-4) l'utilisateur veut modifier
     this.idFocusMove.set(idMove);
     this.changeMode(this.Mode.CHOIX_ATTACK);
+  }
+
+  protected onMovesLoaded(moves: MoveModel[]) {
+    this.availableMovesForSelected = moves;
   }
 
   protected onMoveSelected(move: MoveModel) {
@@ -136,9 +137,9 @@ export class Equipes {
     this.teamService.setMove(slotIndex, moveSlotIndex, teamMove);
     this.teamService.saveTeam();
 
-    // retour à l'affichage du Pokémon
     this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
   }
+
 
   protected removePokemon() {
     const slot = this.selected_card();
@@ -151,9 +152,5 @@ export class Equipes {
     this.selectedMode.set(EquipeMode.AUCUN);
     this.selected_card.set(0);
     this.idFocusMove.set(0);
-  }
-
-  protected onMovesLoaded(moves: MoveModel[]) {
-    this.availableMovesForSelected = moves;
   }
 }

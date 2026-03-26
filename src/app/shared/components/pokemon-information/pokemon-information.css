@@ -2,11 +2,9 @@
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  border: 3px solid var(--border-gray);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  box-sizing: border-box;
 
-  padding: 1rem;
+
+  padding: 0.2rem;
   width: 100%;
   /* laisser la hauteur s'adapter au contenu */
   height: 100%;
@@ -67,7 +65,7 @@
 
 .pokemon-image-wrapper img {
   max-width: 100%;
-  max-height: 220px;
+  max-height: 15rem;
   object-fit: contain;
 }
 

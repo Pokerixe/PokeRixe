@@ -53,7 +53,6 @@
       <app-stats [stats]="pokemon.stats"></app-stats>
 
       <div class="pokemon-moves-owned">
-        <h3>Capacités de l'équipe :</h3>
         <div class="moves-list">
           @for (move of ownedMoves; track move.slot; let idx = $index) {
             <app-move

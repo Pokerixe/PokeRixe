@@ -15,6 +15,11 @@ export class MoveService {
   /**
    * Prend la liste des moves bruts d'un Pokémon (avec leurs URLs), appelle chaque URL,
    * et renvoie un tableau de Move détaillés.
+   *
+   * NOTE: On applique ici le filtrage et le tri global demandé :
+   * - ne garder que les moves avec damageClass 'physical' ou 'special'
+   * - et power > 30 (les moves sans power sont exclus)
+   * - trier par `type` alphabétiquement (insensible à la casse)
    */
   loadMovesFromDtos(rawMoves: RawMoveDTO[]): Observable<Move[]> {
     if (!rawMoves || rawMoves.length === 0) {
@@ -34,7 +39,74 @@ export class MoveService {
       } as Move))
     ));
 
-    return forkJoin(requests);
+    return forkJoin(requests).pipe(
+      map((moves: Move[]) => {
+        // Filtrer : power != null && power > 30 && damageClass in (physical, special)
+        const filtered = (moves || []).filter(m => {
+          const dmg = (m.damageClass || '').toLowerCase();
+          return m.power !== null && m.power > 30 && (dmg === 'physical' || dmg === 'special');
+        });
+        // Trier par type alphabétiquement (insensible à la casse)
+        filtered.sort((a, b) => (a.type || '').toLowerCase().localeCompare((b.type || '').toLowerCase()));
+        return filtered;
+      })
+    );
+  }
+
+  /**
+   * Filtre un tableau de `Move` selon des critères simples.
+   * Exemples d'utilisation :
+   *   const filtered = this.moveService.filterMoves(moves, { minPower: 50, damageClass: 'physical' });
+   *
+   * Critères supportés :
+   * - minPower (number) : inclut les moves dont power >= minPower (ignore si power est null)
+   * - maxPower (number) : inclut les moves dont power <= maxPower
+   * - damageClass (string) : correspondance insensible à la casse sur damageClass
+   * - type (string) : correspondance insensible à la casse sur type
+   * - minAccuracy (number) : inclut les moves dont accuracy >= minAccuracy
+   */
+  filterMoves(moves: Move[], criteria?: {
+    minPower?: number;
+    maxPower?: number;
+    damageClass?: string;
+    type?: string;
+    minAccuracy?: number;
+  }): Move[] {
+    if (!moves || moves.length === 0) return [];
+    if (!criteria) return moves.slice();
+
+    const {
+      minPower,
+      maxPower,
+      damageClass,
+      type,
+      minAccuracy,
+    } = criteria;
+
+    return moves.filter(m => {
+      // power can be null in the data model
+      if (typeof minPower === 'number') {
+        if (m.power === null || m.power < minPower) return false;
+      }
+      if (typeof maxPower === 'number') {
+        if (m.power === null || m.power > maxPower) return false;
+      }
+
+      if (typeof minAccuracy === 'number') {
+        if (m.accuracy === null || m.accuracy < minAccuracy) return false;
+      }
+
+      if (damageClass) {
+        if (!m.damageClass) return false;
+        if (m.damageClass.toLowerCase() !== damageClass.toLowerCase()) return false;
+      }
+
+      if (type) {
+        if (!m.type) return false;
+        if (m.type.toLowerCase() !== type.toLowerCase()) return false;
+      }
+
+      return true;
+    });
   }
 }
-

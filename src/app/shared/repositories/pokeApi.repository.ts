@@ -27,7 +27,8 @@ export class PokemonRepository {
     return this.http.get<RawPokemonDTO>(url);
   }
 
-  //getSpecies(id: number): Observable<RawSpeciesDTO> {
-  //  return this.http.get<RawSpeciesDTO>(`${this.BASE}/pokemon-species/${id}`);
-  //}
+  getSpecies(id: number): Observable<any> {
+    // The species DTO shape varies; use any to avoid tight coupling with a missing DTO.
+    return this.http.get<any>(`${this.BASE}/pokemon-species/${id}`);
+  }
 }

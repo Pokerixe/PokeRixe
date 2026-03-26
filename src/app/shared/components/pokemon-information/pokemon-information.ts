@@ -74,8 +74,9 @@ export class PokemonInformation implements OnChanges {
     this.pokemonService.getByIdWithMoves(id).subscribe({
       next: ({pokemon, moves}) => {
         this.pokemon = pokemon;
-        this.displayedMoves = moves;
-        this.movesLoaded.emit(moves);
+        // Les moves sont déjà filtrés et triés par le service MoveService.loadMovesFromDtos
+        this.displayedMoves = moves || [];
+        this.movesLoaded.emit(this.displayedMoves);
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -126,9 +127,6 @@ export class PokemonInformation implements OnChanges {
   setModeToChangeMove(moveNumber: number) {
     this.changeToMoveMode.emit(moveNumber);
   }
-
-  protected readonly String = String;
-  protected readonly Type = Type;
 
   @Output() removePokemon = new EventEmitter<void>();
 

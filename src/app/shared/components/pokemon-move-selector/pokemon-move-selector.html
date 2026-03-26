@@ -1,24 +1,6 @@
 <div class="selector">
 
-  <div class="move-top">
-    @if (currentMove() === null) {
-    <h1 class="move-title">Capacité choisie :</h1>
-      <div class="moves-list">
-        <app-move
-          [inFight]="true"
-          [isDefined]="true"
-          [name]="currentMove()!.name"
-          [type]="currentMove()!.type"
-          [power]="currentMove()!.power ?? 0"
-          [accuracy]="currentMove()!.accuracy ?? 100"
-          [damage_class]="currentMove()!.damageClass">
-        </app-move>
-      </div>
-    }
-  </div>
-
   <div class="move-bottom">
-    <h1 class="move-title">Capacités disponibles :</h1>
     <div class="moves-list overflow-scroll">
       @for (move of availableMoves(); track move.name; let idx = $index) {
         <app-move

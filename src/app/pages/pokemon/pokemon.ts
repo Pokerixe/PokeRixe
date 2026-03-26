@@ -3,12 +3,15 @@ import {ActivatedRoute} from '@angular/router';
 import {Type} from '../../shared/components/type/type';
 import {StarStats} from '../../shared/components/star-stats/star-stats';
 import {PokemonService} from '../../shared/services/pokemon.service';
+import {Move as MoveComponent} from '../../shared/components/move/move';
+import {Move as MoveModel} from '../../shared/models/move.model';
 
 @Component({
   selector: 'app-pokemon',
   imports: [
     Type,
-    StarStats
+    StarStats,
+    MoveComponent
   ],
   templateUrl: './pokemon.html',
   styleUrl: './pokemon.css',
@@ -26,15 +29,30 @@ export class PokemonPage implements OnInit {
   isLoading: boolean = true;
   pokemon: any;
 
+  // nouvel attribut contenant la liste des moves
+  moves: MoveModel[] = [];
+
+  // description récupérée depuis /pokemon-species/:id
+  description: string = '';
+
   /**
    * Récupère les informations du Pokémon
    */
   ngOnInit() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    this.pokemonService.getById(Number(id)).subscribe(pokemon => {
+    // utiliser getByIdWithMoves pour récupérer pokemon + moves
+    this.pokemonService.getByIdWithMoves(Number(id)).subscribe(({pokemon, moves}) => {
       this.pokemon = pokemon;
+      this.moves = moves || [];
       this.isLoading = false;
-      console.log("loaded pokemon : ", this.pokemon);
+      console.log('loaded pokemon : ', this.pokemon);
+      console.log('loaded moves : ', this.moves);
+      this.cdr.detectChanges();
+    });
+
+    // récupérer la description (flavor_text en anglais) via pokemon-species
+    this.pokemonService.getDescription(Number(id)).subscribe(desc => {
+      this.description = desc;
       this.cdr.detectChanges();
     });
 

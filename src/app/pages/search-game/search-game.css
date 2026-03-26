@@ -1,0 +1,207 @@
+.title-search-game {
+  text-align: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: var(--border-yellow);
+  font-family: "8Bitbis", sans-serif;
+  font-size: 1.6rem;
+}
+
+.search-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.search-card {
+  width: 22rem;
+  box-sizing: border-box;
+  margin: 0.5rem;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 3px solid var(--border-gray);
+  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 10rem;
+}
+
+.search-card-header{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-card-host{
+  margin: 0;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.search-card-meta{
+  color: var(--light-gray);
+  font-size: 0.9rem;
+}
+
+.badge{
+  display: inline-block;
+  min-width: 1.4rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 6px;
+  border: 2px solid var(--border-yellow);
+  color: var(--border-yellow);
+  text-align: center;
+  font-weight: bold;
+}
+
+.search-card-desc{
+  margin: 0.6rem 0;
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+.search-card-actions{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.join-button{
+  padding: 0.5rem 0.9rem;
+}
+
+.create-game-backdrop{
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0,0,0,0.6);
+  z-index: 100; /* behind the modal container but above the page */
+}
+
+.create-game-container{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 110; /* above the backdrop */
+  width: min(90vw, 44rem);
+  max-width: 44rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 3px solid var(--border-yellow);
+  background: linear-gradient(180deg, rgba(0,0,0,0.92), rgba(24,24,24,0.96));
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.create-game-container h2{
+  margin: 0;
+  color: var(--border-yellow);
+  font-family: "8Bitbis", sans-serif;
+}
+
+.create-game-container label{
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+.create-game-container input[type="text"]{
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--light-gray);
+  background: rgba(22,22,22,0.9);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.create-game-actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.create-game-button{
+  position: fixed;
+  right: 3rem;
+  bottom: 3rem;
+  z-index: 40;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+}
+
+.team-slots{
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.team-slot{
+  width: 10rem;
+  height: 10rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 0.4rem;
+  cursor: pointer;
+  background: rgba(255,255,255,0.02);
+}
+
+.team-slot.disabled{
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+.team-slot:hover:not(.disabled){
+  transform: translateY(-3px);
+  transition: transform 0.15s ease;
+}
+
+.team-slot img{
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.team-slot .slot-name{
+  margin-top: 0.4rem;
+  color: var(--border-yellow);
+  font-size: 0.95rem;
+}
+
+.team-slot.selected{
+  border-color: var(--border-yellow);
+  box-shadow: 0 8px 20px rgba(255,215,0,0.12);
+}
+
+@media (max-width: 480px) {
+  .search-card {
+    width: calc(100% - 2rem);
+  }
+
+  .create-game-button{
+    left: 0.5rem;
+    bottom: 0.5rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .create-game-container{
+    width: calc(100% - 2rem);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

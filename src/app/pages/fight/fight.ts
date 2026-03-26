@@ -26,4 +26,5 @@ export class Fight {
   public teamPokemon = this.teamService.slots;
   public firstPokemon = this.teamService.firstPokemon;
 
+  readonly user = this.userService.currentUser;
 }

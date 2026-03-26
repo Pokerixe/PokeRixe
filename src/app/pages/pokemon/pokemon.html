@@ -4,53 +4,72 @@
   @if (pokemon) {
     <div class="pokemon-container">
 
-    <div class="title">
-      <div class="id-type">
-
-        <h2 id="pokeId">#{{ pokemon.id}}</h2>
-
-          @for (type of pokemon.types ; track type){
+        <div class="id-type">
+          <h2 id="pokeId">#{{ pokemon.id }}</h2>
+          @for (type of pokemon.types; track type) {
             <app-type type="{{type}}"></app-type>
           }
-      </div>
-
-      <h1 id="pokeName">{{ pokemon.name }}</h1>
-
-    </div>
+        </div>
+        <h1 id="pokeName">{{ pokemon.name }}</h1>
 
       <div class="separator"></div>
 
-    <div class="pokemon">
+      <div class="pokemon">
+        <div class="left">
 
-      <div class="left">
+          <div class="img">
+            <img [src]="pokemon.image" alt="prout"/>
+          </div>
+          <div class="taille-poid">
+            <div class="taille-poid-item">
+              <h3 class="desc">Taille</h3>
+              <h3 class="value">{{ pokemon.height / 10 }} M</h3>
+            </div>
 
-        <div class="img">
-          <img [src]="pokemon.image" alt="prout" />
+            <div class="taille-poid-item">
+              <h3 class="desc">Poids</h3>
+              <h3 class="value">{{ pokemon.weight / 10 }} Kg</h3>
+            </div>
+          </div>
+
+          <div class="desc-content">
+            <h1>Description</h1>
+            <p>{{ description || 'Aucune description disponible.' }}</p>
+          </div>
+
         </div>
 
-        <div class="taille-poid">
+        <div class="right">
 
-        <div class="taille-poid-item">
-        <h3 class="desc">Taille</h3>
-        <h3 class="value">{{pokemon.height/10}} M</h3>
-        </div>
 
-        <div class="taille-poid-item">
-        <h3 class="desc">Poids</h3>
-        <h3 class="value">{{pokemon.weight/10}} Kg</h3>
-        </div>
+          <div class="right-content">
+            <h1>Statistiques</h1>
+            <app-star-stats [stats]="pokemon.stats"></app-star-stats>
+          </div>
+
+          <div class="right-content">
+            <h1>Capacités disponibles</h1>
+            <div class="moves">
+              <div class="moves-list">
+
+                @for (move of moves; track move.name; let idx = $index) {
+                  <app-move
+                    [inFight]="true"
+                    [isDefined]="true"
+                    [name]="move.name"
+                    [type]="move.type"
+                    [power]="move.power ?? 0"
+                    [accuracy]="move.accuracy ?? 100"
+                    [damage_class]="move.damageClass">
+                  </app-move>
+                }
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
-
-      <div class="right">
-        <h1>Statistiques</h1>
-        <app-star-stats [stats]="pokemon.stats"></app-star-stats>
-
-      </div>
-
-
-    </div>
     </div>
 
 
