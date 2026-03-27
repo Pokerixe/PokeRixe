@@ -6,7 +6,7 @@
 
       <article class="search-card card">
         <header class="search-card-header">
-          <h2 class="search-card-host">Host : {{ game.player1 }}</h2>
+          <h2 class="search-card-host">Host : {{ game.player1}}</h2>
           <div class="search-card-meta">
             Nombre de pokémons :
             <span class="badge">{{ game.nombrePokemon ?? 0 }}</span>
@@ -16,7 +16,8 @@
           Description :<br> {{ game.description || 'Aucune description' }}
         </p>
         <footer class="search-card-actions">
-          <button class="little-button join-button" (click)="openJoinModal()">Rejoindre</button>
+          <!-- set the selectedGameId then open the modal (keeps template type-checker happy) -->
+          <button class="little-button join-button" (click)="selectedGameId.set(game.id); openJoinModal()">Rejoindre</button>
         </footer>
 
       </article>

@@ -84,19 +84,19 @@ export const mockAuthInterceptor: HttpInterceptorFn = (req, next) => {
     const mockGames = [
       {
         id: 1,
-        username: 'Ash',
+        player1: 'Ash',
         description: 'Match amical à Jadielle',
         nombrePokemon: 3,
       },
       {
         id: 2,
-        username: 'Misty',
+        player1: 'Misty',
         description: 'Tournoi arène eau',
         nombrePokemon: 6,
       },
       {
         id: 3,
-        username: 'Brock',
+        player1: 'Brock',
         description: 'Duel d\'entraînement',
         nombrePokemon: 4,
       },
@@ -151,6 +151,7 @@ export const mockAuthInterceptor: HttpInterceptorFn = (req, next) => {
       body: mockTeam,
     })).pipe(delay(300));
   }
+
 
   return next(req);
 };

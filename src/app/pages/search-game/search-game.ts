@@ -20,6 +20,7 @@ export class SearchGame {
 
   joinModalOpen = signal<boolean>(false);
   selectedTeamSlot = signal<number | null>(null);
+  selectedGameId = signal<number | null>(null);
 
   private readonly teamService = inject(TeamService);
 
@@ -49,7 +50,14 @@ export class SearchGame {
     this.closeCreateGame();
   }
 
-  openJoinModal() {
+  // accept the game id so we know which game to join
+  openJoinModal(...args: any[]) {
+    // allow being called without an id (backwards compatible)
+    const gameId = args && args.length > 0 ? args[0] : undefined;
+    if (typeof gameId === 'number') {
+      this.selectedGameId.set(gameId);
+    } else {
+    }
     this.joinModalOpen.set(true);
     document.body.style.overflow = 'hidden';
     this.selectedTeamSlot.set(null);
@@ -57,6 +65,7 @@ export class SearchGame {
 
   closeJoinModal() {
     this.joinModalOpen.set(false);
+    this.selectedGameId.set(null);
     document.body.style.overflow = '';
   }
 
@@ -75,8 +84,29 @@ export class SearchGame {
       console.warn('Selected slot is empty, cannot join');
       return;
     }
-    console.log('Attempting to join game with team slot:', idx, slot);
-    // TODO: implement real join logic (call API / route)
-    this.closeJoinModal();
+
+    const gameId = this.selectedGameId();
+    if (gameId === null) {
+      console.error('No game id set while confirming join');
+      return;
+    }
+
+    // Count non-null team slots to infer number of pokemons
+    const nombrePokemon = this.teamSlots.filter(s => !!s).length;
+    console.log(`Joining game ${gameId} with ${nombrePokemon} pokemons (selected slot ${idx})`);
+
+    // Call the GameService to join. subscribe to handle result or error
+    this.gamesService.joinGame(gameId).subscribe({
+      next: (game) => {
+        console.log('Joined game:', game);
+        // optionally you could navigate or update state here
+      },
+      error: (err) => {
+        console.error('Failed to join game', err);
+      },
+      complete: () => {
+        this.closeJoinModal();
+      }
+    });
   }
 }

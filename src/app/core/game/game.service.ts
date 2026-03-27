@@ -30,7 +30,7 @@ export class GameService {
   }
 
   createGame(payload: { description: string; nombrePokemon: number }): Observable<Game> {
-    return this.http.post<Game>(`${this.BASE}/games`, payload).pipe(
+    return this.http.post<Game>(`${this.BASE}/games&`, payload).pipe(
       tap(game => this._currentGame.set(game))
     );
   }
