@@ -7,6 +7,11 @@ import {Move} from '../models/move.model';
 import {MoveService} from './move.service';
 import {RawPokemonDTO} from '../models/dto/pokemon.dto';
 
+/**
+ * Service de haut niveau pour accéder aux données Pokémon.
+ * Orchestre les appels à `PokemonRepository` et applique le mapping via `PokemonMapper`.
+ * Pour les attaques, délègue le chargement et le filtrage à `MoveService`.
+ */
 @Injectable({ providedIn: 'root' })
 export class PokemonService {
   constructor(
@@ -14,6 +19,10 @@ export class PokemonService {
     private readonly moveService: MoveService,
   ) {}
 
+  /**
+   * Récupère les premiers Pokémon (par défaut 150) en parallèle via leurs URLs.
+   * @param amount Nombre de Pokémon à charger (défaut : 150)
+   */
   getFirst150(amount : number = 150): Observable<Pokemon[]> {
     return this.repo.getList(amount).pipe(
       switchMap(list =>
@@ -23,12 +32,22 @@ export class PokemonService {
     );
   }
 
+  /**
+   * Récupère un Pokémon par son numéro de Pokédex.
+   * @param id Numéro du Pokédex
+   */
   getById(id: number): Observable<Pokemon> {
     return this.repo.getById(id).pipe(
       map(PokemonMapper.toModel)
     );
   }
 
+  /**
+   * Récupère un Pokémon avec ses attaques filtrées et triées.
+   * Les attaques sont chargées en parallèle via `MoveService.loadMovesFromDtos`
+   * (filtre : power > 30, classe physique ou spéciale ; tri alphabétique par type).
+   * @param id Numéro du Pokédex
+   */
   getByIdWithMoves(id: number): Observable<{ pokemon: Pokemon; moves: Move[] }> {
     return this.repo.getById(id).pipe(
       switchMap((raw: RawPokemonDTO) =>
@@ -42,12 +61,24 @@ export class PokemonService {
     );
   }
 
+  /**
+   * Récupère un lot de Pokémon par plage d'identifiants (utilisé pour la pagination du store).
+   * Les IDs dépassant 150 sont ignorés.
+   * @param offset Index de départ (0-based)
+   * @param limit Nombre de Pokémon à récupérer
+   */
   getRange(offset: number, limit: number): Observable<Pokemon[]> {
     const ids = Array.from({ length: limit }, (_, i) => offset + i + 1)
       .filter(id => id <= 150);
     return forkJoin(ids.map(id => this.getById(id)));
   }
 
+  /**
+   * Récupère la description anglaise d'un Pokémon depuis l'endpoint `pokemon-species`.
+   * Nettoie les caractères parasites (form-feed `\f`, espaces multiples).
+   * @param id Numéro du Pokédex
+   * @returns Texte de description ou chaîne vide si non disponible
+   */
   getDescription(id: number): Observable<string> {
     return this.repo.getSpecies(id).pipe(
       map((species: any) => {

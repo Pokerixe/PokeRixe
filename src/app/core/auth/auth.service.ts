@@ -20,8 +20,10 @@ export class AuthService {
   private readonly API_URL = environment.apiUrl;
 
   private readonly _currentUser = signal<User | null>(null);
+  /** Signal en lecture seule exposant l'utilisateur actuellement connecté, ou `null`. */
   readonly currentUser = this._currentUser.asReadonly();
 
+  /** Signal calculé indiquant si un utilisateur est actuellement authentifié. */
   readonly isAuthenticated = computed(() => this._currentUser() !== null);
 
   /** Computed pour obtenir le rôle de l'utilisateur courant, ou null s'il n'est pas connecté
@@ -113,8 +115,9 @@ export class AuthService {
   }
 
   /**
-   * Met a jour localement le profil de l'utilisateur courant.
-   * Utilise pour la page profil en attendant une route backend dediee.
+   * Met à jour localement le profil de l'utilisateur courant (nom et email).
+   * Modifie uniquement le signal côté client en attendant une route backend dédiée.
+   * @param payload Objet contenant le nouveau `name` et le nouvel `email`
    */
   updateCurrentUserProfile(payload: { name: string; email: string }) {
     const current = this._currentUser();

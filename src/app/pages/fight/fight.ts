@@ -18,13 +18,25 @@ import {AuthService} from '../../core/auth/auth.service';
   templateUrl: './fight.html',
   styleUrl: './fight.css',
 })
+/**
+ * Page d'interface de combat JCJ (Joueur contre Joueur).
+ *
+ * Affiche le terrain de combat avec les Pokémon du joueur et de l'adversaire,
+ * ainsi que les boutons d'attaque et le journal de combat.
+ *
+ * @remarks La logique de combat (gestion des tours, calcul des dégâts, synchronisation réseau)
+ * sera implémentée ultérieurement dans `FightService` lorsque le backend sera disponible.
+ */
 export class Fight {
 
   private readonly teamService = inject(TeamService);
   private readonly userService = inject(AuthService);
 
+  /** Signal des 6 slots de l'équipe du joueur. */
   public teamPokemon = this.teamService.slots;
+  /** Index du Pokémon de tête (celui qui combat en premier). */
   public firstPokemon = this.teamService.firstPokemon;
 
+  /** Signal de l'utilisateur connecté (pour afficher son nom en combat). */
   readonly user = this.userService.currentUser;
 }

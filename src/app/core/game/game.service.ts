@@ -5,6 +5,11 @@ import {Observable, map, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response.model';
 
+/**
+ * Service de gestion des parties multijoueur.
+ * Maintient la liste des parties disponibles et la partie courante via des signaux Angular.
+ * Toutes les réponses backend sont enveloppées dans `ApiResponse<T>` et unwrappées via `map(r => r.data)`.
+ */
 @Injectable({providedIn: 'root'})
 export class GameService {
 
@@ -16,8 +21,11 @@ export class GameService {
   private readonly _currentGame = signal<Game | null>(null);
   private readonly _isLoading = signal(false);
 
+  /** Signal en lecture seule exposant la liste des parties disponibles. */
   readonly games = this._games.asReadonly();
+  /** Signal en lecture seule exposant la partie dans laquelle le joueur se trouve, ou `null`. */
   readonly currentGame = this._currentGame.asReadonly();
+  /** Signal en lecture seule indiquant qu'un chargement est en cours. */
   readonly isLoading = this._isLoading.asReadonly();
 
   /**

@@ -5,6 +5,12 @@ import {Observable, map, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response.model';
 
+/**
+ * Service de gestion de l'équipe Pokémon de l'utilisateur connecté.
+ * Expose des signaux réactifs pour les slots, le premier Pokémon et l'état de sauvegarde.
+ * Les mutations locales (setSlot, clearSlot, moveSlot…) sont immédiates ;
+ * la persistance s'effectue explicitement via `saveTeam()`.
+ */
 @Injectable({providedIn: 'root'})
 export class TeamService {
 
@@ -15,9 +21,13 @@ export class TeamService {
   private readonly _team = signal<Team>(this.emptyTeam());
   private readonly _isSaving = signal(false);
 
+  /** Signal en lecture seule exposant l'intégralité de l'équipe. */
   readonly team = this._team.asReadonly();
+  /** Signal calculé retournant le tableau des 6 slots (certains pouvant être `null`). */
   readonly slots = computed(() => this._team().slots);
+  /** Signal calculé retournant l'index du Pokémon de tête (celui qui combat en premier). */
   readonly firstPokemon = computed(() => this._team().firstPokemon);
+  /** Signal en lecture seule indiquant qu'une sauvegarde backend est en cours. */
   readonly isSaving = this._isSaving.asReadonly();
 
   /**
@@ -122,6 +132,7 @@ export class TeamService {
     this.setMove(slotIndex, moveIndex, this.emptyMove(moveIndex as 0 | 1 | 2 | 3));
   }
 
+  /** Réinitialise l'équipe à son état vide (6 slots `null`, firstPokemon à 0). Appelé lors du logout. */
   resetTeam(): void {
     this._team.set(this.emptyTeam());
   }

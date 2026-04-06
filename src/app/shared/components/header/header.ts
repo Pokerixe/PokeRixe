@@ -10,11 +10,14 @@ import {AuthService} from '../../../core/auth/auth.service';
   styleUrls: ['./header.css'],
 })
 /**
- * Header du site
- * Affiche les liens de navigation
+ * En-tête global de l'application.
+ * Affiche la barre de navigation avec les liens vers les pages principales.
+ * Les liens visibles s'adaptent selon l'état d'authentification (`AuthService.isAuthenticated`)
+ * et le rôle de l'utilisateur (`AuthService.userRole`).
  */
 export class Header {
 
+  /** Service d'authentification utilisé pour conditionner l'affichage des liens de navigation. */
   auth = inject(AuthService);
 
 }

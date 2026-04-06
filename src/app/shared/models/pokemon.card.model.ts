@@ -1,16 +1,14 @@
 import {PokemonStats} from './pokemon-stats.model';
 
 /**
- * Modèle de données pour un Pokémon
- * - id : Numéro de Pokédex
- * - name : Nom
- * - types : Types du Pokémon (ex: ["Fire", "Flying"])
- * - image : URL de l'image du Pokémon
- * - height : Taille du Pokémon (en décimètres)
- * - weight : Poids du Pokémon (en hectogrammes)
- * - stats : Statistiques du Pokémon (HP, Attack, Defense, etc.)
- * - moves : Liste des mouvements que le Pokémon peut apprendre
- * Modèle d'un pokémon tel qu'on le reçoit de l'API, avec les champs essentiels pour l'affichage et les détails
+ * Sous-ensemble des données d'un Pokémon utilisé pour l'affichage des cartes
+ * et la communication entre composants (ex: sélection dans le Pokédex ou dans la gestion d'équipe).
+ *
+ * @property pokedex_id - Numéro du Pokédex
+ * @property name - Nom du Pokémon
+ * @property types - Types du Pokémon (ex: `["fire", "flying"]`)
+ * @property sprite - URL du sprite face avant
+ * @property stats - Statistiques de base utilisées pour initialiser un slot d'équipe
  */
 export interface PokemonCardModel {
   pokedex_id: number;

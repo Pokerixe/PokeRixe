@@ -10,6 +10,14 @@ import {routes} from '../../app.routes';
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
+/**
+ * Page de profil utilisateur.
+ * Permet à l'utilisateur connecté de consulter et modifier son nom et son email,
+ * de voir son rôle, et de se déconnecter.
+ *
+ * @remarks La mise à jour du profil est actuellement locale (via `AuthService.updateCurrentUserProfile`)
+ * en attendant une route backend dédiée.
+ */
 export class UserPage {
 
   auth = inject(AuthService);
@@ -18,13 +26,20 @@ export class UserPage {
   private readonly initialName = this.auth.currentUser()?.name ?? '';
   private readonly initialEmail = this.auth.currentUser()?.email ?? '';
 
+  /** Message de confirmation affiché après une sauvegarde réussie. */
   saveMessage = '';
 
+  /**
+   * Formulaire de modification du profil.
+   * - `name` : requis, minimum 2 caractères
+   * - `email` : requis, format email valide
+   */
   profileForm = this.fb.group({
     name: [this.initialName, [Validators.required, Validators.minLength(2)]],
     email: [this.initialEmail, [Validators.required, Validators.email]],
   });
 
+  /** Signal calculé retournant le libellé du rôle de l'utilisateur connecté (`"Admin"`, `"User"`, `"Guest"`). */
   readonly currentRoleLabel = computed(() => {
     const role = this.auth.currentUser()?.role;
     if (role === undefined || role === null) return 'Inconnu';
@@ -62,8 +77,8 @@ export class UserPage {
     this.saveMessage = '';
   }
 
+  /** Déconnecte l'utilisateur et le redirige vers la page d'accueil. */
   onDeconnect() {
     this.auth.logout();
-
   }
 }

@@ -27,22 +27,37 @@ import {TeamMove, TeamSlot} from '../../../core/team/team.model';
   templateUrl: './pokemon-information.html',
   styleUrl: './pokemon-information.css',
 })
+/**
+ * Panneau d'informations détaillées d'un Pokémon dans la gestion d'équipe.
+ * Charge automatiquement les données du Pokémon (stats, attaques, types) à chaque changement
+ * de `pokemon_id`, et synchronise les attaques possédées depuis le `TeamService`.
+ *
+ * Émet trois événements vers le parent (`Equipes`) :
+ * - `movesLoaded` — liste complète des attaques disponibles pour ce Pokémon
+ * - `changeToMoveMode` — demande d'ouverture du sélecteur pour un slot d'attaque
+ * - `removePokemon` — demande de retrait du Pokémon de l'équipe
+ */
 export class PokemonInformation implements OnChanges {
 
   private readonly pokemonService = inject(PokemonService);
   private readonly teamService = inject(TeamService);
 
+  /** Numéro du Pokédex du Pokémon à afficher. Déclenche un rechargement à chaque changement. */
   pokemon_id = input<number>(1);
 
+  /** `true` pendant le chargement des données du Pokémon. */
   isLoading: boolean = true;
+  /** Message d'erreur en cas d'échec du chargement, `null` sinon. */
   error: string | null = null;
 
+  /** Données complètes du Pokémon chargé depuis l'API. */
   pokemon: Pokemon | null = null;
-
+  /** Liste des attaques disponibles pour ce Pokémon (filtrées et triées). */
   displayedMoves: MoveModel[] = [];
-
+  /** Attaques actuellement assignées au Pokémon dans l'équipe (4 slots). */
   ownedMoves: TeamMove[] = [];
 
+  /** Émis avec la liste complète des attaques disponibles après chargement. */
   @Output() movesLoaded = new EventEmitter<MoveModel[]>();
 
   constructor(private readonly cdr: ChangeDetectorRef) {
@@ -122,14 +137,21 @@ export class PokemonInformation implements OnChanges {
     ];
   }
 
+  /** Émis avec l'index du slot d'attaque (1-4) pour ouvrir le sélecteur d'attaque. */
   @Output() changeToMoveMode = new EventEmitter<number>();
 
+  /**
+   * Déclenche le mode sélection d'attaque pour le slot indiqué.
+   * @param moveNumber Index du slot d'attaque (1 à 4)
+   */
   setModeToChangeMove(moveNumber: number) {
     this.changeToMoveMode.emit(moveNumber);
   }
 
+  /** Émis lorsque l'utilisateur demande à retirer ce Pokémon de l'équipe. */
   @Output() removePokemon = new EventEmitter<void>();
 
+  /** Émet `removePokemon` pour notifier le composant parent du retrait. */
   protected removePoke() {
     this.removePokemon.emit();
   }

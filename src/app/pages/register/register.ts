@@ -10,6 +10,11 @@ import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
+/**
+ * Page d'inscription.
+ * Affiche un formulaire réactif avec validation des champs nom, email et mot de passe.
+ * En cas de succès, `AuthService.register()` connecte l'utilisateur et le redirige vers l'accueil.
+ */
 export class RegisterPage {
 
 

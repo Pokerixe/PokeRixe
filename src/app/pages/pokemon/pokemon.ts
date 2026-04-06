@@ -16,6 +16,11 @@ import {Move as MoveModel} from '../../shared/models/move.model';
   templateUrl: './pokemon.html',
   styleUrl: './pokemon.css',
 })
+/**
+ * Page de fiche détaillée d'un Pokémon.
+ * L'ID est lu depuis les paramètres de route (`/pokemon/:id`).
+ * Charge en parallèle : les données du Pokémon avec ses attaques, et sa description en anglais.
+ */
 export class PokemonPage implements OnInit {
   private readonly pokemonService = inject(PokemonService);
 
@@ -26,13 +31,15 @@ export class PokemonPage implements OnInit {
 
   types: any;
 
+  /** `true` tant que les données du Pokémon sont en cours de chargement. */
   isLoading: boolean = true;
+  /** Données complètes du Pokémon chargé depuis l'API. */
   pokemon: any;
 
-  // nouvel attribut contenant la liste des moves
+  /** Liste des attaques du Pokémon (filtrées : power > 30, classe physique ou spéciale). */
   moves: MoveModel[] = [];
 
-  // description récupérée depuis /pokemon-species/:id
+  /** Description flavor-text en anglais, récupérée depuis l'endpoint `pokemon-species`. */
   description: string = '';
 
   /**

@@ -9,7 +9,8 @@
       "Bash(flatpak-spawn --host chsh -s /bin/bash)",
       "Bash(flatpak-spawn --host which npm)",
       "Bash(flatpak-spawn --host npm --version)",
-      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d['projects']['client']['architect']['test'], indent=2\\)\\)\")"
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d['projects']['client']['architect']['test'], indent=2\\)\\)\")",
+      "Bash(npm test:*)"
     ]
   }
 }

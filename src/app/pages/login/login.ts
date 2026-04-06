@@ -10,6 +10,11 @@ import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
+/**
+ * Page de connexion.
+ * Affiche un formulaire réactif avec validation des champs email et mot de passe.
+ * En cas de succès, `AuthService.login()` redirige automatiquement vers la page d'accueil.
+ */
 export class LoginPage {
 
   private readonly auth = inject(AuthService);

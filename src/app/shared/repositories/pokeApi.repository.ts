@@ -15,18 +15,35 @@ export class PokemonRepository {
 
   constructor(private readonly http: HttpClient) {}
 
+  /**
+   * Récupère une liste paginée de Pokémon (noms + URLs).
+   * @param limit Nombre maximum de Pokémon à retourner (défaut : 150)
+   */
   getList(limit = 150): Observable<PokemonListDTO> {
     return this.http.get<PokemonListDTO>(`${this.BASE}/pokemon?limit=${limit}`);
   }
 
+  /**
+   * Récupère les données brutes d'un Pokémon par son numéro de Pokédex.
+   * @param id Numéro du Pokédex (1-151 pour la Gen 1)
+   */
   getById(id: number): Observable<RawPokemonDTO> {
     return this.http.get<RawPokemonDTO>(`${this.BASE}/pokemon/${id}`);
   }
 
+  /**
+   * Récupère les données brutes d'un Pokémon depuis son URL complète (fournie par `getList`).
+   * @param url URL complète de la ressource Pokémon
+   */
   getByUrl(url: string): Observable<RawPokemonDTO> {
     return this.http.get<RawPokemonDTO>(url);
   }
 
+  /**
+   * Récupère les données de l'espèce d'un Pokémon, notamment les `flavor_text_entries`
+   * utilisées pour afficher la description dans la fiche détaillée.
+   * @param id Numéro du Pokédex
+   */
   getSpecies(id: number): Observable<any> {
     return this.http.get<any>(`${this.BASE}/pokemon-species/${id}`);
   }

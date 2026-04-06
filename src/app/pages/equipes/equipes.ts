@@ -11,6 +11,14 @@ import {TeamService} from '../../core/team/team.service';
 import {PokemonCardModel} from '../../shared/models/pokemon.card.model';
 import {Move as MoveModel} from '../../shared/models/move.model';
 
+/**
+ * Modes d'affichage du panneau latéral sur la page Équipes.
+ *
+ * - `CHOIX_POKEMON` : le joueur sélectionne un Pokémon dans le Pokédex
+ * - `AFFICHAGE_POKEMON` : fiche détaillée du Pokémon du slot sélectionné
+ * - `CHOIX_ATTACK` : le joueur choisit une attaque pour un slot donné
+ * - `AUCUN` : aucun slot sélectionné, panneau vide
+ */
 export enum EquipeMode {
   CHOIX_ATTACK = 'choix attack',
   CHOIX_POKEMON = 'choix pokemon',
@@ -29,24 +37,46 @@ export enum EquipeMode {
   templateUrl: './equipes.html',
   styleUrl: './equipes.css',
 })
+/**
+ * Page de gestion de l'équipe Pokémon du joueur.
+ *
+ * Affiche les 6 slots de l'équipe. Un clic sur un slot vide ouvre le Pokédex pour choisir
+ * un Pokémon (`CHOIX_POKEMON`) ; un clic sur un slot occupé affiche la fiche du Pokémon
+ * (`AFFICHAGE_POKEMON`). Depuis la fiche, le joueur peut modifier les attaques (`CHOIX_ATTACK`)
+ * ou retirer le Pokémon.
+ *
+ * Toutes les mutations passent par `TeamService` et sont persistées via `saveTeam()`.
+ */
 export class Equipes {
   private readonly teamService = inject(TeamService);
 
+  /** Référence à l'enum `EquipeMode` pour l'utiliser dans le template. */
   public Mode = EquipeMode;
 
+  /** Mode d'affichage actuel du panneau latéral. */
   public selectedMode = signal<EquipeMode>(EquipeMode.AUCUN);
+  /** Index de la carte sélectionnée (1-6, 0 = aucune). */
   public selected_card = signal<number>(0);
 
+  /** Signal des 6 slots de l'équipe, synchronisé avec `TeamService`. */
   readonly team = this.teamService.slots;
 
+  /** Index du slot d'attaque en cours d'édition (1-4). */
   public idFocusMove = signal<number>(0);
 
+  /** Attaques disponibles pour le Pokémon du slot sélectionné, chargées par `PokemonInformation`. */
   public availableMovesForSelected: MoveModel[] = [];
 
+  /** Index de la carte sélectionnée (lecture seule, pour le template). */
   get cardState(): number {
     return this.selected_card();
   }
 
+  /**
+   * Sélectionne ou désélectionne une carte de l'équipe.
+   * Adapte le mode d'affichage selon que le slot est occupé ou vide.
+   * @param index Numéro de la carte (1-6)
+   */
   toggleCard(index: number) {
     const currentSelected = this.selected_card();
 
@@ -67,10 +97,19 @@ export class Equipes {
     }
   }
 
+  /**
+   * Change manuellement le mode d'affichage du panneau latéral.
+   * @param mode Le nouveau mode à appliquer
+   */
   changeMode(mode: EquipeMode) {
     this.selectedMode.set(mode);
   }
 
+  /**
+   * Assigne un Pokémon au slot actuellement sélectionné et sauvegarde l'équipe.
+   * Initialise le Pokémon avec 4 slots d'attaque vides et ses HP maximum.
+   * @param pokemon Données de la carte Pokémon sélectionnée
+   */
   choosePokemon(pokemon: PokemonCardModel) {
     const slot = this.selected_card();
     if (!slot) return;

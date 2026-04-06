@@ -5,6 +5,12 @@ import {Pokemon} from '../models/pokemon.model';
  * Mapper pour convertir les données brutes de l'API Pokémon en modèles utilisables dans l'application
  */
 export class PokemonMapper {
+  /**
+   * Transforme un DTO brut de l'API PokeAPI en modèle interne `Pokemon`.
+   * Extrait et renomme les champs pertinents, mappe les statistiques dans l'ordre standard.
+   * @param dto Données brutes issues de l'API
+   * @returns Modèle Pokémon prêt à être utilisé dans les composants
+   */
   static toModel(dto: RawPokemonDTO): Pokemon {
     return {
       id: dto.id,
