@@ -8,13 +8,11 @@ describe('StarStats', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StarStats]
-    })
-    .compileComponents();
+      imports: [StarStats],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(StarStats);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {
