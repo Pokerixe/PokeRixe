@@ -33,7 +33,7 @@
   @if (createModalOpen()) {
     <div class="create-game-backdrop" (click)="closeCreateGame()"></div>
 
-    <div class="create-game-container" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <dialog class="create-game-container" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
       <h2>Créer une partie</h2>
 
       <label for="game-desc">Description</label>
@@ -44,13 +44,13 @@
         <button class="little-button" type="button" (click)="submitCreateGame()">Créer</button>
         <button class="little-button" type="button" (click)="closeCreateGame()">Annuler</button>
       </div>
-    </div>
+    </dialog>
   }
 
   @if (joinModalOpen()) {
     <div class="create-game-backdrop" (click)="closeJoinModal()"></div>
 
-    <div class="create-game-container" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <dialog class="create-game-container" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
       <h2>Rejoindre une partie</h2>
 
       <p>Sélectionne le pokémon de ton équipe qui seras le Leader de l'équipe :</p>
@@ -75,7 +75,7 @@
         </button>
         <button class="little-button" type="button" (click)="closeJoinModal()">Annuler</button>
       </div>
-    </div>
+    </dialog>
   }
 
 </div>

@@ -27,7 +27,7 @@ export class HpBar {
     const current = this.hp();
     const max = this.hpMax();
 
-    if (max == null || max <= 0 || current == null || isNaN(current)) {
+    if (max == null || max <= 0 || current == null || Number.isNaN(current)) {
       return 0;
     }
 

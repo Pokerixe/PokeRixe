@@ -85,7 +85,8 @@ export class PokemonService {
         if (!species || !Array.isArray(species.flavor_text_entries)) return '';
         // find first english flavor_text
         const entry = species.flavor_text_entries.find((e: any) => e.language?.name === 'en');
-        if (!entry || !entry.flavor_text) return '';
+        if (!entry.flavor_text) return '';
+        if (!entry ) return '';
         // normalize whitespace and remove form-feed characters \f
         let txt = entry.flavor_text as string;
         txt = txt.replace(/\f/g, ' ');

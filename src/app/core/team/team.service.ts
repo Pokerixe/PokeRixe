@@ -16,7 +16,7 @@ export class TeamService {
 
   private readonly BASE = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   private readonly _team = signal<Team>(this.emptyTeam());
   private readonly _isSaving = signal(false);

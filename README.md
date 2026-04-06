@@ -6,6 +6,10 @@ Site web toujours en développement : ``pokerixe.baptouk.live/``
 
 Documentation technique : ``baptouk.github.io/PokeRixe/``
 
+Sonar Test : 
+[![Quality Gate Status](https://sonar.baptouk.live/api/project_badges/measure?project=PokeRixe-front&metric=alert_status&token=sqb_ad8cebf443af13e1b57178c64191711439729c63)](https://sonar.baptouk.live/dashboard?id=PokeRixe-front)
+[![Coverage](https://sonar.baptouk.live/api/project_badges/measure?project=PokeRixe-front&metric=coverage&token=sqb_ad8cebf443af13e1b57178c64191711439729c63)](https://sonar.baptouk.live/dashboard?id=PokeRixe-front) 
+
 > Le front-end communiqueras avec le back-end via une **API REST** (Java Spring).
 ---
 

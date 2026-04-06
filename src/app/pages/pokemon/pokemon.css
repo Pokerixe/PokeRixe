@@ -179,6 +179,9 @@ app-star-stats {
   font-size: 1.1rem;
   text-align: center;
   height: 100%;
+
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+
 }
 
 .desc-content {
@@ -186,9 +189,6 @@ app-star-stats {
   background-color: var(--backgroud-gray);
   border: 4px solid var(--border-yellow);
   border-radius: 10px;
-}
-.desc-content p {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .pokemon .right .desc-content .h1 {

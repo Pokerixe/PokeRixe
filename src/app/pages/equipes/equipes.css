@@ -86,9 +86,6 @@
   overflow-y: auto;    /* scrollbar verticale si ça dépasse */
 }
 
-.choix-attack{
-}
-
 .affichage-pokemon{
   margin: 0;
   padding: 1rem; /* espace interne pour que la bordure englobe le contenu */
@@ -127,7 +124,6 @@
   justify-content: center;
   height: 100%;
   background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.1));
-  color: #222;
   font-size: 1rem;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);

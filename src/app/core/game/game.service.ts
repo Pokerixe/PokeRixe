@@ -15,7 +15,7 @@ export class GameService {
 
   private readonly BASE = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   private readonly _games = signal<Game[]>([]);
   private readonly _currentGame = signal<Game | null>(null);

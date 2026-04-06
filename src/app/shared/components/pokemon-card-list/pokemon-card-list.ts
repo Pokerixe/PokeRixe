@@ -7,7 +7,8 @@ import {
   input,
   output,
   ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
+  AfterViewInit
 } from '@angular/core';
 import {PokemonStore} from '../../../core/store/pokemon.store';
 import {PokemonCardModel} from '../../models/pokemon.card.model';
@@ -20,7 +21,8 @@ import {Card} from '../card/card';
   templateUrl: './pokemon-card-list.html',
   styleUrl: './pokemon-card-list.css',
 })
-export class PokemonCardList {
+
+export class PokemonCardList implements AfterViewInit {
   redirect = input<boolean>(false); // Pour les cartes dans pokedex
   filterTypes = input<string[]>([]);
   cardSelected = output<PokemonCardModel>();
