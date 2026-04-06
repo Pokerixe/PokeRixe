@@ -197,3 +197,36 @@ app-star-stats {
   font-size: 1.2rem;
 }
 
+@media (max-width: 768px) {
+  .pokemon-container {
+    padding: 1rem;
+  }
+
+  .pokemon {
+    flex-direction: column;
+  }
+
+  .pokemon .left {
+    width: 100%;
+  }
+
+  .pokemon .left img {
+    height: 18rem;
+  }
+
+  .pokemon .right {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  app-star-stats {
+    width: 100%;
+    height: 22rem;
+  }
+
+  .moves-list app-move {
+    flex: 1 1 100%;
+  }
+}
+

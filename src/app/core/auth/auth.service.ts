@@ -5,6 +5,8 @@ import {AuthResponse, LoginDTO, RegisterDTO} from '../models/auth.model';
 import {environment} from '../../../environments/environment';
 import {Router} from '@angular/router';
 import { TeamService } from "../team/team.service";
+import { ApiResponse } from '../../shared/models/api-response.model';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +37,7 @@ export class AuthService {
    * @param loginDTO les credentials de connexion
    */
   login(loginDTO: LoginDTO) {
-    this.http.post<AuthResponse>(this.API_URL + 'login', loginDTO).subscribe({
+    this.http.post<ApiResponse<AuthResponse>>(this.API_URL + 'login', loginDTO).pipe(map(r => r.data)).subscribe({
       next: (response: AuthResponse) => {
         this._currentUser.set(response.user);
 
@@ -57,7 +59,7 @@ export class AuthService {
    * @param registerDTO les informations d'inscription
    */
   register(registerDTO: RegisterDTO) {
-    this.http.post<AuthResponse>(this.API_URL + 'register', registerDTO).subscribe({
+    this.http.post<ApiResponse<AuthResponse>>(this.API_URL + 'register', registerDTO).pipe(map(r => r.data)).subscribe({
       next: (response: AuthResponse) => {
         this._currentUser.set(response.user);
         this.router.navigateByUrl('/');
@@ -93,7 +95,7 @@ export class AuthService {
    *
    */
   loadCurrentUser() {
-    this.http.get<AuthResponse>(this.API_URL + 'me').subscribe({
+    this.http.get<ApiResponse<AuthResponse>>(this.API_URL + 'me').pipe(map(r => r.data)).subscribe({
       next: (response: AuthResponse) => {
         if (response?.user) {
           this._currentUser.set(response.user);

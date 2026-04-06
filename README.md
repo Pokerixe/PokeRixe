@@ -11,12 +11,14 @@ Documentation technique : ``baptouk.github.io/PokeRixe/``
 
 ## 📋 Fonctionnalités
 
-- [x] Consultation du Pokédex
+- [x] Consultation du Pokédex (avec filtre par type)
 - [x] Consultation de chaque créature
-- [ ] Attaques disponible pour chaque pokemon
-- [ ] CRUD des équipes (ajout/suppression de créatures, modification de l'ordre...)
-- [ ] CRUD des utilisateurs (inscription, connexion, gestion du profil)
-- [ ] Interface de combat
+- [x] Attaques disponibles pour chaque pokémon
+- [x] Connexion / Inscription utilisateur
+- [x] Gestion d'équipe (slots, mouvements, ordre)
+- [x] Recherche et rejoindre une partie
+- [ ] CRUD complet des équipes (interface front non finalisée)
+- [ ] Interface de combat interactive
 ---
 
 ## 🏗️ Stack technique
@@ -25,9 +27,10 @@ Documentation technique : ``baptouk.github.io/PokeRixe/``
 |---|---|---|
 | [Angular](https://angular.io/) | 21 | Framework front-end |
 | TypeScript | ~5.9 | Langage principal |
-| CSS custom | — | Styles |
+| CSS custom | — | Styles (responsive mobile inclus) |
 | [ECharts](https://echarts.apache.org/) + [ngx-echarts](https://xieziyu.github.io/ngx-echarts/) | 6 / 21 | Graphiques de statistiques |
 | [RxJS](https://rxjs.dev/) | ~7.8 | Gestion des flux asynchrones |
+| [Vitest](https://vitest.dev/) | — | Tests unitaires |
 | [Compodoc](https://compodoc.app/) | ^1.2 | Documentation du code |
 | [SonarQube](https://www.sonarsource.com/products/sonarqube/) | — | Qualité du code |
 | [GitHub Actions](https://github.com/features/actions) | — | CI/CD |
@@ -111,6 +114,26 @@ src/
         ├── repositories/       # Couche d'accès aux données (appels HTTP)
         └── services/           # Logique métier partagée
 ```
+
+---
+
+## 🧪 Tests unitaires
+
+Les tests sont exécutés avec **Vitest** via le builder Angular.
+
+```bash
+npm test
+```
+
+### Couverture des services core
+
+| Service | Tests | Description |
+|---|---|---|
+| `AuthService` | 11 | Login, register, logout, loadCurrentUser, gestion des signaux |
+| `GameService` | 8 | Chargement, création, rejoindre et quitter une partie |
+| `TeamService` | 19 | Slots, mouvements, firstPokemon, saveTeam, resetTeam |
+
+Les tests utilisent `HttpTestingController` pour simuler les appels HTTP et vérifient le comportement des signaux Angular (`signal()`, `computed()`).
 
 ---
 

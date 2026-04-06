@@ -22,6 +22,7 @@ import {Card} from '../card/card';
 })
 export class PokemonCardList {
   redirect = input<boolean>(false); // Pour les cartes dans pokedex
+  filterTypes = input<string[]>([]);
   cardSelected = output<PokemonCardModel>();
 
   private readonly store = inject(PokemonStore);
@@ -31,19 +32,32 @@ export class PokemonCardList {
   pokemonContainer!: ViewContainerRef;
 
   private renderedCount = 0;
+  private lastFilterTypes: string[] = [];
 
   /**
-   * Effet qui observe les changements dans la liste des pokémons du store.
-   * À chaque mise à jour, il affiche les nouveaux pokémons et déclenche le chargement du batch suivant si nécessaire.
+   * Effet qui observe les changements dans la liste des pokémons du store et les filtres actifs.
+   * Réinitialise l'affichage si les filtres changent, sinon ajoute seulement les nouveaux pokémons.
    */
   constructor() {
     effect(() => {
-      const pokemons = this.store.pokemons();
+      const filterTypes = this.filterTypes();
+      const allPokemons = this.store.pokemons();
       if (!this.pokemonContainer) return;
 
-      // Affiche les nouveaux pokémons du batch
-      pokemons.slice(this.renderedCount).forEach(p => this.addPokemonCard(p));
-      this.renderedCount = pokemons.length;
+      const filtered = filterTypes.length === 0
+        ? allPokemons
+        : allPokemons.filter(p => filterTypes.some(t => p.types.includes(t)));
+
+      const filterChanged = !this.arraysEqual(filterTypes, this.lastFilterTypes);
+      if (filterChanged) {
+        this.pokemonContainer.clear();
+        this.renderedCount = 0;
+        this.lastFilterTypes = [...filterTypes];
+      }
+
+      // Affiche les nouveaux pokémons du batch (ou tous si filtre réinitialisé)
+      filtered.slice(this.renderedCount).forEach(p => this.addPokemonCard(p));
+      this.renderedCount = filtered.length;
 
       // Dès que le batch est affiché, charge le suivant
       if (this.store.hasMore() && !this.store.loading()) {
@@ -87,5 +101,9 @@ export class PokemonCardList {
     cardRef.instance.sendCardData.subscribe(data => {
       this.cardSelected.emit(data);
     });
+  }
+
+  private arraysEqual(a: string[], b: string[]): boolean {
+    return a.length === b.length && a.every((v, i) => v === b[i]);
   }
 }

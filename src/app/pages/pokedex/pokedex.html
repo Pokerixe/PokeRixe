@@ -17,11 +17,22 @@
   <div class="pokedex">
     <div class="filter">
       <h2>Filtres</h2>
-      <div class="filter-generation">GENERATION</div>
-      <div class="filter-types">TYPES</div>
+      <div class="filter-generation">
+        <span class="gen-label">Gen 1</span>
+      </div>
+      <div class="filter-types">
+        @for (type of allTypes; track type) {
+          <button
+            class="type-btn"
+            [class.active]="selectedTypes().includes(type)"
+            (click)="toggleType(type)">
+            {{ type }}
+          </button>
+        }
+      </div>
     </div>
     <br>
-    <app-pokemon-card-list [redirect]="true"></app-pokemon-card-list>
+    <app-pokemon-card-list [redirect]="true" [filterTypes]="selectedTypes()"></app-pokemon-card-list>
 
   </div>
 

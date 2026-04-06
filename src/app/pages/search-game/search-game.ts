@@ -1,7 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { TeamService } from '../../core/team/team.service';
 import {GameService} from '../../core/game/game.service';
-import {Game} from '../../core/game/game.model';
 
 @Component({
   selector: 'app-search-game',
@@ -12,8 +11,9 @@ import {Game} from '../../core/game/game.model';
 export class SearchGame {
 
   private readonly gamesService = inject(GameService);
-
-  readonly games = signal<Game[]>([]);
+  private readonly teamService = inject(TeamService);
+  readonly games = this.gamesService.games;
+  readonly isLoading = this.gamesService.isLoading;
 
   createModalOpen = signal<boolean>(false);
   description = signal<string>('');
@@ -22,12 +22,8 @@ export class SearchGame {
   selectedTeamSlot = signal<number | null>(null);
   selectedGameId = signal<number | null>(null);
 
-  private readonly teamService = inject(TeamService);
-
   constructor() {
-    this.gamesService.getGames().subscribe((games) => {
-      this.games.set(games);
-    });
+    this.gamesService.loadGames().subscribe();
   }
 
   get teamSlots() {
@@ -45,19 +41,14 @@ export class SearchGame {
   }
 
   submitCreateGame() {
-    const desc = this.description();
-    console.log('Creating game with description:', desc);
-    this.closeCreateGame();
+    const nombrePokemon = this.teamSlots.filter(s => !!s).length || 1;
+    this.gamesService.createGame({ description: this.description(), nombrePokemon }).subscribe({
+      next: () => this.closeCreateGame(),
+      error: (err) => console.error('Failed to create game', err),
+    });
   }
 
-  // accept the game id so we know which game to join
-  openJoinModal(...args: any[]) {
-    // allow being called without an id (backwards compatible)
-    const gameId = args && args.length > 0 ? args[0] : undefined;
-    if (typeof gameId === 'number') {
-      this.selectedGameId.set(gameId);
-    } else {
-    }
+  openJoinModal() {
     this.joinModalOpen.set(true);
     document.body.style.overflow = 'hidden';
     this.selectedTeamSlot.set(null);

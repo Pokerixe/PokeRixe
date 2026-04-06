@@ -180,3 +180,52 @@
 .fight-opponent-pokemon .battle-base{
   left: -1rem;
 }
+
+@media (max-width: 768px) {
+  .fight-top {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .fight-menu {
+    width: 100%;
+    height: 22rem;
+  }
+
+  .fight-log {
+    width: 100%;
+    height: 10rem;
+  }
+
+  .fight-menu-moves {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fight-player {
+    bottom: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .fight-opponent {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .fight-player-pokemon {
+    bottom: 3rem;
+    left: 8rem;
+  }
+
+  .fight-opponent-pokemon {
+    top: 3rem;
+    right: 8rem;
+  }
+
+  .player-info {
+    width: 10rem;
+  }
+
+  .battle-base {
+    width: 10rem;
+  }
+}

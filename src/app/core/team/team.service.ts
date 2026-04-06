@@ -1,8 +1,9 @@
 import {computed, Injectable, signal} from '@angular/core';
 import {Team, TeamMove, TeamSlot} from './team.model';
 import {HttpClient} from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
+import {Observable, map, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
+import { ApiResponse } from '../../shared/models/api-response.model';
 
 @Injectable({providedIn: 'root'})
 export class TeamService {
@@ -12,16 +13,19 @@ export class TeamService {
   constructor(private http: HttpClient) {}
 
   private readonly _team = signal<Team>(this.emptyTeam());
+  private readonly _isSaving = signal(false);
+
+  readonly team = this._team.asReadonly();
   readonly slots = computed(() => this._team().slots);
   readonly firstPokemon = computed(() => this._team().firstPokemon);
+  readonly isSaving = this._isSaving.asReadonly();
 
   /**
-   * Charge la team de l utilisateur depuis l API (mockée par l interceptor)
-   * et met à jour le signal _team avec la valeur retournée.
+   * Charge la team de l'utilisateur depuis l'API et met à jour le signal _team.
    */
   loadTeam(userId: string): Observable<Team> {
-    console.log('Loading team...');
-    return this.http.get<Team>(`${this.BASE}/team`).pipe(
+    return this.http.get<ApiResponse<Team>>(`${this.BASE}/team`).pipe(
+      map(r => r.data),
       tap((team) => {
         this._team.set({
           ...team,
@@ -31,17 +35,37 @@ export class TeamService {
     );
   }
 
+  /**
+   * Persiste la team courante sur le backend via PUT /team.
+   * Met à jour le signal _team avec la réponse serveur (version canonique).
+   */
+  saveTeam(): void {
+    this._isSaving.set(true);
+    this.http.put<ApiResponse<Team>>(`${this.BASE}/team`, this._team()).pipe(map(r => r.data)).subscribe({
+      next: (team) => {
+        this._team.set(team);
+        this._isSaving.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to save team', err);
+        this._isSaving.set(false);
+      },
+    });
+  }
+
+  /**
+   * Définit le pokémon de tête (celui qui combat en premier).
+   * Le slot cible doit être occupé.
+   */
   setFirstPokemon(slotIndex: number): void {
-    if (slotIndex < 0 || slotIndex >= this._team().slots.length) {
+    const slots = this._team().slots;
+    if (slotIndex < 0 || slotIndex >= slots.length || slots[slotIndex] === null) {
       return;
     }
     this._team.update(team => ({...team, firstPokemon: slotIndex}));
   }
 
-  saveTeam(): void {
-    // TODO: this.http.put(`/api/teams`, this._team())
-  }
-
+  /** Remplace le pokémon dans un slot. */
   setSlot(index: number, pokemon: TeamSlot): void {
     this._team.update(team => {
       const slots = [...team.slots];
@@ -50,14 +74,36 @@ export class TeamService {
     });
   }
 
+  /** Supprime le pokémon d'un slot (le passe à null). */
   clearSlot(index: number): void {
     this._team.update(team => {
       const slots = [...team.slots];
       slots[index] = null;
-      return {...team, slots};
+      // Si le slot supprimé était firstPokemon, on cherche le prochain slot occupé
+      let firstPokemon = team.firstPokemon;
+      if (firstPokemon === index) {
+        firstPokemon = slots.findIndex(s => s !== null);
+        if (firstPokemon === -1) firstPokemon = 0;
+      }
+      return {...team, slots, firstPokemon};
     });
   }
 
+  /** Échange deux slots dans la team. */
+  moveSlot(fromIndex: number, toIndex: number): void {
+    if (fromIndex === toIndex) return;
+    this._team.update(team => {
+      const slots = [...team.slots];
+      [slots[fromIndex], slots[toIndex]] = [slots[toIndex], slots[fromIndex]];
+      // Met à jour firstPokemon si l'un des slots échangés était le premier
+      let firstPokemon = team.firstPokemon;
+      if (firstPokemon === fromIndex) firstPokemon = toIndex;
+      else if (firstPokemon === toIndex) firstPokemon = fromIndex;
+      return {...team, slots, firstPokemon};
+    });
+  }
+
+  /** Remplace une attaque dans un slot. */
   setMove(slotIndex: number, moveIndex: number, move: TeamMove): void {
     this._team.update(team => {
       const slots = [...team.slots];
@@ -71,6 +117,15 @@ export class TeamService {
     });
   }
 
+  /** Réinitialise une attaque à vide dans un slot. */
+  clearMove(slotIndex: number, moveIndex: number): void {
+    this.setMove(slotIndex, moveIndex, this.emptyMove(moveIndex as 0 | 1 | 2 | 3));
+  }
+
+  resetTeam(): void {
+    this._team.set(this.emptyTeam());
+  }
+
   private emptyTeam(): Team {
     return {
       userId: '',
@@ -79,7 +134,7 @@ export class TeamService {
     };
   }
 
-  resetTeam(): void {
-    this._team.set(this.emptyTeam());
+  private emptyMove(slot: 0 | 1 | 2 | 3): TeamMove {
+    return {slot, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'};
   }
 }

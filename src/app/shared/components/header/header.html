@@ -6,8 +6,6 @@
     @if (!auth.isAuthenticated()) {
       <ul class="nav-list">
         <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="pokedex">Pokedex</a></li>
-        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="equipes">Equipes</a></li>
-        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="searchGame">Games</a></li>
 
       </ul>
 
@@ -18,8 +16,8 @@
       <ul class="nav-list">
         <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="pokedex">Pokedex</a></li>
         <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="equipes">Equipes</a></li>
-        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="fight">Fight</a></li>
         <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="searchGame">Games</a></li>
+        <li class="nav-item font-basic" routerLinkActive="active"><a routerLink="fight">Fight</a></li>
       </ul>
       <div class="nav-user font-basic" routerLinkActive="active"><a routerLink="user">{{auth.currentUser()?.name}}</a></div>
     }

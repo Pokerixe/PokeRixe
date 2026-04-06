@@ -1,49 +1,85 @@
 import {Injectable, signal} from '@angular/core';
-import {Game} from './game.model';
+import {CreateGameDTO, Game} from './game.model';
 import {HttpClient} from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
+import {Observable, map, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
+import { ApiResponse } from '../../shared/models/api-response.model';
 
 @Injectable({providedIn: 'root'})
 export class GameService {
 
   private readonly BASE = environment.apiUrl;
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   private readonly _games = signal<Game[]>([]);
-  readonly games = this._games.asReadonly();
-
-  getGames(): Observable<Game[]> {
-    console.log("Get games lancé ");
-    return this.http.get<Game[]>(`${this.BASE}/games`);
-  }
-
   private readonly _currentGame = signal<Game | null>(null);
+  private readonly _isLoading = signal(false);
+
+  readonly games = this._games.asReadonly();
   readonly currentGame = this._currentGame.asReadonly();
+  readonly isLoading = this._isLoading.asReadonly();
 
+  /**
+   * Récupère la liste des parties en attente depuis le backend et met à jour le signal.
+   */
   loadGames(): Observable<Game[]> {
-    return this.http.get<Game[]>(`${this.BASE}/game`).pipe(
-      tap(games => this._games.set(games))
+    this._isLoading.set(true);
+    return this.http.get<ApiResponse<Game[]>>(`${this.BASE}games`).pipe(
+      map(r => r.data),
+      tap({
+        next: (games) => {
+          this._games.set(games);
+          this._isLoading.set(false);
+        },
+        error: () => this._isLoading.set(false),
+      }),
     );
   }
 
-  createGame(payload: { description: string; nombrePokemon: number }): Observable<Game> {
-    return this.http.post<Game>(`${this.BASE}/games&`, payload).pipe(
-      tap(game => this._currentGame.set(game))
+  /**
+   * Crée une nouvelle partie et l'ajoute à la liste locale.
+   * Le backend retourne la partie créée avec son id et player1 résolu.
+   */
+  createGame(dto: CreateGameDTO): Observable<Game> {
+    return this.http.post<ApiResponse<Game>>(`${this.BASE}games`, dto).pipe(
+      map(r => r.data),
+      tap((game) => {
+        this._games.update(games => [...games, game]);
+        this._currentGame.set(game);
+      }),
     );
   }
 
+  /**
+   * Rejoint une partie existante en tant que player2.
+   * Met à jour la partie dans la liste et la définit comme partie courante.
+   */
   joinGame(gameId: number): Observable<Game> {
-    return this.http.post<Game>(`${this.BASE}/games/${gameId}/join`, {}).pipe(
-      tap(game => this._currentGame.set(game))
+    return this.http.post<ApiResponse<Game>>(`${this.BASE}games/${gameId}/join`, {}).pipe(
+      map(r => r.data),
+      tap((game) => {
+        this._games.update(games => games.map(g => g.id === game.id ? game : g));
+        this._currentGame.set(game);
+      }),
     );
   }
 
+  /**
+   * Quitte la partie courante.
+   * Si player1 quitte : la partie est supprimée.
+   * Si player2 quitte : player2 est retiré côté backend.
+   */
   leaveGame(): void {
-    this._currentGame.set(null);
+    const game = this._currentGame();
+    if (!game) return;
+
+    this.http.delete<void>(`${this.BASE}games/${game.id}`).subscribe({
+      next: () => {
+        this._games.update(games => games.filter(g => g.id !== game.id));
+        this._currentGame.set(null);
+      },
+      error: (err) => console.error('Failed to leave game', err),
+    });
   }
-
-
 }

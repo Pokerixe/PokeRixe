@@ -14,7 +14,7 @@ export const routes: Routes = [
   },
   {
     path: 'equipes',
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/equipes/equipes').then(m => m.Equipes)
   },
   {
@@ -51,6 +51,7 @@ export const routes: Routes = [
   },
   {
     path: 'searchGame',
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/search-game/search-game').then(m => m.SearchGame)
   },
   {
