@@ -1,17 +1,23 @@
 <div class="main-container">
-
-  <div class="message">
-    <p>Bienvenue dans le journal de combat ! Ici, vous pourrez suivre tous les événements de votre combat en temps réel.
-      <br>Pour cette première affrontement, vous vous battez contre l'horrible Meven.
-    </p>
-  </div>
-
-  <div class="message new-turn"> <h2>Tour numéro 1</h2></div>
-  <div class="message new-turn"> <h2>Tour numéro 1</h2></div>
-  <div class="message"> <p>Big Meven est tombé au combat !</p></div>
-  <div class="message new-turn"> <h2>Tour numéro 1</h2></div>
-  <div class="message new-turn"> <h2>Tour numéro 1</h2></div>
-  <div class="message new-turn"> <h2>Tour numéro 1</h2></div>
-  <div class="message new-turn"> <h2>Tour numéro 1</h2></div>
-  <div class="message new-turn"> <h2>Tour numéro 1</h2></div>
+  @if (events().length === 0) {
+    <div class="message">
+      <p>Le combat va commencer ! Choisissez votre attaque.</p>
+    </div>
+  }
+  @for (event of events(); track $index) {
+    @switch (event.type) {
+      @case ('turn_start') {
+        <div class="message new-turn"><h2>{{ event.message }}</h2></div>
+      }
+      @case ('faint') {
+        <div class="message faint"><p>{{ event.message }}</p></div>
+      }
+      @case ('fight_end') {
+        <div class="message fight-end"><p>{{ event.message }}</p></div>
+      }
+      @default {
+        <div class="message"><p>{{ event.message }}</p></div>
+      }
+    }
+  }
 </div>

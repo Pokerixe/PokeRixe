@@ -1,10 +1,13 @@
-<div class="fight-pokemon-card">
+<div class="fight-pokemon-card"
+     [class.fainted]="isFainted()"
+     [class.active]="isActive()"
+     [class.switchable]="canSwitch() && !isFainted() && !isActive()"
+     (click)="onClick()">
   <div class="card-top">
     <div class="img-wrap">
       <img [src]="img" [alt]="name" />
     </div>
     <div class="pokemon-name">{{ name }}</div>
   </div>
-  <!-- Zone future pour barre d'HP si nécessaire -->
   <app-hp-bar [hp]="hp()" [hpMax]="hpMax()"></app-hp-bar>
 </div>

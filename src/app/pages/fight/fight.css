@@ -68,6 +68,28 @@
   border: var(--border-gray) solid 3px;
 }
 
+.fight-status {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-family: Verdana, sans-serif;
+  font-weight: bold;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.fight-winner {
+  background-color: rgba(255, 221, 0, 0.25);
+  border-color: var(--border-yellow);
+  font-size: 1.2rem;
+}
+
+.fight-error {
+  background-color: rgba(220, 50, 50, 0.25);
+  border-color: #dc3232;
+}
+
 .fight-move-card {
   background-color: #fff;
   border: 1px solid #ccc;

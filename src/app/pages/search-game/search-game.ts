@@ -1,6 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TeamService } from '../../core/team/team.service';
-import {GameService} from '../../core/game/game.service';
+import { GameService } from '../../core/game/game.service';
 
 @Component({
   selector: 'app-search-game',
@@ -21,6 +22,7 @@ export class SearchGame {
 
   private readonly gamesService = inject(GameService);
   private readonly teamService = inject(TeamService);
+  private readonly router = inject(Router);
   /** Signal en lecture seule exposant la liste des parties disponibles. */
   readonly games = this.gamesService.games;
   /** Signal en lecture seule indiquant qu'un chargement de parties est en cours. */
@@ -66,7 +68,10 @@ export class SearchGame {
   submitCreateGame() {
     const nombrePokemon = this.teamSlots.filter(s => !!s).length || 1;
     this.gamesService.createGame({ description: this.description(), nombrePokemon }).subscribe({
-      next: () => this.closeCreateGame(),
+      next: (game) => {
+        this.closeCreateGame();
+        this.router.navigate(['/fight', game.id]);
+      },
       error: (err) => console.error('Failed to create game', err),
     });
   }
@@ -125,15 +130,12 @@ export class SearchGame {
     // Call the GameService to join. subscribe to handle result or error
     this.gamesService.joinGame(gameId).subscribe({
       next: (game) => {
-        console.log('Joined game:', game);
-        // optionally you could navigate or update state here
+        this.closeJoinModal();
+        this.router.navigate(['/fight', game.id]);
       },
       error: (err) => {
         console.error('Failed to join game', err);
       },
-      complete: () => {
-        this.closeJoinModal();
-      }
     });
   }
 }

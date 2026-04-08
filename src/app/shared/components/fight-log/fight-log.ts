@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { TurnEvent } from '../../../core/fight/fight.model';
 
 @Component({
   selector: 'app-fight-log',
@@ -9,10 +10,9 @@ import { Component } from '@angular/core';
 /**
  * Journal des événements de combat.
  * Affiche le déroulé des actions tour par tour (attaques, dégâts, changements de Pokémon…).
- *
- * @remarks Ce composant est un stub — l'implémentation sera connectée au `FightService` lorsque
- * la logique de combat sera développée côté backend.
+ * Se met à jour automatiquement via le signal `events` connecté au `FightService`.
  */
 export class FightLog {
-
+  /** Liste des événements à afficher, fournie par le `FightService`. */
+  events = input<TurnEvent[]>([]);
 }

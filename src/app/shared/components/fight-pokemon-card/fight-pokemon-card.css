@@ -13,10 +13,24 @@
   box-sizing: border-box;
 }
 
-.fight-pokemon-card:hover {
+.fight-pokemon-card.switchable {
+  cursor: pointer;
+}
+
+.fight-pokemon-card.switchable:hover {
   background-color: var(--card-bg-color-hover);
   border-color: var(--border-yellow);
   transform: scale(1.1);
+}
+
+.fight-pokemon-card.active {
+  border-color: var(--border-yellow);
+  background-color: rgba(255, 221, 0, 0.15);
+}
+
+.fight-pokemon-card.fainted {
+  opacity: 0.4;
+  filter: grayscale(100%);
 }
 
 

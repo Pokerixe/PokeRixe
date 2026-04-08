@@ -22,7 +22,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/pokemon/pokemon').then(m => m.PokemonPage)
   },
   {
-    path: 'fight',
+    path: 'fight/:gameId',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/fight/fight').then(m => m.Fight)
   },
