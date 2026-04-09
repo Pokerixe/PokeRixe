@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Move } from '../../shared/components/move/move';
 import { FightLog } from '../../shared/components/fight-log/fight-log';
@@ -7,6 +7,7 @@ import { HpBar } from '../../shared/components/hp-bar/hp-bar';
 import { FightService } from '../../core/fight/fight.service';
 import { TeamService } from '../../core/team/team.service';
 import { TeamMove } from '../../core/team/team.model';
+import { FightPokemonState } from '../../core/fight/fight.model';
 
 @Component({
   selector: 'app-fight',
@@ -14,16 +15,6 @@ import { TeamMove } from '../../core/team/team.model';
   templateUrl: './fight.html',
   styleUrl: './fight.css',
 })
-/**
- * Page d'interface de combat JCJ (Joueur contre Joueur).
- *
- * Orchestre le combat en connectant le `FightService` à l'interface :
- * - Démarre le polling via `FightService.startPolling(gameId)` à l'initialisation
- * - Transmet les actions du joueur (attaque / switch) au service
- * - Expose des signaux calculés pour le template
- *
- * Le `gameId` est lu depuis le paramètre de route `fight/:gameId`.
- */
 export class Fight implements OnDestroy {
   private readonly fightService = inject(FightService);
   private readonly teamService = inject(TeamService);
@@ -34,60 +25,74 @@ export class Fight implements OnDestroy {
 
   // ─── Signaux du FightService exposés au template ──────────────────────────
 
-  /** Phase courante du combat. */
   readonly phase = this.fightService.phase;
-  /** Pokémon actif du joueur. */
   readonly playerActive = this.fightService.playerActivePokemon;
-  /** Pokémon actif de l'adversaire. */
   readonly opponentActive = this.fightService.opponentActivePokemon;
-  /** Équipe complète du joueur (pour l'UI de switch). */
   readonly playerTeam = this.fightService.playerTeam;
-  /** Nom de l'adversaire. */
   readonly opponentName = this.fightService.opponentName;
-  /** Nom du joueur. */
   readonly playerName = this.fightService.playerName;
-  /** `true` si le joueur a déjà soumis son action ce tour. */
   readonly playerHasActed = this.fightService.playerHasActed;
-  /** `true` si le joueur doit choisir un remplaçant après un KO. */
   readonly mustSwitch = this.fightService.mustSwitch;
-  /** Journal de combat. */
   readonly log = this.fightService.log;
-  /** Nom du gagnant (null si combat en cours). */
   readonly winner = this.fightService.winner;
-  /** `true` si le combat est terminé. */
   readonly isFinished = this.fightService.isFinished;
-  /** Dernière erreur de communication. */
   readonly error = this.fightService.error;
 
-  // ─── Signaux calculés ────────────────────────────────────────────────────
+  // ─── Tracking des Pokémon adverses vus ────────────────────────────────────
 
-  /**
-   * Attaques du Pokémon actif du joueur, récupérées depuis le `TeamService`.
-   * Le `FightState` ne les expose pas côté client pour éviter la triche.
-   */
-  readonly activePlayerMoves = computed<TeamMove[]>(() => {
-    const activeSlotIndex = this.playerActive()?.slotIndex;
-    if (activeSlotIndex == null) return [];
-    return this.teamService.slots()[activeSlotIndex]?.moves ?? [];
+  /** Liste des Pokémon adverses déjà rencontrés (découverts quand ils entrent en combat). */
+  readonly seenOpponents = signal<FightPokemonState[]>([]);
+
+  /** Nombre total de Pokémon adverses (vus + non vus encore vivants). */
+  readonly opponentTotalCount = computed(() => {
+    const remaining = this.fightService.opponentRemainingCount();
+    const faintedSeen = this.seenOpponents().filter((p) => p.isFainted).length;
+    return remaining + faintedSeen;
   });
 
-  /** `true` si le joueur peut actuellement choisir une attaque. */
-  readonly canAct = computed(
-    () => !this.playerHasActed() && this.phase() === 'waiting_actions',
-  );
+  /** Nombre de Pokémon adverses pas encore découverts. */
+  readonly unseenOpponentCount = computed(() => {
+    return Math.max(0, this.opponentTotalCount() - this.seenOpponents().length);
+  });
 
   constructor() {
     this.fightService.startPolling(this.gameId);
+
+    // Chaque fois que le Pokémon actif adverse change, on l'ajoute aux vus
+    effect(() => {
+      const active = this.opponentActive();
+      if (!active) return;
+      this.seenOpponents.update((seen) => {
+        const existing = seen.findIndex((p) => p.slotIndex === active.slotIndex);
+        if (existing >= 0) {
+          // Met à jour l'état (hp, isFainted) du Pokémon déjà vu
+          const updated = [...seen];
+          updated[existing] = active;
+          return updated;
+        }
+        return [...seen, active];
+      });
+    });
   }
 
   ngOnDestroy(): void {
     this.fightService.reset();
   }
 
-  /**
-   * Envoie une action d'attaque au serveur lorsque le joueur clique sur un move.
-   * @param move L'attaque sélectionnée
-   */
+  // ─── Signaux calculés ────────────────────────────────────────────────────
+
+  readonly activePlayerMoves = computed<TeamMove[]>(() => {
+    const activeSlotIndex = this.playerActive()?.slotIndex;
+    if (activeSlotIndex == null) return [];
+    return this.teamService.slots()[activeSlotIndex]?.moves ?? [];
+  });
+
+  readonly canAct = computed(
+    () => !this.playerHasActed() && this.phase() === 'waiting_actions',
+  );
+
+  // ─── Actions ─────────────────────────────────────────────────────────────
+
   onMoveClick(move: TeamMove): void {
     if (!this.canAct()) return;
     const activeSlotIndex = this.playerActive()?.slotIndex;
@@ -97,10 +102,6 @@ export class Fight implements OnDestroy {
     this.fightService.sendAttack(this.gameId, move, slot.stats, slot.types).subscribe();
   }
 
-  /**
-   * Envoie une action de switch au serveur lorsque le joueur clique sur une carte Pokémon.
-   * @param slotIndex Index du Pokémon remplaçant dans l'équipe
-   */
   onPokemonSwitch(slotIndex: number): void {
     const target = this.playerTeam().find((p) => p.slotIndex === slotIndex);
     if (!target || target.isFainted) return;

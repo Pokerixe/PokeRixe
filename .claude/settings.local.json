@@ -20,7 +20,9 @@
       "Bash(DEBUG='*' npx ng test --no-watch --coverage --coverage-reporters lcov --coverage-reporters text)",
       "Bash(find /home/baptouk/dev/Pokerixe/src/app/core -name \"*.model.ts\" -exec ls -la {} \\\\;)",
       "Bash(ls /home/baptouk/dev/Pokerixe/vitest*.ts /home/baptouk/dev/Pokerixe/vitest*.js)",
-      "Bash(ls /home/baptouk/dev/Pokerixe/src/*.ts)"
+      "Bash(ls /home/baptouk/dev/Pokerixe/src/*.ts)",
+      "Bash(npx @angular/cli build)"
     ]
-  }
+  },
+  "plansDirectory": ".claude/plans"
 }

@@ -7,7 +7,16 @@
       <!-- Infos joueur -->
       <div class="fight-player player-info">
         <h2 class="player-name">{{ playerName() }}</h2>
-        <div class="pokemons-balls"></div>
+        <div class="pokemons-balls">
+          @for (pokemon of playerTeam(); track pokemon.slotIndex) {
+            <img
+              class="ball-sprite"
+              [class.dead]="pokemon.isFainted"
+              [src]="pokemon.sprite"
+              [alt]="pokemon.name"
+            />
+          }
+        </div>
       </div>
 
       <!-- Pokémon actif du joueur (sprite dos) -->
@@ -50,7 +59,25 @@
       <!-- Infos adversaire -->
       <div class="fight-opponent player-info">
         <h2 class="player-name">{{ opponentName() }}</h2>
-        <div class="pokemons-balls"></div>
+        <div class="pokemons-balls">
+          <!-- Pokémon adverses déjà vus -->
+          @for (pokemon of seenOpponents(); track pokemon.slotIndex) {
+            <img
+              class="ball-sprite"
+              [class.dead]="pokemon.isFainted"
+              [src]="pokemon.sprite"
+              [alt]="pokemon.name"
+            />
+          }
+          <!-- Pokémon adverses pas encore découverts (pokéballs) -->
+          @for (_ of [].constructor(unseenOpponentCount()); track $index) {
+            <img
+              class="ball-sprite pokeball"
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+              alt="Pokéball"
+            />
+          }
+        </div>
       </div>
 
     </div>

@@ -137,6 +137,29 @@
   margin-bottom: 0.6rem;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.2rem;
+}
+
+.ball-sprite {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.ball-sprite.dead {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}
+
+.ball-empty {
+  width: 2rem;
+  height: 2rem;
 }
 .player-info h2{
   margin: 0;
