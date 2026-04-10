@@ -21,8 +21,8 @@ Sonar Test :
 - [x] Connexion / Inscription utilisateur
 - [x] Gestion d'équipe (slots, mouvements, ordre)
 - [x] Recherche et rejoindre une partie
-- [ ] CRUD complet des équipes (interface front non finalisée)
-- [ ] Interface de combat interactive
+- [x] CRUD complet des équipes (interface front non finalisée)
+- [x] Interface de combat interactive
 ---
 
 ## 🏗️ Stack technique
