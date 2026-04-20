@@ -9,6 +9,7 @@
  */
 export interface Move {
   name: string;
+  frenchName: string;
   type: string;
   power: number | null;
   accuracy: number | null;

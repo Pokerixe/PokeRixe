@@ -45,6 +45,7 @@
           <button  class="little-button baba" (click)="removePoke()" >Supprimer le pokémon</button>
 
         </div>
+        
       </div>
     </div>
 
@@ -59,6 +60,7 @@
               [inFight]="false"
               [isDefined]="move.name !== ''"
               [name]="move.name || '—'"
+              [frenchName]="move.frenchName || ''"
               [type]="move.type || 'normal'"
               [power]="move.power ?? 0"
               [accuracy]="move.accuracy"

@@ -13,6 +13,7 @@ import {PokemonStats} from '../../shared/models/pokemon-stats.model';
 export interface TeamMove {
   slot: 0 | 1 | 2 | 3;
   name: string;
+  frenchName: string;
   type: string;
   power: number | null;
   accuracy: number;

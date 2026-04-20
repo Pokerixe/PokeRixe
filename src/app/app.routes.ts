@@ -55,6 +55,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/search-game/search-game').then(m => m.SearchGame)
   },
   {
+    path: 'history',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/history/history').then(m => m.HistoryPage)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

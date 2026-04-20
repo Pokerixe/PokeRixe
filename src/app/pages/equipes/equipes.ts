@@ -130,10 +130,10 @@ export class Equipes {
       stats: pokemon.stats,
       moves: [
         // initialise les 4 slots de moves vides
-        {slot: 0, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
-        {slot: 1, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
-        {slot: 2, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
-        {slot: 3, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+        {slot: 0, name: '', frenchName: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+        {slot: 1, name: '', frenchName: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+        {slot: 2, name: '', frenchName: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
+        {slot: 3, name: '', frenchName: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'},
       ],
     };
 
@@ -167,6 +167,7 @@ export class Equipes {
     const teamMove: TeamMove = {
       slot: moveIndex as 0| 1 | 2 | 3,
       name: move.name,
+      frenchName: move.frenchName,
       type: move.type,
       power: move.power,
       accuracy: move.accuracy ?? 100,

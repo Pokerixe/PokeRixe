@@ -39,30 +39,21 @@ export class PokemonPage implements OnInit {
   /** Liste des attaques du Pokémon (filtrées : power > 30, classe physique ou spéciale). */
   moves: MoveModel[] = [];
 
-  /** Description flavor-text en anglais, récupérée depuis l'endpoint `pokemon-species`. */
+  /** Description française, récupérée depuis l'endpoint `pokemon-species`. */
   description: string = '';
 
   /**
-   * Récupère les informations du Pokémon
+   * Récupère les informations du Pokémon (nom FR, attaques et description en un seul bloc d'appels).
    */
   ngOnInit() {
     const id = String(this.route.snapshot.paramMap.get('id'));
-    // utiliser getByIdWithMoves pour récupérer pokemon + moves
-    this.pokemonService.getByIdWithMoves(Number(id)).subscribe(({pokemon, moves}) => {
+    this.pokemonService.getByIdWithMoves(Number(id)).subscribe(({pokemon, moves, description}) => {
       this.pokemon = pokemon;
       this.moves = moves || [];
+      this.description = description;
       this.isLoading = false;
-      console.log('loaded pokemon : ', this.pokemon);
-      console.log('loaded moves : ', this.moves);
       this.cdr.detectChanges();
     });
-
-    // récupérer la description (flavor_text en anglais) via pokemon-species
-    this.pokemonService.getDescription(Number(id)).subscribe(desc => {
-      this.description = desc;
-      this.cdr.detectChanges();
-    });
-
   }
 
 }

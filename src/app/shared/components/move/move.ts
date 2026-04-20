@@ -24,16 +24,32 @@ export class Move {
   /** Si `true`, l'attaque est définie ; si `false`, le slot est vide et cliquable. */
   isDefined= input<boolean>(false);
 
-  /** Nom de l'attaque. */
+  /** Nom anglais de l'attaque (identifiant backend). */
   name = input<string>('Draco-Rage');
+  /** Nom français de l'attaque à afficher. Si absent, `name` est utilisé en fallback. */
+  frenchName = input<string>('');
   /** Classe de dégâts : `"physical"`, `"special"` ou `"status"`. */
-  damage_class = input<string>('Physique');
+  damage_class = input<string>('physical');
   /** Puissance de base de l'attaque. */
   power = input<number>(90);
   /** Précision de l'attaque en pourcentage. */
   accuracy = input<number>(100);
   /** Type de l'attaque (ex: `"dragon"`, `"fire"`). */
   type = input<string>('Dragon');
+
+  private static readonly DAMAGE_CLASS_FR: Record<string, string> = {
+    physical: 'Physique',
+    special: 'Spécial',
+    status: 'Statut',
+  };
+
+  get displayName(): string {
+    return this.frenchName() || this.name();
+  }
+
+  get frenchDamageClass(): string {
+    return Move.DAMAGE_CLASS_FR[this.damage_class()] ?? this.damage_class();
+  }
 
   /** Émis lorsque l'utilisateur clique sur la carte pour changer l'attaque. */
   @Output() changeMove = new EventEmitter<boolean>();

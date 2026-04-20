@@ -84,6 +84,40 @@
   transform: translateY(-2px);
 }
 
+.nav-item--fight {
+  background: linear-gradient(135deg, #c0392b, #922b21);
+  border: 2px solid #e74c3c;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+  animation: fight-pulse 2s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+.nav-item--fight a {
+  color: #fff !important;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.nav-item--fight:hover {
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  border-color: #ff6b5b !important;
+  border-bottom: 2px solid #ff6b5b !important;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.8) !important;
+  transform: translateY(-3px) !important;
+}
+
+.nav-item--fight.active {
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  border-bottom: 2px solid #ff6b5b !important;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.8) !important;
+}
+
+@keyframes fight-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(231, 76, 60, 0.5); }
+  50%       { box-shadow: 0 0 18px rgba(231, 76, 60, 0.9); }
+}
+
 .font-basic {
   font-family: Verdana, sans-serif
 }

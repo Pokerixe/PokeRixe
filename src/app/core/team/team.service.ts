@@ -1,9 +1,10 @@
 import {computed, Injectable, signal} from '@angular/core';
 import {Team, TeamMove, TeamSlot} from './team.model';
 import {HttpClient} from '@angular/common/http';
-import {Observable, map, tap} from 'rxjs';
+import {Observable, forkJoin, map, of, switchMap, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response.model';
+import { MoveService } from '../../shared/services/move.service';
 
 /**
  * Service de gestion de l'équipe Pokémon de l'utilisateur connecté.
@@ -16,7 +17,10 @@ export class TeamService {
 
   private readonly BASE = environment.apiUrl;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly moveService: MoveService,
+  ) {}
 
   private readonly _team = signal<Team>(this.emptyTeam());
   private readonly _isSaving = signal(false);
@@ -31,27 +35,52 @@ export class TeamService {
   readonly isSaving = this._isSaving.asReadonly();
 
   /**
-   * Charge la team de l'utilisateur depuis l'API et met à jour le signal _team.
+   * Charge la team de l'utilisateur depuis l'API, enrichit les moves avec leur nom français
+   * via PokeAPI, puis met à jour le signal _team.
    */
   loadTeam(userId: string): Observable<Team> {
     return this.http.get<ApiResponse<Team>>(`${this.BASE}/team`).pipe(
       map(r => r.data),
-      tap((team) => {
-        this._team.set({
-          ...team,
-          userId: team.userId ?? userId,
-        });
-      }),
+      switchMap(team => this.enrichTeamWithFrenchNames(team)),
+      tap(team => this._team.set({...team, userId: team.userId ?? userId})),
+    );
+  }
+
+  /**
+   * Enrichit tous les TeamMove sans frenchName en appelant MoveService.getFrenchName.
+   * Les résultats en cache sont réutilisés — aucun appel réseau superflu.
+   */
+  private enrichTeamWithFrenchNames(team: Team): Observable<Team> {
+    const slotObservables = team.slots.map((slot): Observable<TeamSlot | null> => {
+      if (!slot) return of(null);
+
+      const moveObservables = slot.moves.map((move): Observable<TeamMove> => {
+        if (!move.name || move.frenchName) return of(move);
+        return this.moveService.getFrenchName(move.name).pipe(
+          map(frenchName => ({...move, frenchName}))
+        );
+      });
+
+      return forkJoin(moveObservables).pipe(
+        map(moves => ({...slot, moves}))
+      );
+    });
+
+    return forkJoin(slotObservables).pipe(
+      map(slots => ({...team, slots}))
     );
   }
 
   /**
    * Persiste la team courante sur le backend via PUT /team.
-   * Met à jour le signal _team avec la réponse serveur (version canonique).
+   * Ré-enrichit les noms français après la réponse (le cache évite tout appel réseau superflu).
    */
   saveTeam(): void {
     this._isSaving.set(true);
-    this.http.put<ApiResponse<Team>>(`${this.BASE}/team`, this._team()).pipe(map(r => r.data)).subscribe({
+    this.http.put<ApiResponse<Team>>(`${this.BASE}/team`, this._team()).pipe(
+      map(r => r.data),
+      switchMap(team => this.enrichTeamWithFrenchNames(team)),
+    ).subscribe({
       next: (team) => {
         this._team.set(team);
         this._isSaving.set(false);
@@ -146,6 +175,6 @@ export class TeamService {
   }
 
   private emptyMove(slot: 0 | 1 | 2 | 3): TeamMove {
-    return {slot, name: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'};
+    return {slot, name: '', frenchName: '', type: 'normal', power: null, accuracy: 100, damageClass: 'physical'};
   }
 }

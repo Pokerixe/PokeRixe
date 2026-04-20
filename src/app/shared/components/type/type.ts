@@ -36,7 +36,32 @@ export class Type {
     fairy: '#D685AD'
   };
 
+  private readonly translations: Record<string, string> = {
+    normal: 'Normal',
+    fire: 'Feu',
+    water: 'Eau',
+    electric: 'Électrik',
+    grass: 'Plante',
+    ice: 'Glace',
+    fighting: 'Combat',
+    poison: 'Poison',
+    ground: 'Sol',
+    flying: 'Vol',
+    psychic: 'Psy',
+    bug: 'Insecte',
+    rock: 'Roche',
+    ghost: 'Spectre',
+    dragon: 'Dragon',
+    dark: 'Ténèbres',
+    steel: 'Acier',
+    fairy: 'Fée'
+  };
+
   get bgColor(): string {
     return this.colors[this.type] ?? '#A8A77A';
+  }
+
+  get frenchType(): string {
+    return this.translations[this.type] ?? this.type;
   }
 }

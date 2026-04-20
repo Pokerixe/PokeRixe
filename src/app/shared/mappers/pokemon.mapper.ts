@@ -9,12 +9,13 @@ export class PokemonMapper {
    * Transforme un DTO brut de l'API PokeAPI en modèle interne `Pokemon`.
    * Extrait et renomme les champs pertinents, mappe les statistiques dans l'ordre standard.
    * @param dto Données brutes issues de l'API
+   * @param frenchName Nom français récupéré depuis l'endpoint pokemon-species (optionnel)
    * @returns Modèle Pokémon prêt à être utilisé dans les composants
    */
-  static toModel(dto: RawPokemonDTO): Pokemon {
+  static toModel(dto: RawPokemonDTO, frenchName?: string): Pokemon {
     return {
       id: dto.id,
-      name: dto.name,
+      name: frenchName ?? dto.name,
       types: dto.types.map(t => t.type.name),
       image: dto.sprites?.other?.['official-artwork']?.front_default,
       sprite: dto.sprites?.front_default ?? dto.sprites?.other?.['official-artwork']?.front_default ?? '',

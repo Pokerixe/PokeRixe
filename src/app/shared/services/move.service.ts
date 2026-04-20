@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, forkJoin, map} from 'rxjs';
+import {Observable, forkJoin, map, of, catchError} from 'rxjs';
 import {RawMoveDTO} from '../models/dto/pokemon.dto';
 import {Move} from '../models/move.model';
 
@@ -10,7 +10,32 @@ import {Move} from '../models/move.model';
  */
 @Injectable({ providedIn: 'root' })
 export class MoveService {
+  private readonly BASE = 'https://pokeapi.co/api/v2';
+  private readonly frenchNameCache = new Map<string, string>();
+
   constructor(private readonly http: HttpClient) {}
+
+  /**
+   * Retourne le nom français d'une attaque depuis son slug PokeAPI.
+   * Le slug est normalisé (minuscules + espaces → tirets) avant l'appel.
+   * Le résultat est mis en cache pour éviter les appels redondants.
+   * @param slug Nom anglais de l'attaque (ex: "flamethrower", "Fire Blast")
+   */
+  getFrenchName(slug: string): Observable<string> {
+    const normalized = slug.toLowerCase().replace(/\s+/g, '-');
+    if (this.frenchNameCache.has(normalized)) {
+      return of(this.frenchNameCache.get(normalized)!);
+    }
+    return this.http.get<any>(`${this.BASE}/move/${normalized}`).pipe(
+      map(dto => {
+        const entry = (dto.names as any[])?.find((n: any) => n.language?.name === 'fr');
+        const frenchName = entry?.name ?? slug;
+        this.frenchNameCache.set(normalized, frenchName);
+        return frenchName;
+      }),
+      catchError(() => of(slug))
+    );
+  }
 
   /**
    * Prend la liste des moves bruts d'un Pokémon (avec leurs URLs), appelle chaque URL,
@@ -30,13 +55,17 @@ export class MoveService {
     }
 
     const requests = rawMoves.map(raw => this.http.get<any>(raw.move.url).pipe(
-      map(moveDto => ({
-        name: moveDto.name,
-        type: moveDto.type?.name ?? 'normal',
-        power: moveDto.power ?? null,
-        accuracy: moveDto.accuracy ?? null,
-        damageClass: moveDto.damage_class?.name ?? 'physical',
-      } as Move))
+      map(moveDto => {
+        const frenchNameEntry = (moveDto.names as any[])?.find((n: any) => n.language?.name === 'fr');
+        return {
+          name: moveDto.name,
+          frenchName: frenchNameEntry?.name ?? moveDto.name,
+          type: moveDto.type?.name ?? 'normal',
+          power: moveDto.power ?? null,
+          accuracy: moveDto.accuracy ?? null,
+          damageClass: moveDto.damage_class?.name ?? 'physical',
+        } as Move;
+      })
     ));
 
     return forkJoin(requests).pipe(

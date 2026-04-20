@@ -1,0 +1,127 @@
+<div class="history-main basic-container">
+
+  <h1 class="history-title">Historique</h1>
+
+  <!-- Filtres -->
+  <div class="history-filters">
+    <button class="filter-btn" [class.active]="filterResult() === 'all'"  (click)="setFilter('all')">Tous</button>
+    <button class="filter-btn win"  [class.active]="filterResult() === 'win'"  (click)="setFilter('win')">Victoires</button>
+    <button class="filter-btn loss" [class.active]="filterResult() === 'loss'" (click)="setFilter('loss')">Défaites</button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="history-loading">Chargement...</div>
+  } @else if (error()) {
+    <div class="history-error">{{ error() }}</div>
+  } @else if (filteredHistory().length === 0) {
+    <div class="history-empty">Aucune partie trouvée.</div>
+  } @else {
+    <div class="history-layout">
+
+      <!-- ── Liste des parties ── -->
+      <div class="history-list">
+        @for (game of visibleHistory(); track game.id) {
+          <div
+            class="history-card"
+            [class.selected]="selectedGame()?.id === game.id"
+            [class.win]="game.result === 'win'"
+            [class.loss]="game.result === 'loss'"
+            (click)="selectGame(game)">
+
+            <div class="card-top">
+              <span class="result-badge" [class.win]="game.result === 'win'" [class.loss]="game.result === 'loss'">
+                {{ game.result === 'win' ? 'VICTOIRE' : 'DÉFAITE' }}
+              </span>
+              <span class="card-date">{{ formatDate(game.date) }}</span>
+            </div>
+
+            <div class="card-opponent">vs {{ game.opponentName }}</div>
+            <div class="card-turns">{{ game.turnCount }} tours</div>
+
+            <div class="card-teams">
+              <div class="card-team">
+                @for (p of game.playerTeam; track p.pokedexId) {
+                  <img class="mini-sprite" [class.fainted]="p.isFainted" [src]="p.sprite" [alt]="p.name" [title]="p.name" />
+                }
+              </div>
+              <span class="card-vs">vs</span>
+              <div class="card-team">
+                @for (p of game.opponentTeam; track p.pokedexId) {
+                  <img class="mini-sprite" [class.fainted]="p.isFainted" [src]="p.sprite" [alt]="p.name" [title]="p.name" />
+                }
+              </div>
+            </div>
+
+          </div>
+        }
+
+        <!-- Sentinel pour le scroll infini -->
+        <div #sentinel class="scroll-sentinel"></div>
+      </div>
+
+      <!-- ── Détail de la partie sélectionnée ── -->
+      @if (selectedGame(); as game) {
+        <div class="history-detail">
+
+          <div class="detail-header">
+            <span class="result-badge large" [class.win]="game.result === 'win'" [class.loss]="game.result === 'loss'">
+              {{ game.result === 'win' ? 'VICTOIRE' : 'DÉFAITE' }}
+            </span>
+            <h2 class="detail-opponent">vs {{ game.opponentName }}</h2>
+            <div class="detail-meta">
+              <span>{{ formatDate(game.date) }}</span>
+              <span class="detail-separator">·</span>
+              <span>{{ game.turnCount }} tours</span>
+            </div>
+          </div>
+
+          <!-- Équipes -->
+          <div class="detail-teams">
+
+            <div class="detail-team-block">
+              <h3 class="team-label">Votre équipe</h3>
+              <div class="team-pokemon-list">
+                @for (p of game.playerTeam; track p.pokedexId) {
+                  <div class="team-pokemon" [class.fainted]="p.isFainted">
+                    <img class="pokemon-sprite" [src]="p.sprite" [alt]="p.name" />
+                    <span class="pokemon-name">{{ p.name }}</span>
+                    @if (p.isFainted) {
+                      <span class="fainted-label">K.O.</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="detail-team-block">
+              <h3 class="team-label">Équipe adverse</h3>
+              <div class="team-pokemon-list">
+                @for (p of game.opponentTeam; track p.pokedexId) {
+                  <div class="team-pokemon" [class.fainted]="p.isFainted">
+                    <img class="pokemon-sprite" [src]="p.sprite" [alt]="p.name" />
+                    <span class="pokemon-name">{{ p.name }}</span>
+                    @if (p.isFainted) {
+                      <span class="fainted-label">K.O.</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Log du combat -->
+          <div class="detail-log">
+            <h3 class="team-label">Journal du combat</h3>
+            <div class="log-wrapper">
+              <app-fight-log [events]="game.log"></app-fight-log>
+            </div>
+          </div>
+
+        </div>
+      }
+
+    </div>
+  }
+
+</div>

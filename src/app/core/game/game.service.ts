@@ -74,6 +74,13 @@ export class GameService {
   }
 
   /**
+   * Efface la partie courante localement (utilisé après la fin du combat).
+   */
+  clearCurrentGame(): void {
+    this._currentGame.set(null);
+  }
+
+  /**
    * Quitte la partie courante.
    * Si player1 quitte : la partie est supprimée.
    * Si player2 quitte : player2 est retiré côté backend.

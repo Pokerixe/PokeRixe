@@ -1,6 +1,8 @@
-import {Component, inject} from '@angular/core';
+import {Component, effect, inject, OnDestroy} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {AuthService} from '../../../core/auth/auth.service';
+import {GameService} from '../../../core/game/game.service';
+import {FightService} from '../../../core/fight/fight.service';
 
 @Component({
   selector: 'app-header',
@@ -15,9 +17,32 @@ import {AuthService} from '../../../core/auth/auth.service';
  * Les liens visibles s'adaptent selon l'état d'authentification (`AuthService.isAuthenticated`)
  * et le rôle de l'utilisateur (`AuthService.userRole`).
  */
-export class Header {
+export class Header implements OnDestroy {
 
   /** Service d'authentification utilisé pour conditionner l'affichage des liens de navigation. */
   auth = inject(AuthService);
+
+  /** Service de jeu utilisé pour conditionner l'affichage du lien Fight. */
+  game = inject(GameService);
+
+  private readonly fightService = inject(FightService);
+  private clearGameTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  constructor() {
+    effect(() => {
+      if (this.fightService.isFinished()) {
+        this.clearGameTimeout ??= setTimeout(() => {
+          this.game.clearCurrentGame();
+          this.clearGameTimeout = null;
+        }, 5000);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.clearGameTimeout !== null) {
+      clearTimeout(this.clearGameTimeout);
+    }
+  }
 
 }

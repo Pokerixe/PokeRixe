@@ -112,6 +112,7 @@ export class PokemonInformation implements OnChanges {
     const fallback = (slotNumber: 0 | 1 | 2 | 3): TeamMove => ({
       slot: slotNumber,
       name: '',
+      frenchName: '',
       type: 'normal',
       power: null,
       accuracy: 100,
