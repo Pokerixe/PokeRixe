@@ -52,6 +52,7 @@ const mockFightState = (overrides: Partial<FightState> = {}): FightState => ({
 const mockMove: TeamMove = {
   slot: 0,
   name: 'Flamethrower',
+  frenchName: 'Lance-Flammes',
   type: 'fire',
   power: 90,
   accuracy: 100,

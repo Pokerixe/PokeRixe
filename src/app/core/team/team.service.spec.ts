@@ -17,10 +17,10 @@ const mockSlot: TeamSlot = {
   hpMax: 78,
   stats: { hp: 78, attack: 84, defense: 78, specialAttack: 109, specialDefense: 85, speed: 100 },
   moves: [
-    { slot: 0, name: 'Flamethrower', type: 'fire', power: 90, accuracy: 100, damageClass: 'special' },
-    { slot: 1, name: 'Fire Blast', type: 'fire', power: 110, accuracy: 85, damageClass: 'special' },
-    { slot: 2, name: 'Wing Attack', type: 'flying', power: 60, accuracy: 100, damageClass: 'physical' },
-    { slot: 3, name: 'Slash', type: 'normal', power: 70, accuracy: 100, damageClass: 'physical' },
+    { slot: 0, name: 'Flamethrower', frenchName: 'Lance-Flammes', type: 'fire', power: 90, accuracy: 100, damageClass: 'special' },
+    { slot: 1, name: 'Fire Blast', frenchName: 'Déflagration', type: 'fire', power: 110, accuracy: 85, damageClass: 'special' },
+    { slot: 2, name: 'Wing Attack', frenchName: 'Coupvent', type: 'flying', power: 60, accuracy: 100, damageClass: 'physical' },
+    { slot: 3, name: 'Slash', frenchName: 'Tranche', type: 'normal', power: 70, accuracy: 100, damageClass: 'physical' },
   ],
 };
 
@@ -176,7 +176,7 @@ describe('TeamService', () => {
   describe('setMove() and clearMove()', () => {
     it('setMove() updates the correct move in a slot', () => {
       service.setSlot(0, mockSlot);
-      const newMove: TeamMove = { slot: 1, name: 'Ember', type: 'fire', power: 40, accuracy: 100, damageClass: 'special' };
+      const newMove: TeamMove = { slot: 1, name: 'Ember', frenchName: 'Braise', type: 'fire', power: 40, accuracy: 100, damageClass: 'special' };
       service.setMove(0, 1, newMove);
       expect((service.slots()[0] as TeamSlot).moves[1]).toEqual(newMove);
     });
@@ -191,7 +191,7 @@ describe('TeamService', () => {
 
     it('setMove() does nothing when slot is null', () => {
       const before = service.slots()[3];
-      service.setMove(3, 0, { slot: 0, name: 'Test', type: 'fire', power: 50, accuracy: 100, damageClass: 'special' });
+      service.setMove(3, 0, { slot: 0, name: 'Test', frenchName: 'Test', type: 'fire', power: 50, accuracy: 100, damageClass: 'special' });
       expect(service.slots()[3]).toEqual(before);
     });
   });
