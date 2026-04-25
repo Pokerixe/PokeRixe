@@ -21,7 +21,10 @@
       "Bash(find /home/baptouk/dev/Pokerixe/src/app/core -name \"*.model.ts\" -exec ls -la {} \\\\;)",
       "Bash(ls /home/baptouk/dev/Pokerixe/vitest*.ts /home/baptouk/dev/Pokerixe/vitest*.js)",
       "Bash(ls /home/baptouk/dev/Pokerixe/src/*.ts)",
-      "Bash(npx @angular/cli build)"
+      "Bash(npx @angular/cli build)",
+      "Bash(git checkout *)",
+      "Bash(xargs -I{} echo \"{}\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('projects',{}\\).get\\('pokerixe',{}\\).get\\('architect',{}\\).get\\('test',{}\\), indent=2\\)\\)\")"
     ]
   },
   "plansDirectory": ".claude/plans"

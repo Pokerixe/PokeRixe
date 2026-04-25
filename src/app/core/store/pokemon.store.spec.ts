@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { vi } from 'vitest';
 import { PokemonStore } from './pokemon.store';
 import { PokemonService } from '../../shared/services/pokemon.service';
@@ -96,7 +97,9 @@ describe('PokemonStore', () => {
 
     it('does nothing when loading is in progress', () => {
       const batch = Array.from({ length: 20 }, (_, i) => makePokemon(i + 1));
-      pokemonService.getRange.mockReturnValue(of(batch));
+      pokemonService.getRange.mockReturnValue(
+        of(batch).pipe(delay(100)) // Simulate async delay
+      );
 
       store.loadFirst150();
       pokemonService.getRange.mockClear();
@@ -260,6 +263,7 @@ describe('PokemonStore', () => {
       store.loadNextBatch();
 
       expect(store.loading()).toBe(false);
+      expect(store.error()).toContain('API Error');
     });
   });
 

@@ -38,6 +38,8 @@ export class PokemonStore {
   loading = this._loading.asReadonly();
   /** Signal en lecture seule indiquant s'il reste des Pokémon à charger. */
   hasMore = this._hasMore.asReadonly();
+  /** Signal en lecture seule exposant le dernier message d'erreur, le cas échéant. */
+  error = this._error.asReadonly();
 
   /**
    * Déclenche le chargement des 150 premiers Pokémon par lots.

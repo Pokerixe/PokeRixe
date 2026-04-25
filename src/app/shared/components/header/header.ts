@@ -2,7 +2,7 @@ import {Component, effect, inject, OnDestroy} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {AuthService} from '../../../core/auth/auth.service';
 import {GameService} from '../../../core/game/game.service';
-import {FightService} from '../../../core/fight/fight.service';
+import {FightWsService} from '../../../core/fight/fight-ws.service';
 
 @Component({
   selector: 'app-header',
@@ -25,7 +25,7 @@ export class Header implements OnDestroy {
   /** Service de jeu utilisé pour conditionner l'affichage du lien Fight. */
   game = inject(GameService);
 
-  private readonly fightService = inject(FightService);
+  private readonly fightService = inject(FightWsService);
   private clearGameTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
