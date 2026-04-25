@@ -20,6 +20,7 @@ export class HistoryPage implements AfterViewInit, OnDestroy {
   readonly filterResult = signal<'all' | 'win' | 'loss'>('all');
   readonly visibleCount = signal<number>(PAGE_SIZE);
   readonly selectedGame = signal<GameHistoryEntry | null>(null);
+  readonly aiModalOpen = signal(false);
 
   readonly filteredHistory = computed(() => {
     const filter = this.filterResult();
@@ -67,6 +68,14 @@ export class HistoryPage implements AfterViewInit, OnDestroy {
     this.filterResult.set(filter);
     this.visibleCount.set(PAGE_SIZE);
     this.selectedGame.set(this.filteredHistory()[0] ?? null);
+  }
+
+  openAiModal(): void {
+    this.aiModalOpen.set(true);
+  }
+
+  closeAiModal(): void {
+    this.aiModalOpen.set(false);
   }
 
   formatDate(dateStr: string): string {

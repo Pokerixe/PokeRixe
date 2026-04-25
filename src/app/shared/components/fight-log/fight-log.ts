@@ -12,15 +12,18 @@ export class FightLog {
 
   @ViewChild('logContainer') private logContainer!: ElementRef<HTMLElement>;
 
+  private lastEventCount = 0;
+
   constructor() {
     effect(() => {
-      this.events();
-      setTimeout(() => {
-        const el = this.logContainer?.nativeElement;
-        if (el) {
-          el.scrollTop = el.scrollHeight;
-        }
-      });
+      const events = this.events();
+      if (events.length > this.lastEventCount) {
+        this.lastEventCount = events.length;
+        setTimeout(() => {
+          const el = this.logContainer?.nativeElement;
+          if (el) el.scrollTop = el.scrollHeight;
+        });
+      }
     });
   }
 }

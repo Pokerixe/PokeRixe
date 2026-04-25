@@ -71,15 +71,17 @@
             <div class="detail-meta">
               <span>{{ formatDate(game.date) }}</span>
               <span class="detail-separator">·</span>
-              <span>{{ game.turnCount }} tours</span>
+              <span>{{ game.turnCount }} tours</span>            
             </div>
+            <button class="little-button ai-analyse-btn" (click)="openAiModal()">Analyse IA</button>
+
           </div>
 
           <!-- Équipes -->
           <div class="detail-teams">
 
             <div class="detail-team-block">
-              <h3 class="team-label">Votre équipe</h3>
+              <h3 class="team-label">Votre equipe</h3>
               <div class="team-pokemon-list">
                 @for (p of game.playerTeam; track p.pokedexId) {
                   <div class="team-pokemon" [class.fainted]="p.isFainted">
@@ -94,7 +96,7 @@
             </div>
 
             <div class="detail-team-block">
-              <h3 class="team-label">Équipe adverse</h3>
+              <h3 class="team-label">Equipe adverse</h3>
               <div class="team-pokemon-list">
                 @for (p of game.opponentTeam; track p.pokedexId) {
                   <div class="team-pokemon" [class.fainted]="p.isFainted">
@@ -120,8 +122,15 @@
 
         </div>
       }
-
     </div>
   }
 
 </div>
+
+@if (aiModalOpen()) {
+  <div class="ai-modal-backdrop" (click)="closeAiModal()"></div>
+
+  <dialog class="ai-modal-container" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h2 class="ai-modal-title">Analyse IA</h2>
+  </dialog>
+}
