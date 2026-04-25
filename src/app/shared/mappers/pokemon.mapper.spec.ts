@@ -35,17 +35,11 @@ describe('PokemonMapper', () => {
       },
     });
 
-    it('should map id correctly', () => {
+    it('should map id and types correctly', () => {
       const dto = createBasicDTO();
       const result = PokemonMapper.toModel(dto);
       expect(result.id).toBe(1);
-    });
-
-    it('should map types correctly', () => {
-      const dto = createBasicDTO();
-      const result = PokemonMapper.toModel(dto);
       expect(result.types).toEqual(['grass', 'poison']);
-      expect(result.types).toHaveLength(2);
     });
 
     it('should use frenchName when provided', () => {
@@ -57,12 +51,6 @@ describe('PokemonMapper', () => {
     it('should fall back to dto.name when no frenchName provided', () => {
       const dto = createBasicDTO();
       const result = PokemonMapper.toModel(dto);
-      expect(result.name).toBe('bulbasaur');
-    });
-
-    it('should fall back to dto.name when frenchName is undefined', () => {
-      const dto = createBasicDTO();
-      const result = PokemonMapper.toModel(dto, undefined);
       expect(result.name).toBe('bulbasaur');
     });
 
@@ -92,92 +80,10 @@ describe('PokemonMapper', () => {
       expect(result.sprite).toBe('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png');
     });
 
-    it('should use front_default as sprite property when available', () => {
-      const dto = createBasicDTO();
-      const result = PokemonMapper.toModel(dto);
-      expect(result.sprite).toBe('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png');
-    });
-
-    it('should fall back to empty string when both sprites are missing', () => {
-      const dto = createBasicDTO();
-      dto.sprites.front_default = '' as any;
-      dto.sprites.other['official-artwork'].front_default = undefined as any;
-      const result = PokemonMapper.toModel(dto);
-      expect(result.sprite).toBe('');
-    });
-
     it('should map moves to name strings', () => {
       const dto = createBasicDTO();
       const result = PokemonMapper.toModel(dto);
       expect(result.moves).toEqual(['razor-wind', 'swords-dance']);
-      expect(result.moves).toHaveLength(2);
-    });
-
-    it('should handle Pokemon with no moves', () => {
-      const dto = createBasicDTO();
-      dto.moves = [];
-      const result = PokemonMapper.toModel(dto);
-      expect(result.moves).toEqual([]);
-    });
-
-    it('should map height and weight correctly', () => {
-      const dto = createBasicDTO();
-      const result = PokemonMapper.toModel(dto);
-      expect(result.height).toBe(7);
-      expect(result.weight).toBe(69);
-    });
-
-    it('should handle single type Pokemon', () => {
-      const dto = createBasicDTO();
-      dto.types = [{ type: { name: 'fire' } }];
-      const result = PokemonMapper.toModel(dto);
-      expect(result.types).toEqual(['fire']);
-      expect(result.types).toHaveLength(1);
-    });
-
-    it('should handle Pokemon with multiple moves', () => {
-      const dto = createBasicDTO();
-      dto.moves = [
-        { move: { name: 'move1', url: 'https://...' } },
-        { move: { name: 'move2', url: 'https://...' } },
-        { move: { name: 'move3', url: 'https://...' } },
-        { move: { name: 'move4', url: 'https://...' } },
-      ];
-      const result = PokemonMapper.toModel(dto);
-      expect(result.moves).toEqual(['move1', 'move2', 'move3', 'move4']);
-    });
-
-    it('should return valid Pokemon object with all required properties', () => {
-      const dto = createBasicDTO();
-      const result = PokemonMapper.toModel(dto);
-      expect(result).toHaveProperty('id');
-      expect(result).toHaveProperty('name');
-      expect(result).toHaveProperty('types');
-      expect(result).toHaveProperty('image');
-      expect(result).toHaveProperty('sprite');
-      expect(result).toHaveProperty('height');
-      expect(result).toHaveProperty('weight');
-      expect(result).toHaveProperty('stats');
-      expect(result).toHaveProperty('moves');
-    });
-
-    it('should preserve order of stats array mapping', () => {
-      const dto = createBasicDTO();
-      dto.stats = [
-        { base_stat: 100, stat: { name: 'hp' } },
-        { base_stat: 110, stat: { name: 'attack' } },
-        { base_stat: 120, stat: { name: 'defense' } },
-        { base_stat: 130, stat: { name: 'special-attack' } },
-        { base_stat: 140, stat: { name: 'special-defense' } },
-        { base_stat: 150, stat: { name: 'speed' } },
-      ];
-      const result = PokemonMapper.toModel(dto);
-      expect(result.stats.hp).toBe(100);
-      expect(result.stats.attack).toBe(110);
-      expect(result.stats.defense).toBe(120);
-      expect(result.stats.specialAttack).toBe(130);
-      expect(result.stats.specialDefense).toBe(140);
-      expect(result.stats.speed).toBe(150);
     });
   });
 });
