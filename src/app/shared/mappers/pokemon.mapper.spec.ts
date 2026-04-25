@@ -85,5 +85,12 @@ describe('PokemonMapper', () => {
       const result = PokemonMapper.toModel(dto);
       expect(result.moves).toEqual(['razor-wind', 'swords-dance']);
     });
+
+    it('should map height and weight correctly', () => {
+      const dto = createBasicDTO();
+      const result = PokemonMapper.toModel(dto);
+      expect(result.height).toBe(7);
+      expect(result.weight).toBe(69);
+    });
   });
 });
