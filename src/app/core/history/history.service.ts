@@ -26,6 +26,7 @@ export class HistoryService {
       tap({
         next: (entries) => {
           this._history.set(entries);
+          this._error.set(null);
           this._isLoading.set(false);
         },
         error: () => {
