@@ -254,6 +254,7 @@ describe('PokemonStore', () => {
       store.loadNextBatch();
 
       expect(store.loading()).toBe(false);
+      expect(store.error()).toBeNull();
     });
 
     it('handles API error gracefully', () => {
