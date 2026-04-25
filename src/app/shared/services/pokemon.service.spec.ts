@@ -1,6 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {provideHttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {vi} from 'vitest';
 import {PokemonService} from './pokemon.service';
 import {PokemonRepository} from '../repositories/pokeApi.repository';
@@ -9,6 +10,31 @@ import {Pokemon} from '../models/pokemon.model';
 import {Move} from '../models/move.model';
 import {RawPokemonDTO, RawMoveDTO} from '../models/dto/pokemon.dto';
 import {PokemonListDTO} from '../models/dto/pokemon-list.dto';
+
+// ============================================================
+// Type definitions for mock data
+// ============================================================
+interface MockSpeciesName {
+  language: {name: string};
+  name: string;
+}
+
+interface MockFlavorTextEntry {
+  flavor_text: string;
+  language: {name: string};
+}
+
+interface MockSpecies {
+  id: number;
+  names?: MockSpeciesName[];
+  flavor_text_entries?: MockFlavorTextEntry[];
+}
+
+interface GetByIdWithMovesResult {
+  pokemon: Pokemon;
+  moves: Move[];
+  description: string;
+}
 
 /**
  * Helper factory to create Pokemon objects with overrides.
@@ -74,8 +100,8 @@ function makeRawPokemon(overrides?: Partial<RawPokemonDTO>): RawPokemonDTO {
 /**
  * Helper factory to create Pokemon species DTOs.
  */
-function makeSpecies(overrides?: any): any {
-  const defaults = {
+function makeSpecies(overrides?: Partial<MockSpecies>): MockSpecies {
+  const defaults: MockSpecies = {
     id: 1,
     names: [
       {language: {name: 'en'}, name: 'Bulbasaur'},
@@ -329,33 +355,48 @@ describe('PokemonService', () => {
 
     it('returns empty array when offset >= 150', () => {
       let pokemons: Pokemon[] | undefined = undefined;
-      service.getRange(150, 10).subscribe(
-        (p) => {
+      let completed = false;
+      let errorOccurred = false;
+
+      service.getRange(150, 10).subscribe({
+        next: (p) => {
           pokemons = p;
         },
-        () => {},
-        () => {
-          // Complete without emission (forkJoin of empty array)
-        }
-      );
+        error: () => {
+          errorOccurred = true;
+        },
+        complete: () => {
+          completed = true;
+        },
+      });
 
-      // forkJoin with empty array doesn't emit a value, so use toBeUndefined or check expectation differently
-      expect(pokemons ?? []).toHaveLength(0);
+      // forkJoin with empty array doesn't emit a value but DOES complete
+      expect(completed).toBe(true);
+      expect(errorOccurred).toBe(false);
+      expect(pokemons).toBeUndefined();
     });
 
     it('returns empty array when offset is 151', () => {
       let pokemons: Pokemon[] | undefined = undefined;
-      service.getRange(151, 5).subscribe(
-        (p) => {
+      let completed = false;
+      let errorOccurred = false;
+
+      service.getRange(151, 5).subscribe({
+        next: (p) => {
           pokemons = p;
         },
-        () => {},
-        () => {
-          // Complete without emission (forkJoin of empty array)
-        }
-      );
+        error: () => {
+          errorOccurred = true;
+        },
+        complete: () => {
+          completed = true;
+        },
+      });
 
-      expect(pokemons ?? []).toHaveLength(0);
+      // forkJoin with empty array doesn't emit a value but DOES complete
+      expect(completed).toBe(true);
+      expect(errorOccurred).toBe(false);
+      expect(pokemons).toBeUndefined();
     });
 
     it('works with different ranges', () => {
@@ -408,7 +449,7 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
@@ -427,13 +468,13 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.pokemon.name).toBe('Bulbizarre');
-      expect(result.pokemon.id).toBe(1);
+      expect(result?.pokemon.name).toBe('Bulbizarre');
+      expect(result?.pokemon.id).toBe(1);
     });
 
     it('returns moves from loadMovesFromDtos', () => {
@@ -448,13 +489,13 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(25).subscribe((r) => {
         result = r;
       });
 
-      expect(result.moves).toEqual(moves);
-      expect(result.moves).toHaveLength(2);
+      expect(result?.moves).toEqual(moves);
+      expect(result?.moves).toHaveLength(2);
     });
 
     it('passes pokemon moves to loadMovesFromDtos', () => {
@@ -480,12 +521,12 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.description).toContain('graine');
+      expect(result?.description).toContain('graine');
     });
 
     it('normalizes description (removes form feeds)', () => {
@@ -504,13 +545,13 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.description).toBe('First line Second line');
-      expect(result.description).not.toContain('\f');
+      expect(result!.description).toBe('First line Second line');
+      expect(result!.description).not.toContain('\f');
     });
 
     it('normalizes description (collapses extra whitespace)', () => {
@@ -529,12 +570,12 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.description).toBe('Text with multiple spaces');
+      expect(result!.description).toBe('Text with multiple spaces');
     });
 
     it('normalizes description (trims leading/trailing whitespace)', () => {
@@ -553,12 +594,12 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.description).toBe('Text');
+      expect(result!.description).toBe('Text');
     });
 
     it('returns empty string when no french description found', () => {
@@ -581,12 +622,12 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(150).subscribe((r) => {
         result = r;
       });
 
-      expect(result.description).toBe('');
+      expect(result!.description).toBe('');
     });
 
     it('returns empty string when flavor_text_entries is missing', () => {
@@ -598,12 +639,12 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.description).toBe('');
+      expect(result!.description).toBe('');
     });
 
     it('returns empty string when flavor_text_entries is empty array', () => {
@@ -615,12 +656,12 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(species));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.description).toBe('');
+      expect(result!.description).toBe('');
     });
 
     it('handles undefined species gracefully', () => {
@@ -631,14 +672,14 @@ describe('PokemonService', () => {
       repo.getSpecies.mockReturnValue(of(undefined));
       moveService.loadMovesFromDtos.mockReturnValue(of(moves));
 
-      let result: any;
+      let result: GetByIdWithMovesResult | undefined;
       service.getByIdWithMoves(1).subscribe((r) => {
         result = r;
       });
 
-      expect(result.pokemon).toBeDefined();
-      expect(result.moves).toBeDefined();
-      expect(result.description).toBe('');
+      expect(result!.pokemon).toBeDefined();
+      expect(result!.moves).toBeDefined();
+      expect(result!.description).toBe('');
     });
 
     it('coordinates forkJoin then switchMap to loadMovesFromDtos', () => {
@@ -655,6 +696,34 @@ describe('PokemonService', () => {
       expect(repo.getById).toHaveBeenCalledWith(1);
       expect(repo.getSpecies).toHaveBeenCalledWith(1);
       expect(moveService.loadMovesFromDtos).toHaveBeenCalled();
+    });
+
+    it('should call getById and getSpecies before loadMovesFromDtos', () => {
+      const callOrder: string[] = [];
+
+      const raw = makeRawPokemon({id: 1});
+      const species = makeSpecies();
+      const moves = [makeMove()];
+
+      repo.getById.mockReturnValue(
+        of(raw).pipe(tap(() => callOrder.push('getById')))
+      );
+      repo.getSpecies.mockReturnValue(
+        of(species).pipe(tap(() => callOrder.push('getSpecies')))
+      );
+      moveService.loadMovesFromDtos.mockReturnValue(
+        of(moves).pipe(tap(() => callOrder.push('loadMovesFromDtos')))
+      );
+
+      service.getByIdWithMoves(1).subscribe();
+
+      // Verify getById and getSpecies both complete before loadMovesFromDtos
+      // getById and getSpecies should be called in parallel (forkJoin), then loadMovesFromDtos via switchMap
+      expect(callOrder).toContain('getById');
+      expect(callOrder).toContain('getSpecies');
+      expect(callOrder).toContain('loadMovesFromDtos');
+      // loadMovesFromDtos should be last (after both getById and getSpecies complete)
+      expect(callOrder[callOrder.length - 1]).toBe('loadMovesFromDtos');
     });
   });
 
