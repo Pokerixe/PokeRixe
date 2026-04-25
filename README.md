@@ -10,20 +10,7 @@ Sonar Test :
 [![Quality Gate Status](https://sonar.baptouk.live/api/project_badges/measure?project=PokeRixe-front&metric=alert_status&token=sqb_ad8cebf443af13e1b57178c64191711439729c63)](https://sonar.baptouk.live/dashboard?id=PokeRixe-front)
 [![Coverage](https://sonar.baptouk.live/api/project_badges/measure?project=PokeRixe-front&metric=coverage&token=sqb_ad8cebf443af13e1b57178c64191711439729c63)](https://sonar.baptouk.live/dashboard?id=PokeRixe-front) 
 
-> Le front-end communiqueras avec le back-end via une **API REST** (Java Spring).
----
-
-## 📋 Fonctionnalités
-
-- [x] Consultation du Pokédex (avec filtre par type)
-- [x] Consultation de chaque créature
-- [x] Attaques disponibles pour chaque pokémon
-- [x] Connexion / Inscription utilisateur
-- [x] Gestion d'équipe (slots, mouvements, ordre)
-- [x] Recherche et rejoindre une partie
-- [x] CRUD complet des équipes (interface front non finalisée)
-- [x] Interface de combat interactive
----
+> Le front-end communique avec le back-end via une **API REST** (Java Spring) et une connexion **WebSocket** pour les combats en temps réel.
 
 ## 🏗️ Stack technique
 
@@ -34,6 +21,7 @@ Sonar Test :
 | CSS custom | — | Styles (responsive mobile inclus) |
 | [ECharts](https://echarts.apache.org/) + [ngx-echarts](https://xieziyu.github.io/ngx-echarts/) | 6 / 21 | Graphiques de statistiques |
 | [RxJS](https://rxjs.dev/) | ~7.8 | Gestion des flux asynchrones |
+| [MessagePack](https://msgpack.org/) | ^3.1 | Sérialisation binaire des messages WebSocket |
 | [Vitest](https://vitest.dev/) | — | Tests unitaires |
 | [Compodoc](https://compodoc.app/) | ^1.2 | Documentation du code |
 | [SonarQube](https://www.sonarsource.com/products/sonarqube/) | — | Qualité du code |
@@ -94,24 +82,45 @@ Les fichiers compilés se trouvent dans le dossier `dist/`.
 src/
 └── app/
     ├── core/
-    │   ├── interceptors/       # Intercepteurs HTTP (auth, erreurs...)
-    │   └── store/              # Gestion d'état global
+    │   ├── auth/               # Guards, service d'auth, résolveurs
+    │   ├── fight/              # Service WebSocket pour les combats en temps réel
+    │   ├── game/               # Service de gestion des parties
+    │   ├── history/            # Service d'historique des combats
+    │   ├── interceptors/       # Intercepteurs HTTP (auth, mock dev)
+    │   ├── models/             # Modèles partagés du domaine core
+    │   ├── store/              # État global (signal-based, cache Pokémon)
+    │   └── team/               # Service de gestion des équipes
     │
     ├── pages/                  # Pages principales de l'application
+    │   ├── admin/              # Interface d'administration (rôle Admin)
     │   ├── equipes/            # Gestion des équipes du joueur
-    │   ├── fight/              # Interface de combat JCJ
+    │   ├── fight/              # Interface de combat JCJ (WebSocket)
+    │   ├── forbidden/          # Page d'accès refusé
+    │   ├── history/            # Historique des combats
     │   ├── home/               # Page d'accueil
+    │   ├── login/              # Connexion
     │   ├── pokedex/            # Liste des créatures
-    │   └── pokemon/            # Fiche détaillée d'une créature
+    │   ├── pokemon/            # Fiche détaillée d'une créature
+    │   ├── register/           # Inscription
+    │   ├── search-game/        # Recherche / création de partie
+    │   └── user/               # Profil utilisateur
     │
     └── shared/                 # Éléments réutilisables
         ├── components/
-        │   ├── card/           # Carte créature
-        │   ├── header/         # En-tête global
-        │   ├── progress-bar/   # Barre de progression (HP, stats...)
-        │   ├── star-stats/     # Affichage stats en étoiles
-        │   ├── stats/          # Bloc statistiques (ECharts)
-        │   └── type/           # Badge de type de créature
+        │   ├── card/               # Carte créature générique
+        │   ├── fight-log/          # Journal des actions de combat
+        │   ├── fight-pokemon-card/ # Carte pokémon en cours de combat
+        │   ├── form/               # Composants de formulaire réutilisables
+        │   ├── header/             # En-tête global
+        │   ├── hp-bar/             # Barre de points de vie
+        │   ├── move/               # Affichage d'une attaque
+        │   ├── pokemon-card-list/  # Liste de cartes pokémon
+        │   ├── pokemon-information/# Informations détaillées d'un pokémon
+        │   ├── pokemon-move-selector/ # Sélecteur d'attaques en combat
+        │   ├── progress-bar/       # Barre de progression (stats...)
+        │   ├── star-stats/         # Affichage stats en étoiles
+        │   ├── stats/              # Graphique statistiques (ECharts)
+        │   └── type/               # Badge de type de créature
         ├── mappers/            # Transformation API → modèle interne
         ├── models/
         │   └── dto/            # Types des réponses API
@@ -126,16 +135,28 @@ src/
 Les tests sont exécutés avec **Vitest** via le builder Angular.
 
 ```bash
+# Lancer les tests
 npm test
+
+# Lancer un fichier de test spécifique
+npx vitest run src/app/pages/home/home.spec.ts
+
+# Générer un rapport de couverture (lcov + console)
+npm run test:coverage
 ```
 
 ### Couverture des services core
 
-| Service | Tests | Description |
+| Service / Guard | Tests | Description |
 |---|---|---|
 | `AuthService` | 11 | Login, register, logout, loadCurrentUser, gestion des signaux |
 | `GameService` | 8 | Chargement, création, rejoindre et quitter une partie |
 | `TeamService` | 19 | Slots, mouvements, firstPokemon, saveTeam, resetTeam |
+| `FightWsService` | 9 | Connexion WebSocket, envoi d'actions, gestion de l'état de combat |
+| `FightWsMockService` | 8 | Mock du WebSocket de combat pour les tests et le dev |
+| `HistoryService` | 15 | Chargement et consultation de l'historique des combats |
+| `authGuard` | 11 | Redirection si non authentifié |
+| `roleGuard` | 16 | Contrôle d'accès par rôle (Guest / User / Admin) |
 
 Les tests utilisent `HttpTestingController` pour simuler les appels HTTP et vérifient le comportement des signaux Angular (`signal()`, `computed()`).
 
@@ -151,7 +172,7 @@ Pour lancer une analyse manuellement :
 npm run sonar
 ```
 
-> Requiert un fichier `sonar-project.properties` à la racine avec la configuration du projet, et de avoir un server soanrQube dédié.
+> Requiert un fichier `sonar-project.properties` à la racine avec la configuration du projet, et d'avoir un serveur SonarQube dédié.
 
 Exemple de `sonar-project.properties` :
 
