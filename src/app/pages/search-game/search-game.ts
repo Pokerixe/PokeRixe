@@ -2,6 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TeamService } from '../../core/team/team.service';
 import { GameService } from '../../core/game/game.service';
+import { FightWsService } from '../../core/fight/fight-ws.service';
 
 @Component({
   selector: 'app-search-game',
@@ -23,6 +24,7 @@ export class SearchGame {
   private readonly gamesService = inject(GameService);
   private readonly teamService = inject(TeamService);
   private readonly router = inject(Router);
+  private readonly fightWsService = inject(FightWsService);
   /** Signal en lecture seule exposant la liste des parties disponibles. */
   readonly games = this.gamesService.games;
   /** Signal en lecture seule indiquant qu'un chargement de parties est en cours. */
@@ -70,6 +72,7 @@ export class SearchGame {
     this.gamesService.createGame({ description: this.description(), nombrePokemon }).subscribe({
       next: (game) => {
         this.closeCreateGame();
+        this.fightWsService.connect(game.id);
         this.router.navigate(['/fight', game.id]);
       },
       error: (err) => console.error('Failed to create game', err),
@@ -131,6 +134,7 @@ export class SearchGame {
     this.gamesService.joinGame(gameId).subscribe({
       next: (game) => {
         this.closeJoinModal();
+        this.fightWsService.connect(game.id);
         this.router.navigate(['/fight', game.id]);
       },
       error: (err) => {

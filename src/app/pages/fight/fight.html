@@ -1,142 +1,178 @@
-<div class="fight-main basic-container">
-
-  <div class="fight-top">
-
-    <div class="fight-menu">
-
-      <!-- Infos joueur -->
-      <div class="fight-player player-info">
-        <h2 class="player-name">{{ playerName() }}</h2>
-        <div class="pokemons-balls">
-          @for (pokemon of playerTeam(); track pokemon.slotIndex) {
-            <img
-              class="ball-sprite"
-              [class.dead]="pokemon.isFainted"
-              [src]="pokemon.sprite"
-              [alt]="pokemon.name"
-            />
-          }
-        </div>
-      </div>
-
-      <!-- Pokémon actif du joueur (sprite dos) -->
-      <div class="fight-player-pokemon pokemon-fighting">
-        <div class="pokemon-name">
-          {{ playerActive()?.name || 'Aucun Pokémon' }}
-        </div>
-        <app-hp-bar
-          [hp]="playerActive()?.hp ?? 0"
-          [hpMax]="playerActive()?.hpMax ?? 0"
-        ></app-hp-bar>
-
-        <div class="battle-base">
-          <img src="/battle-base-basic.png" alt="Battle Base">
-        </div>
-
-        <div class="img-container">
-          <img [src]="playerActive()?.spriteBack" [alt]="playerActive()?.name || 'Pokemon'">
-        </div>
-      </div>
-
-      <!-- Pokémon actif de l'adversaire (sprite face) -->
-      <div class="fight-opponent-pokemon pokemon-fighting">
-        <div class="pokemon-name">{{ opponentActive()?.name || '???' }}</div>
-
-        <app-hp-bar
-          [hp]="opponentActive()?.hp ?? 0"
-          [hpMax]="opponentActive()?.hpMax ?? 0"
-        ></app-hp-bar>
-
-        <div class="battle-base">
-          <img src="/battle-base-basic.png" alt="Battle Base">
-        </div>
-
-        <div class="img-container">
-          <img [src]="opponentActive()?.sprite" [alt]="opponentActive()?.name || 'Adversaire'">
-        </div>
-      </div>
-
-      <!-- Infos adversaire -->
-      <div class="fight-opponent player-info">
-        <h2 class="player-name">{{ opponentName() }}</h2>
-        <div class="pokemons-balls">
-          <!-- Pokémon adverses déjà vus -->
-          @for (pokemon of seenOpponents(); track pokemon.slotIndex) {
-            <img
-              class="ball-sprite"
-              [class.dead]="pokemon.isFainted"
-              [src]="pokemon.sprite"
-              [alt]="pokemon.name"
-            />
-          }
-          <!-- Pokémon adverses pas encore découverts (pokéballs) -->
-          @for (_ of [].constructor(unseenOpponentCount()); track $index) {
-            <img
-              class="ball-sprite pokeball"
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
-              alt="Pokéball"
-            />
-          }
-        </div>
-      </div>
-
+<!-- Écran : connexion en cours -->
+@if (connectionStatus() === 'connecting') {
+  <div class="fight-overlay">
+    <div class="fight-overlay-content">
+      <div class="fight-spinner"></div>
+      <p>Connexion au combat...</p>
     </div>
-
-    <!-- Journal de combat -->
-    <div class="fight-log">
-      <app-fight-log [events]="log()"></app-fight-log>
-    </div>
-
   </div>
+}
 
-  <!-- Bannière d'état -->
-  @if (error()) {
-    <div class="fight-status fight-error">{{ error() }}</div>
-  }
-  @if (isFinished()) {
-    <div class="fight-status fight-winner">{{ winner() }} remporte le combat !</div>
-  } @else if (mustSwitch()) {
-    <div class="fight-status">Choisissez votre prochain Pokémon !</div>
-  } @else if (playerHasActed()) {
-    <div class="fight-status">En attente de l'adversaire...</div>
-  }
+<!-- Écran : attente de l'adversaire -->
+@else if (connectionStatus() === 'waiting_opponent') {
+  <div class="fight-overlay">
+    <div class="fight-overlay-content">
+      <div class="fight-spinner"></div>
+      <p>En attente de l'adversaire...</p>
+    </div>
+  </div>
+}
 
-  <!-- Attaques (masquées si le joueur a déjà joué ou doit switcher) -->
-  @if (canAct() && !mustSwitch()) {
-    <div class="fight-menu-moves">
-      @for (move of activePlayerMoves(); track move.slot) {
-        @if (move.name !== '') {
-          <div class="fight-move-wrapper" (click)="onMoveClick(move)" style="cursor: pointer;">
-            <app-move
-              [inFight]="true"
-              [power]="move.power ?? 0"
-              [accuracy]="move.accuracy"
-              [name]="move.name"
-              [frenchName]="move.frenchName || ''"
-              [damage_class]="move.damageClass"
-              [type]="move.type"
-              [isDefined]="true">
-            </app-move>
+<!-- Écran : déconnecté -->
+@else if (connectionStatus() === 'disconnected') {
+  <div class="fight-overlay">
+    <div class="fight-overlay-content fight-overlay-error">
+      <p>Connexion perdue.</p>
+      <button class="btn-retry" (click)="retryConnect()">Retenter</button>
+    </div>
+  </div>
+}
+
+<!-- Interface de combat principale -->
+@else {
+  <div class="fight-main basic-container">
+
+    <div class="fight-top">
+
+      <div class="fight-menu">
+
+        <!-- Infos joueur -->
+        <div class="fight-player player-info">
+          <h2 class="player-name">{{ playerName() }}</h2>
+          <div class="pokemons-balls">
+            @for (pokemon of playerTeam(); track pokemon.slotIndex) {
+              <img
+                class="ball-sprite"
+                [class.dead]="pokemon.isFainted"
+                [src]="pokemon.sprite"
+                [alt]="pokemon.name"
+              />
+            }
           </div>
+        </div>
+
+        <!-- Pokémon actif du joueur (sprite dos) -->
+        <div class="fight-player-pokemon pokemon-fighting">
+          <div class="pokemon-name">
+            {{ playerActive()?.name || 'Aucun Pokémon' }}
+          </div>
+          <app-hp-bar
+            [hp]="playerActive()?.hp ?? 0"
+            [hpMax]="playerActive()?.hpMax ?? 0"
+          ></app-hp-bar>
+
+          <div class="battle-base">
+            <img src="/battle-base-basic.png" alt="Battle Base">
+          </div>
+
+          <div class="img-container">
+            <img [src]="playerActive()?.spriteBack" [alt]="playerActive()?.name || 'Pokemon'">
+          </div>
+        </div>
+
+        <!-- Pokémon actif de l'adversaire (sprite face) -->
+        <div class="fight-opponent-pokemon pokemon-fighting">
+          <div class="pokemon-name">{{ opponentActive()?.name || '???' }}</div>
+
+          <app-hp-bar
+            [hp]="opponentActive()?.hp ?? 0"
+            [hpMax]="opponentActive()?.hpMax ?? 0"
+          ></app-hp-bar>
+
+          <div class="battle-base">
+            <img src="/battle-base-basic.png" alt="Battle Base">
+          </div>
+
+          <div class="img-container">
+            <img [src]="opponentActive()?.sprite" [alt]="opponentActive()?.name || 'Adversaire'">
+          </div>
+        </div>
+
+        <!-- Infos adversaire -->
+        <div class="fight-opponent player-info">
+          <h2 class="player-name">{{ opponentName() }}</h2>
+          <div class="pokemons-balls">
+            @for (pokemon of seenOpponents(); track pokemon.slotIndex) {
+              <img
+                class="ball-sprite"
+                [class.dead]="pokemon.isFainted"
+                [src]="pokemon.sprite"
+                [alt]="pokemon.name"
+              />
+            }
+            @for (_ of [].constructor(unseenOpponentCount()); track $index) {
+              <img
+                class="ball-sprite pokeball"
+                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+                alt="Pokéball"
+              />
+            }
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Journal de combat -->
+      <div class="fight-log">
+        <app-fight-log [events]="log()"></app-fight-log>
+      </div>
+
+    </div>
+
+    <!-- Bannière d'état -->
+    @if (error()) {
+      <div class="fight-status fight-error">{{ error() }}</div>
+    }
+    @if (isFinished()) {
+      <div class="fight-status fight-winner">{{ winner() }} remporte le combat !</div>
+    } @else if (isPendingAction()) {
+      <div class="fight-status fight-pending">
+        <span class="fight-spinner fight-spinner-sm"></span>
+        Traitement en cours...
+      </div>
+    } @else if (mustSwitch()) {
+      <div class="fight-status">Choisissez votre prochain Pokémon !</div>
+    } @else if (playerHasActed()) {
+      <div class="fight-status">En attente de l'adversaire...</div>
+    }
+
+    <!-- Attaques (masquées si le joueur a déjà joué, attend une réponse ou doit switcher) -->
+    @if (canAct() && !mustSwitch()) {
+      <div class="fight-menu-moves">
+        @for (move of activePlayerMoves(); track move.slot) {
+          @if (move.name !== '') {
+            <div class="fight-move-wrapper" (click)="onMoveClick(move)" style="cursor: pointer;">
+              <app-move
+                [inFight]="true"
+                [power]="move.power ?? 0"
+                [accuracy]="move.accuracy"
+                [name]="move.name"
+                [frenchName]="move.frenchName || ''"
+                [damage_class]="move.damageClass"
+                [type]="move.type"
+                [isDefined]="true">
+              </app-move>
+            </div>
+          }
         }
+      </div>
+    }
+
+    <!-- Équipe du joueur (switch) -->
+    <div class="fight-menu-pokemons">
+      @for (pokemon of playerTeam(); track pokemon.slotIndex) {
+        <app-fight-pokemon-card
+          [img]="pokemon.sprite"
+          [name]="pokemon.name"
+          [hp]="pokemon.hp"
+          [hpMax]="pokemon.hpMax"
+          [isFainted]="pokemon.isFainted"
+          [isActive]="pokemon.slotIndex === playerActive()?.slotIndex"
+          [canSwitch]="(mustSwitch() || canAct()) && !isPendingAction()"
+          (switchClick)="onPokemonSwitch(pokemon.slotIndex)">
+        </app-fight-pokemon-card>
       }
     </div>
-  }
 
-  <!-- Équipe du joueur (switch) -->
-  <div class="fight-menu-pokemons">
-    @for (pokemon of playerTeam(); track pokemon.slotIndex) {
-      <app-fight-pokemon-card
-        [img]="pokemon.sprite"
-        [name]="pokemon.name"
-        [hp]="pokemon.hp"
-        [hpMax]="pokemon.hpMax"
-        [isFainted]="pokemon.isFainted"
-        [isActive]="pokemon.slotIndex === playerActive()?.slotIndex"
-        [canSwitch]="mustSwitch() || canAct()"
-        (switchClick)="onPokemonSwitch(pokemon.slotIndex)">
-      </app-fight-pokemon-card>
-    }
   </div>
-
-</div>
+}

@@ -24,7 +24,7 @@ export const roleGuard = (requiredRole: Role): CanActivateFn => () => {
     return router.createUrlTree(['/forbidden']);
   }
 
-  if (rolePriority[userRole] >= rolePriority[requiredRole]) {
+  if (rolePriority[userRole] < rolePriority[requiredRole]) {
     return router.createUrlTree(['/forbidden'])
   }
   return true
