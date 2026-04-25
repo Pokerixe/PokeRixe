@@ -696,7 +696,7 @@ describe('MoveService', () => {
       });
 
       // Only physical/special moves with power > 30 should remain
-      expect(result!.length).toBeGreaterThan(0);
+      expect(result!.length).toBe(2);
       expect(result!.every(m => m.power !== null && m.power > 30)).toBe(true);
       expect(result!.every(m => m.damageClass === 'physical' || m.damageClass === 'special')).toBe(
         true
@@ -724,7 +724,7 @@ describe('MoveService', () => {
         });
       });
 
-      expect(result!.length).toBeGreaterThan(0);
+      expect(result!.length).toBe(3);
     });
   });
 });
