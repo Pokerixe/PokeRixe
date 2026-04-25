@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, UrlTree } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -29,6 +31,8 @@ describe('authGuard', () => {
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: Router, useValue: router },
+        provideHttpClient(),
+        provideRouter([]),
       ],
     });
   });
