@@ -167,13 +167,13 @@ describe('PokemonService', () => {
   };
 
   beforeEach(() => {
-    const repoMock = {
+    repo = {
       getList: vi.fn(),
       getById: vi.fn(),
       getByUrl: vi.fn(),
       getSpecies: vi.fn(),
     };
-    const moveMock = {
+    moveService = {
       loadMovesFromDtos: vi.fn(),
       filterMoves: vi.fn(),
     };
@@ -181,15 +181,13 @@ describe('PokemonService', () => {
     TestBed.configureTestingModule({
       providers: [
         PokemonService,
-        {provide: PokemonRepository, useValue: repoMock},
-        {provide: MoveService, useValue: moveMock},
+        {provide: PokemonRepository, useValue: repo},
+        {provide: MoveService, useValue: moveService},
         provideHttpClient(),
       ],
     });
 
     service = TestBed.inject(PokemonService);
-    repo = TestBed.inject(PokemonRepository) as any;
-    moveService = TestBed.inject(MoveService) as any;
   });
 
   // ============================================================
