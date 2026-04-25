@@ -72,129 +72,60 @@ describe('PokemonRepository', () => {
   });
 
   describe('getList()', () => {
-    it('should send GET request to /pokemon with default limit of 150', () => {
-      repository.getList().subscribe(data => {
+    it.each([
+      { limit: 150, description: 'uses default limit 150' },
+      { limit: 50, description: 'uses custom limit 50' },
+      { limit: 20, description: 'uses custom limit 20' },
+      { limit: 100, description: 'uses custom limit 100' },
+      { limit: 200, description: 'uses custom limit 200' },
+    ])('$description', ({ limit }) => {
+      repository.getList(limit || undefined).subscribe(data => {
         expect(data).toEqual(mockPokemonListDTO);
       });
 
-      const req = httpMock.expectOne('https://pokeapi.co/api/v2/pokemon?limit=150');
+      const req = httpMock.expectOne(`https://pokeapi.co/api/v2/pokemon?limit=${limit}`);
       expect(req.request.method).toBe('GET');
       req.flush(mockPokemonListDTO);
-    });
-
-    it('should send GET request with custom limit parameter', () => {
-      const customLimit = 50;
-
-      repository.getList(customLimit).subscribe(data => {
-        expect(data).toEqual(mockPokemonListDTO);
-      });
-
-      const req = httpMock.expectOne(
-        `https://pokeapi.co/api/v2/pokemon?limit=${customLimit}`
-      );
-      expect(req.request.method).toBe('GET');
-      req.flush(mockPokemonListDTO);
-    });
-
-    it('should work with different limit values', () => {
-      const limits = [20, 100, 200];
-
-      limits.forEach(limit => {
-        repository.getList(limit).subscribe();
-        const req = httpMock.expectOne(
-          `https://pokeapi.co/api/v2/pokemon?limit=${limit}`
-        );
-        expect(req.request.method).toBe('GET');
-        req.flush(mockPokemonListDTO);
-      });
     });
   });
 
   describe('getById()', () => {
-    it('should send GET request to /pokemon/{id}', () => {
-      const id = 1;
-
+    it.each([1, 25, 150])('should send GET to /pokemon/%i', (id) => {
       repository.getById(id).subscribe(data => {
-        expect(data).toEqual(mockRawPokemonDTO);
+        expect(data.id).toBe(id);
       });
 
+      const mockData = { ...mockRawPokemonDTO, id };
       const req = httpMock.expectOne(`https://pokeapi.co/api/v2/pokemon/${id}`);
       expect(req.request.method).toBe('GET');
-      req.flush(mockRawPokemonDTO);
-    });
-
-    it('should work with different pokemon IDs', () => {
-      const pokemonIds = [1, 25, 150];
-
-      pokemonIds.forEach(id => {
-        repository.getById(id).subscribe(data => {
-          expect(data.id).toBe(id);
-        });
-
-        const mockData = { ...mockRawPokemonDTO, id };
-        const req = httpMock.expectOne(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        expect(req.request.method).toBe('GET');
-        req.flush(mockData);
-      });
+      req.flush(mockData);
     });
   });
 
   describe('getByUrl()', () => {
-    it('should send GET request to the provided URL', () => {
-      const url = 'https://pokeapi.co/api/v2/pokemon/1/';
-
-      repository.getByUrl(url).subscribe(data => {
-        expect(data).toEqual(mockRawPokemonDTO);
-      });
+    it.each([
+      'https://pokeapi.co/api/v2/pokemon/1/',
+      'https://pokeapi.co/api/v2/pokemon/25/',
+      'https://pokeapi.co/api/v2/pokemon/150/',
+    ])('should send GET to %s', (url) => {
+      repository.getByUrl(url).subscribe();
 
       const req = httpMock.expectOne(url);
       expect(req.request.method).toBe('GET');
       req.flush(mockRawPokemonDTO);
     });
-
-    it('should work with different URLs', () => {
-      const urls = [
-        'https://pokeapi.co/api/v2/pokemon/1/',
-        'https://pokeapi.co/api/v2/pokemon/25/',
-        'https://pokeapi.co/api/v2/pokemon/150/',
-      ];
-
-      urls.forEach(url => {
-        repository.getByUrl(url).subscribe();
-
-        const req = httpMock.expectOne(url);
-        expect(req.request.method).toBe('GET');
-        req.flush(mockRawPokemonDTO);
-      });
-    });
   });
 
   describe('getSpecies()', () => {
-    it('should send GET request to /pokemon-species/{id}', () => {
-      const id = 1;
-
+    it.each([1, 25, 150])('should send GET to /pokemon-species/%i', (id) => {
       repository.getSpecies(id).subscribe(data => {
-        expect(data).toEqual(mockSpeciesDTO);
+        expect(data.id).toBe(id);
       });
 
+      const mockData = { ...mockSpeciesDTO, id };
       const req = httpMock.expectOne(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
       expect(req.request.method).toBe('GET');
-      req.flush(mockSpeciesDTO);
-    });
-
-    it('should work with different species IDs', () => {
-      const speciesIds = [1, 25, 150];
-
-      speciesIds.forEach(id => {
-        repository.getSpecies(id).subscribe(data => {
-          expect(data.id).toBe(id);
-        });
-
-        const mockData = { ...mockSpeciesDTO, id };
-        const req = httpMock.expectOne(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
-        expect(req.request.method).toBe('GET');
-        req.flush(mockData);
-      });
+      req.flush(mockData);
     });
 
     it('should include flavor_text_entries in response', () => {
