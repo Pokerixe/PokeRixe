@@ -41,8 +41,8 @@ export class RegisterPage {
 
     const values = this.registerForm.value;
     this.auth.register({
-      name: values.name!,
-      email: values.email!,
+      pseudo: values.name!,
+      mail: values.email!,
       password: values.password!
     });
   }

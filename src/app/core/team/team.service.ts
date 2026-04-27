@@ -39,7 +39,7 @@ export class TeamService {
    * via PokeAPI, puis met à jour le signal _team.
    */
   loadTeam(userId: string): Observable<Team> {
-    return this.http.get<ApiResponse<Team>>(`${this.BASE}/team`).pipe(
+    return this.http.get<ApiResponse<Team>>(`${this.BASE}team`).pipe(
       map(r => r.data),
       switchMap(team => this.enrichTeamWithFrenchNames(team)),
       tap(team => this._team.set({...team, userId: team.userId ?? userId})),
@@ -77,7 +77,7 @@ export class TeamService {
    */
   saveTeam(): void {
     this._isSaving.set(true);
-    this.http.put<ApiResponse<Team>>(`${this.BASE}/team`, this._team()).pipe(
+    this.http.put<ApiResponse<Team>>(`${this.BASE}team`, this._team()).pipe(
       map(r => r.data),
       switchMap(team => this.enrichTeamWithFrenchNames(team)),
     ).subscribe({

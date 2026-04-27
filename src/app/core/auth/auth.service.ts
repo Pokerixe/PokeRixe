@@ -1,7 +1,7 @@
 import {computed, inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../models/user.model';
-import {AuthResponse, LoginDTO, RegisterDTO} from '../models/auth.model';
+import {LoginDTO, RegisterDTO, UpdateDTO} from '../models/auth.model';
 import {environment} from '../../../environments/environment';
 import {Router} from '@angular/router';
 import { TeamService } from "../team/team.service";
@@ -20,10 +20,8 @@ export class AuthService {
   private readonly API_URL = environment.apiUrl;
 
   private readonly _currentUser = signal<User | null>(null);
-  /** Signal en lecture seule exposant l'utilisateur actuellement connecté, ou `null`. */
   readonly currentUser = this._currentUser.asReadonly();
 
-  /** Signal calculé indiquant si un utilisateur est actuellement authentifié. */
   readonly isAuthenticated = computed(() => this._currentUser() !== null);
 
   /** Computed pour obtenir le rôle de l'utilisateur courant, ou null s'il n'est pas connecté
@@ -39,15 +37,10 @@ export class AuthService {
    * @param loginDTO les credentials de connexion
    */
   login(loginDTO: LoginDTO) {
-    this.http.post<ApiResponse<AuthResponse>>(this.API_URL + 'login', loginDTO).pipe(map(r => r.data)).subscribe({
-      next: (response: AuthResponse) => {
-        this._currentUser.set(response.user);
-
-        const user = this._currentUser();
-        if (user) {
-          this.team.loadTeam(user.id).subscribe();
-        }
-
+    this.http.post<ApiResponse<User>>(this.API_URL + 'auth/signin', loginDTO).pipe(map(r => r.data)).subscribe({
+      next: (user: User) => {
+        this._currentUser.set(user);
+        this.team.loadTeam(user.id).subscribe();
         this.router.navigateByUrl('/');
       },
       error: (err) => {
@@ -61,9 +54,9 @@ export class AuthService {
    * @param registerDTO les informations d'inscription
    */
   register(registerDTO: RegisterDTO) {
-    this.http.post<ApiResponse<AuthResponse>>(this.API_URL + 'register', registerDTO).pipe(map(r => r.data)).subscribe({
-      next: (response: AuthResponse) => {
-        this._currentUser.set(response.user);
+    this.http.post<ApiResponse<User>>(this.API_URL + 'auth/signup', registerDTO).pipe(map(r => r.data)).subscribe({
+      next: (user: User) => {
+        this._currentUser.set(user);
         this.router.navigateByUrl('/');
       },
       error: (err) => {
@@ -76,7 +69,7 @@ export class AuthService {
    * Effectue une requete de logout et met a jour le signal currentUser en cas de succes
    */
   logout() {
-    this.http.post<void>(this.API_URL + 'logout', {}).subscribe({
+    this.http.post<void>(this.API_URL + 'auth/signout', {}).subscribe({
       next: () => {
         this.team.resetTeam();
         this._currentUser.set(null);
@@ -97,37 +90,37 @@ export class AuthService {
    *
    */
   loadCurrentUser() {
-    this.http.get<ApiResponse<AuthResponse>>(this.API_URL + 'me').pipe(map(r => r.data)).subscribe({
-      next: (response: AuthResponse) => {
-        if (response?.user) {
-          this._currentUser.set(response.user);
-          const user = this._currentUser();
-          if (user) {
-            this.team.loadTeam(user.id).subscribe();
-          }
+    this.http.get<ApiResponse<User>>(this.API_URL + 'users/me').pipe(map(r => r.data)).subscribe({
+      next: (user: User) => {
+        if (user) {
+          this._currentUser.set(user);
+          this.team.loadTeam(user.id).subscribe();
         }
       },
       error: (err) => {
-        console.error('Failed to load current qdqdqd', err);
+        console.error('Failed to load current user', err);
         this._currentUser.set(null);
       }
     });
   }
 
   /**
-   * Met à jour localement le profil de l'utilisateur courant (nom et email).
-   * Modifie uniquement le signal côté client en attendant une route backend dédiée.
-   * @param payload Objet contenant le nouveau `name` et le nouvel `email`
+   * Met à jour le profil de l'utilisateur courant (nom et email).
+   * @param updateDTO Objet contenant le nouveau `name` et le nouveau`mail`
    */
-  updateCurrentUserProfile(payload: { name: string; email: string }) {
-    const current = this._currentUser();
-    if (!current) return;
+  updateCurrentUserProfile(updateDTO: UpdateDTO) {
+    this.http.patch<ApiResponse<User>>(this.API_URL + 'users/profile', updateDTO).pipe(map(r => r.data)).subscribe ({
+      next: (user:User) => {
+        if (user) {
+          this._currentUser.set(user);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to update current user',err);
+      }
+      }   
+    );
 
-    this._currentUser.set({
-      ...current,
-      name: payload.name,
-      email: payload.email,
-    });
   }
 
 }

@@ -38,7 +38,7 @@ export class LoginPage {
 
     const values = this.loginForm.value;
     this.auth.login({
-      email: values.email!,
+      mail: values.email!,
       password: values.password!
     });
   }

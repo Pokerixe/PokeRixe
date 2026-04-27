@@ -20,12 +20,12 @@
     </div>
 
     <div class="field">
-      <label for="email">Email</label>
-      <input id="email" formControlName="email" type="email" placeholder="email@exemple.com" autocomplete="email">
-      @if (profileForm.get('email')?.touched && profileForm.get('email')?.hasError('required')) {
+      <label for="mail">Email</label>
+      <input id="email" formControlName="mail" type="email" placeholder="email@exemple.com" autocomplete="mail">
+      @if (profileForm.get('mail')?.touched && profileForm.get('mail')?.hasError('required')) {
         <span class="error">L'email est obligatoire.</span>
       }
-      @if (profileForm.get('email')?.touched && profileForm.get('email')?.hasError('email')) {
+      @if (profileForm.get('mail')?.touched && profileForm.get('mail')?.hasError('mail')) {
         <span class="error">Le format de l'email est invalide.</span>
       }
     </div>
