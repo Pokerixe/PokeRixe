@@ -8,7 +8,7 @@ import { TeamService } from '../team/team.service';
 import { Role, User } from '../models/user.model';
 import { Team } from '../team/team.model';
 
-const mockUser: User = { id: '1', name: 'Test User', email: 'test@gmail.com', role: Role.User };
+const mockUser: User = { id: '1', name: 'Test User', mail: 'test@gmail.com', role: Role.User };
 
 const mockTeam: Team = { userId: '1', firstPokemon: 0, slots: Array(6).fill(null) };
 
@@ -52,7 +52,7 @@ describe('AuthService', () => {
 
   describe('login()', () => {
     it('sets currentUser signal on success', () => {
-      service.login({ email: 'test@gmail.com', password: 'password' });
+      service.login({ mail: 'test@gmail.com', password: 'password' });
 
       const req = httpMock.expectOne(r => r.url.includes('/login'));
       expect(req.request.method).toBe('POST');
@@ -65,15 +65,15 @@ describe('AuthService', () => {
     });
 
     it('sends correct body', () => {
-      service.login({ email: 'test@gmail.com', password: 'password' });
+      service.login({ mail: 'test@gmail.com', password: 'password' });
 
       const req = httpMock.expectOne(r => r.url.includes('/login'));
-      expect(req.request.body).toEqual({ email: 'test@gmail.com', password: 'password' });
+      expect(req.request.body).toEqual({ mail: 'test@gmail.com', password: 'password' });
       req.flush(apiResp({ user: mockUser }));
     });
 
     it('leaves currentUser null when response user is null', () => {
-      service.login({ email: 'wrong@email.com', password: 'bad' });
+      service.login({ mail: 'wrong@email.com', password: 'bad' });
 
       const req = httpMock.expectOne(r => r.url.includes('/login'));
       req.flush(apiResp({ user: null }));
@@ -85,7 +85,7 @@ describe('AuthService', () => {
 
   describe('register()', () => {
     it('sets currentUser signal on success', () => {
-      service.register({ name: 'New User', email: 'new@example.com', password: 'pass123' });
+      service.register({ pseudo: 'New User', mail: 'new@example.com', password: 'pass123' });
 
       const req = httpMock.expectOne(r => r.url.includes('/register'));
       expect(req.request.method).toBe('POST');
@@ -96,7 +96,7 @@ describe('AuthService', () => {
     });
 
     it('sends correct body', () => {
-      const dto = { name: 'New User', email: 'new@example.com', password: 'pass123' };
+      const dto = { pseudo: 'New User', mail: 'new@example.com', password: 'pass123' };
       service.register(dto);
 
       const req = httpMock.expectOne(r => r.url.includes('/register'));
@@ -108,7 +108,7 @@ describe('AuthService', () => {
   describe('logout()', () => {
     it('clears currentUser and calls resetTeam', () => {
       // Pre-login to set a user
-      service.login({ email: 'test@gmail.com', password: 'password' });
+      service.login({ mail: 'test@gmail.com', password: 'password' });
       httpMock.expectOne(r => r.url.includes('/login')).flush(apiResp({ user: mockUser }));
       expect(service.isAuthenticated()).toBe(true);
 
