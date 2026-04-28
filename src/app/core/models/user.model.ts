@@ -21,8 +21,25 @@ export enum Role {
  * Modèle d'un utilisateur interne a l'application
  */
 export interface User {
-  id: string;
-  name: string;
   mail: string;
+  password: string;
+  id: string;
+  pseudo: string;
   role: Role;
+  roles: Role[];
+  team: null;
 }
+
+
+/**
+ * {
+    "mail": "tatata@test.com",
+    "password": "$2a$10$DRNMhzO6U10qUCfoNariBeemKAN8XbuqIjvNW9YwDSvRHioUV8PLO",
+    "pseudo": "baptouk",
+    "id": "5bbb835b-de3a-4cf0-9160-88298663e353",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "team": null
+}
+ */

@@ -2,7 +2,7 @@
   <header class="user-header">
     <h1 class="user-title">Profil Dresseur</h1>
     @if (auth.isAuthenticated()) {
-      <p class="user-welcome">Bienvenue {{ auth.currentUser()?.name }}</p>
+      <p class="user-welcome">Bienvenue {{ auth.currentUser()?.pseudo }}</p>
       <p class="user-meta">Role: {{ currentRoleLabel() }}</p>
     }
   </header>
@@ -10,11 +10,11 @@
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="user-form">
     <div class="field">
       <label for="name">Nom</label>
-      <input id="name" formControlName="name" type="text" placeholder="Nom du dresseur" autocomplete="name">
-      @if (profileForm.get('name')?.touched && profileForm.get('name')?.hasError('required')) {
+      <input id="name" formControlName="pseudo" type="text" placeholder="Nom du dresseur" autocomplete="pseudo">
+      @if (profileForm.get('pseudo')?.touched && profileForm.get('pseudo')?.hasError('required')) {
         <span class="error">Le nom est obligatoire.</span>
       }
-      @if (profileForm.get('name')?.touched && profileForm.get('name')?.hasError('minlength')) {
+      @if (profileForm.get('pseudo')?.touched && profileForm.get('pseudo')?.hasError('minlength')) {
         <span class="error">Le nom doit contenir au moins 2 caracteres.</span>
       }
     </div>

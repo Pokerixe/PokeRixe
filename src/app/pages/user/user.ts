@@ -18,7 +18,7 @@ export class UserPage {
   saveMessage = '';
 
   profileForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
+    pseudo: ['', [Validators.required, Validators.minLength(2)]],
     mail: ['', [Validators.required, Validators.email]],
   });
 
@@ -32,7 +32,7 @@ export class UserPage {
     effect(() => {
       const user = this.auth.currentUser();
       if (user) {
-        this.profileForm.patchValue({ name: user.name, mail: user.mail }, { emitEvent: false });
+        this.profileForm.patchValue({ pseudo: user.pseudo, mail: user.mail }, { emitEvent: false });
       }
     });
   }
@@ -45,7 +45,7 @@ export class UserPage {
 
     const values = this.profileForm.value;
     this.auth.updateCurrentUserProfile({
-      pseudo: values.name!,
+      pseudo: values.pseudo!,
       mail: values.mail!,
     });
     this.saveMessage = 'Modifications enregistrees.';
@@ -53,7 +53,7 @@ export class UserPage {
 
   onReset() {
     const user = this.auth.currentUser();
-    this.profileForm.reset({ name: user?.name ?? '', mail: user?.mail ?? '' });
+    this.profileForm.reset({ pseudo: user?.pseudo ?? '', mail: user?.mail ?? '' });
     this.saveMessage = '';
   }
 

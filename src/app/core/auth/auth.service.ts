@@ -1,5 +1,5 @@
 import {computed, inject, Injectable, signal} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {User} from '../models/user.model';
 import {LoginDTO, RegisterDTO, UpdateDTO} from '../models/auth.model';
 import {environment} from '../../../environments/environment';
@@ -37,10 +37,12 @@ export class AuthService {
    * @param loginDTO les credentials de connexion
    */
   login(loginDTO: LoginDTO) {
-    this.http.post<ApiResponse<User>>(this.API_URL + 'auth/signin', loginDTO).pipe(map(r => r.data)).subscribe({
+    const params = new HttpParams().set('mail', loginDTO.mail).set('password', loginDTO.password);
+    this.http.post<User>(this.API_URL + 'auth/signin', null, { params }).subscribe({
       next: (user: User) => {
         this._currentUser.set(user);
         this.team.loadTeam(user.id).subscribe();
+        this.loadCurrentUser();
         this.router.navigateByUrl('/');
       },
       error: (err) => {
@@ -54,9 +56,11 @@ export class AuthService {
    * @param registerDTO les informations d'inscription
    */
   register(registerDTO: RegisterDTO) {
-    this.http.post<ApiResponse<User>>(this.API_URL + 'auth/signup', registerDTO).pipe(map(r => r.data)).subscribe({
+    const params = new HttpParams().set('pseudo', registerDTO.pseudo).set('mail', registerDTO.mail).set('password', registerDTO.password);
+    this.http.post<User>(this.API_URL + 'auth/signup', null, { params }).subscribe({
       next: (user: User) => {
         this._currentUser.set(user);
+        this.loadCurrentUser();
         this.router.navigateByUrl('/');
       },
       error: (err) => {
@@ -90,7 +94,7 @@ export class AuthService {
    *
    */
   loadCurrentUser() {
-    this.http.get<ApiResponse<User>>(this.API_URL + 'users/me').pipe(map(r => r.data)).subscribe({
+    this.http.get<User>(this.API_URL + 'users/me').subscribe({
       next: (user: User) => {
         if (user) {
           this._currentUser.set(user);
@@ -109,7 +113,8 @@ export class AuthService {
    * @param updateDTO Objet contenant le nouveau `name` et le nouveau`mail`
    */
   updateCurrentUserProfile(updateDTO: UpdateDTO) {
-    this.http.patch<ApiResponse<User>>(this.API_URL + 'users/profile', updateDTO).pipe(map(r => r.data)).subscribe ({
+    const params = new HttpParams().set('pseudo', updateDTO.pseudo).set('mail', updateDTO.mail);
+    this.http.patch<User>(this.API_URL + 'users/profile', null, { params }).subscribe ({
       next: (user:User) => {
         if (user) {
           this._currentUser.set(user);
