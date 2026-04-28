@@ -1,7 +1,7 @@
 import { Signal } from '@angular/core';
 import { FightPhase, FightPokemonState, TurnEvent } from './fight.model';
 
-export type ConnectionStatus = 'connecting' | 'waiting_opponent' | 'in_fight' | 'disconnected';
+export type ConnectionStatus = 'connecting' | 'waiting' | 'playing' | 'disconnected';
 
 export abstract class FightWsService {
   abstract readonly phase: Signal<FightPhase | null>;
@@ -13,8 +13,10 @@ export abstract class FightWsService {
   abstract readonly log: Signal<TurnEvent[]>;
   abstract readonly winner: Signal<string | null>;
   abstract readonly isFinished: Signal<boolean>;
+
   abstract readonly error: Signal<string | null>;
   abstract readonly connectionStatus: Signal<ConnectionStatus>;
+
   abstract readonly opponentName: Signal<string>;
   abstract readonly playerName: Signal<string>;
   abstract readonly opponentRemainingCount: Signal<number>;

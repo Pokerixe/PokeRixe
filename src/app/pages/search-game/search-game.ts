@@ -69,11 +69,10 @@ export class SearchGame {
    */
   submitCreateGame() {
     const nombrePokemon = this.teamSlots.filter(s => !!s).length || 1;
-    this.gamesService.createGame({ description: this.description(), nombrePokemon }).subscribe({
+    this.gamesService.createGame(this.description()).subscribe({
       next: (game) => {
         this.closeCreateGame();
-        this.fightWsService.connect(game.id);
-        this.router.navigate(['/fight', game.id]);
+        this.router.navigate(['/fight', game.gameId]);
       },
       error: (err) => console.error('Failed to create game', err),
     });
@@ -81,7 +80,6 @@ export class SearchGame {
 
   /**
    * Ouvre la modale de sélection du Pokémon pour rejoindre une partie.
-   * @param gameId Identifiant de la partie à rejoindre (à définir avant d'appeler)
    */
   openJoinModal() {
     this.joinModalOpen.set(true);
@@ -132,10 +130,9 @@ export class SearchGame {
 
     // Call the GameService to join. subscribe to handle result or error
     this.gamesService.joinGame(gameId).subscribe({
-      next: (game) => {
+      next: (_) => {
         this.closeJoinModal();
-        this.fightWsService.connect(game.id);
-        this.router.navigate(['/fight', game.id]);
+        this.router.navigate(['/fight', gameId]);
       },
       error: (err) => {
         console.error('Failed to join game', err);

@@ -1,5 +1,5 @@
 import {Injectable, signal} from '@angular/core';
-import {CreateGameDTO, Game} from './game.model';
+import {Game, GameCreationData} from './game.model';
 import {HttpClient} from '@angular/common/http';
 import {Observable, map, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
@@ -49,12 +49,10 @@ export class GameService {
    * Crée une nouvelle partie et l'ajoute à la liste locale.
    * Le backend retourne la partie créée avec son id et player1 résolu.
    */
-  createGame(dto: CreateGameDTO): Observable<Game> {
-    return this.http.post<ApiResponse<Game>>(`${this.BASE}games`, dto).pipe(
-      map(r => r.data),
+  createGame(description: string): Observable<GameCreationData> {
+    return this.http.post<GameCreationData>(`${this.BASE}games`, description).pipe(
       tap((game) => {
-        this._games.update(games => [...games, game]);
-        this._currentGame.set(game);
+        localStorage.setItem('fightToken', game.token);
       }),
     );
   }
@@ -63,13 +61,11 @@ export class GameService {
    * Rejoint une partie existante en tant que player2.
    * Met à jour la partie dans la liste et la définit comme partie courante.
    */
-  joinGame(gameId: number): Observable<Game> {
-    return this.http.post<ApiResponse<Game>>(`${this.BASE}games/${gameId}/join`, {}).pipe(
-      map(r => r.data),
-      tap((game) => {
-        this._games.update(games => games.map(g => g.id === game.id ? game : g));
-        this._currentGame.set(game);
-      }),
+  joinGame(gameId: number): Observable<string> {
+    return this.http.post<string>(`${this.BASE}games/${gameId}/join`, {}).pipe(
+      tap((token) => {
+        localStorage.setItem('fightToken', token);
+      })
     );
   }
 

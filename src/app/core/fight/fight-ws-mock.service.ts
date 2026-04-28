@@ -85,13 +85,13 @@ export class FightWsMockService extends FightWsService {
     this.clearTimers();
 
     this.schedule(() => {
-      this._connectionStatus.set('waiting_opponent');
+      this._connectionStatus.set('waiting');
     }, 500);
 
     this.schedule(() => {
       this.state = this.buildBaseState();
       this.applyState(this.state);
-      this._connectionStatus.set('in_fight');
+      this._connectionStatus.set('playing');
     }, 1500);
   }
 

@@ -33,10 +33,10 @@ export interface Game {
 /**
  * Données nécessaires pour créer une nouvelle partie.
  *
- * @property description - Description courte de la partie (visible dans le lobby)
- * @property nombrePokemon - Nombre de Pokémon que chaque joueur engage
+ * @property gameId - Identifiant unique de la partie en UUIDv4
+ * @property token - Jeton d'authentification pour la partie, à utiliser dans le websocket
  */
-export interface CreateGameDTO {
-  description: string;
-  nombrePokemon: number;
+export interface GameCreationData {
+  gameId: string;
+  token: string;
 }

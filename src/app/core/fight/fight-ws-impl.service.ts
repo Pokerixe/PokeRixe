@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { encode, decode } from '@msgpack/msgpack';
 import { ConnectionStatus, FightWsService } from './fight-ws.service';
 import { FightPhase, FightPokemonState, FightState, TurnEvent } from './fight.model';
-import { ClientMessage, ServerMessage } from './fight-ws.model';
+import { Message } from './fight-ws.model';
 
 @Injectable()
 export class FightWsServiceImpl extends FightWsService {
@@ -43,6 +43,10 @@ export class FightWsServiceImpl extends FightWsService {
   private reconnectAttempts = 0;
   private readonly MAX_RECONNECT = 3;
 
+  private getToken(): string {
+    return localStorage.getItem('fight_token') ?? '';
+  }
+
   connect(gameId: number): void {
     this.currentGameId = gameId;
     this.reconnectAttempts = 0;
@@ -56,13 +60,25 @@ export class FightWsServiceImpl extends FightWsService {
 
   sendAttack(moveSlot: number, pokemonSlot: number): void {
     this._isPendingAction.set(true);
-    const msg: ClientMessage = { type: 'attack', moveSlot, pokemonSlot };
+
+    const msg: Extract<Message, { type: 'AttackPacket' }> = {
+      token: this.getToken(),
+      type: 'AttackPacket',
+      data: { moveSlot, pokemonSlot }
+    };
+
     this.ws?.send(encode(msg));
   }
 
   sendSwitch(slotIndex: number): void {
     this._isPendingAction.set(true);
-    const msg: ClientMessage = { type: 'switch', switchToSlotIndex: slotIndex };
+
+    const msg: Extract<Message, { type: 'SwitchPacket' }> = {
+      token: this.getToken(),
+      type: 'SwitchPacket',
+      data: { switchToSlotIndex: slotIndex }
+    };
+
     this.ws?.send(encode(msg));
   }
 
@@ -92,14 +108,14 @@ export class FightWsServiceImpl extends FightWsService {
 
   private openSocket(gameId: number): void {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${protocol}://${window.location.host}/api/games/${gameId}/ws`;
+    const url = `${protocol}://${window.location.host}/api/ws`;
     const ws = new WebSocket(url);
     ws.binaryType = 'arraybuffer';
     this.ws = ws;
 
     ws.onmessage = (event: MessageEvent<ArrayBuffer>) => {
       try {
-        const msg = decode(event.data) as ServerMessage;
+        const msg = decode(event.data) as Message;
         this.handleMessage(msg);
       } catch {
         this._error.set('Message serveur invalide');
@@ -119,16 +135,33 @@ export class FightWsServiceImpl extends FightWsService {
     };
   }
 
-  private handleMessage(msg: ServerMessage): void {
-    if (msg.type === 'waiting_opponent') {
-      this._connectionStatus.set('waiting_opponent');
-    } else if (msg.type === 'full_state') {
-      this.applyState(msg.payload);
-      this._connectionStatus.set('in_fight');
-      this._isPendingAction.set(false);
-    } else if (msg.type === 'error') {
-      this._error.set(msg.message);
-      this._isPendingAction.set(false);
+  private handleMessage(msg: Message): void {
+    switch (msg.type) {
+      case 'WaitingOpponentPacket':
+        this._connectionStatus.set('waiting');
+        break;
+
+      case 'FullStatePacket':
+        this.applyState(msg.data);
+        this._connectionStatus.set('playing');
+        this._isPendingAction.set(false);
+        break;
+
+      case 'ErrorPacket':
+        this._error.set(msg.data.message);
+        this._isPendingAction.set(false);
+        break;
+
+      case 'AttackPacket':
+      case 'SwitchPacket':
+      case 'JoinPacket':
+        // TODO : Handle
+        break;
+
+      default: {
+        const _exhaustiveCheck: never = msg;
+        console.warn('Unhandled packet', _exhaustiveCheck);
+      }
     }
   }
 
@@ -153,7 +186,9 @@ export class FightWsServiceImpl extends FightWsService {
       const delay = Math.pow(2, this.reconnectAttempts) * 1000;
       this.reconnectAttempts++;
       setTimeout(() => {
-        if (this.currentGameId !== null) this.openSocket(this.currentGameId);
+        if (this.currentGameId !== null) {
+          this.openSocket(this.currentGameId);
+        }
       }, delay);
     } else {
       this._connectionStatus.set('disconnected');
