@@ -1,0 +1,53 @@
+name: Deploy Pokerixe Front
+
+on:
+  # uniquement si la CI est good
+  workflow_run:
+    workflows: ["Analyze Pokerixe Front"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  build-and-deploy:
+    name: Build, push & deploy
+    runs-on: ubuntu-latest
+    environment: pokerixe-front
+    # bloque si la CI echoue
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Get version from package.json
+        id: pkg
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Build & Push image
+        run: |
+          docker build -t ghcr.io/baptouk/pokerixe-front:latest \
+                       -t ghcr.io/baptouk/pokerixe-front:${{ steps.pkg.outputs.version }} \
+                       .
+          docker push ghcr.io/baptouk/pokerixe-front:latest
+          docker push ghcr.io/baptouk/pokerixe-front:${{ steps.pkg.outputs.version }}
+
+      - name: Deploy on Labs
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+          ssh -i private_key -o StrictHostKeyChecking=no \
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
+              docker pull ghcr.io/baptouk/pokerixe-front:latest &&
+              cd ~/PROJET/ &&
+              docker compose up -d --no-deps --force-recreate frontend
+            "
+          rm private_key
