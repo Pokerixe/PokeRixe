@@ -11,6 +11,8 @@ import {PokemonStats} from '../../shared/models/pokemon-stats.model';
  * @property damageClass - Classe de dégâts : `"physical"`, `"special"` ou `"status"`
  */
 export interface TeamMove {
+  id?: number;
+  apiUrl?: string;
   slot: 0 | 1 | 2 | 3;
   name: string;
   frenchName: string;
@@ -34,7 +36,10 @@ export interface TeamMove {
  * @property hpMax - Points de vie maximum
  * @property stats - Statistiques de base du Pokémon
  */
+
 export interface TeamSlot {
+  id?: number;
+  apiUrl?: string;
   slotIndex: 0 | 1 | 2 | 3 | 4 | 5;
   pokedexId: number;
   name: string;

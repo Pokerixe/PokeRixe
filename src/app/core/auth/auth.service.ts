@@ -41,7 +41,6 @@ export class AuthService {
     this.http.post<User>(this.API_URL + 'auth/signin', null, { params }).subscribe({
       next: (user: User) => {
         this._currentUser.set(user);
-        this.team.loadTeam(user.id).subscribe();
         this.loadCurrentUser();
         this.router.navigateByUrl('/');
       },
@@ -91,14 +90,14 @@ export class AuthService {
    * et pour récupérer les informations de l'utilisateur (ex: rôle) afin de gérer l'affichage et les autorisations
    * en conséquence.
    * Si la requete échoue (ex: pas de session valide), le signal currentUser est mis à null.
-   *
+   *  
    */
   loadCurrentUser() {
     this.http.get<User>(this.API_URL + 'users/me').subscribe({
       next: (user: User) => {
         if (user) {
           this._currentUser.set(user);
-          this.team.loadTeam(user.id).subscribe();
+          this.team.loadTeamFromUser(user.team, user.mail).subscribe();
         }
       },
       error: (err) => {

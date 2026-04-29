@@ -55,7 +55,7 @@
 
       <div class="pokemon-moves-owned">
         <div class="moves-list">
-          @for (move of ownedMoves; track move.slot; let idx = $index) {
+          @for (move of ownedMoves(); track move.slot; let idx = $index) {
             <app-move
               [inFight]="false"
               [isDefined]="move.name !== ''"
