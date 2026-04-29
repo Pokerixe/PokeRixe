@@ -34,12 +34,12 @@ jobs:
 
       - name: Build & Push image
         run: |
-          docker build -t ghcr.io/baptouk/pokerixe-front:latest \
-                       -t ghcr.io/baptouk/pokerixe-front:${{ steps.pkg.outputs.version }} \
+          docker build -t ghcr.io/pokerixe/pokerixe-front:latest \
+                       -t ghcr.io/pokerixe/pokerixe-front:${{ steps.pkg.outputs.version }} \
                        .
-          docker push ghcr.io/baptouk/pokerixe-front:latest
-          docker push ghcr.io/baptouk/pokerixe-front:${{ steps.pkg.outputs.version }}
-
+          docker push ghcr.io/pokerixe/pokerixe-front:latest
+          docker push ghcr.io/pokerixe/pokerixe-front:${{ steps.pkg.outputs.version }}
+          
       - name: Deploy on Labs
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
