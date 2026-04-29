@@ -18,7 +18,7 @@ const prod = `export const environment = {
 
 const staging = `export const environment = {
   production: true,
-  useMockApi: true,
+  useMockApi: false,
   apiUrl: '${process.env['PROD_API_URL']}'
 };
 `;
