@@ -39,13 +39,14 @@ jobs:
                        .
           docker push ghcr.io/pokerixe/pokerixe-front:latest
           docker push ghcr.io/pokerixe/pokerixe-front:${{ steps.pkg.outputs.version }}
-          
+      
       - name: Deploy on Labs
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
+              echo '${{ secrets.GHCR_PAT }}' | docker login ghcr.io -u ${{ secrets.GHCR_USER }} --password-stdin &&
               docker pull ghcr.io/pokerixe/pokerixe-front:latest &&
               cd ~/PROJET/ &&
               docker compose up -d --no-deps --force-recreate frontend
