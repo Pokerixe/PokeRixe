@@ -46,7 +46,7 @@ jobs:
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
-              docker pull ghcr.io/baptouk/pokerixe-front:latest &&
+              docker pull ghcr.io/pokerixe/pokerixe-front:latest &&
               cd ~/PROJET/ &&
               docker compose up -d --no-deps --force-recreate frontend
             "
