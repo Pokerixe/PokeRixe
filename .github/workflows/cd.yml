@@ -31,12 +31,14 @@ jobs:
       - name: Get version from package.json
         id: pkg
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
-
+      
       - name: Build & Push image
         run: |
-          docker build -t ghcr.io/pokerixe/pokerixe-front:latest \
-                       -t ghcr.io/pokerixe/pokerixe-front:${{ steps.pkg.outputs.version }} \
-                       .
+          docker build \
+            --build-arg PROD_API_URL=${{ secrets.PROD_API_URL }} \
+            -t ghcr.io/pokerixe/pokerixe-front:latest \
+            -t ghcr.io/pokerixe/pokerixe-front:${{ steps.pkg.outputs.version }} \
+            .
           docker push ghcr.io/pokerixe/pokerixe-front:latest
           docker push ghcr.io/pokerixe/pokerixe-front:${{ steps.pkg.outputs.version }}
       
