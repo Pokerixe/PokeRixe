@@ -6,8 +6,8 @@ import { Role, User } from '../../core/models/user.model';
 
 const mkUser = (role: Role): User => ({
   id: '1',
-  name: 'TestUser',
-  email: 'test@test.com',
+  pseudo: 'TestUser',        
+  mail: 'test@test.com',
   role,
 });
 
@@ -17,7 +17,7 @@ function buildAuthSvc(user: User | null = null) {
     _currentUser,
     currentUser: _currentUser.asReadonly(),
     isAuthenticated: signal(user !== null),
-    updateCurrentUserProfile: vi.fn().mockImplementation((payload: { name: string; email: string }) => {
+    updateCurrentUserProfile: vi.fn().mockImplementation((payload: { pseudo: string; mail: string }) => {
       const current = _currentUser();
       if (current) _currentUser.set({ ...current, ...payload });
     }),
@@ -72,20 +72,20 @@ describe('UserPage', () => {
   describe('onSubmit()', () => {
     it('marks all fields as touched and does not update when form is invalid', async () => {
       await setup(null);
-      component.profileForm.controls.name.setValue('');
+      component.profileForm.controls.pseudo.setValue('');
       component.onSubmit();
-      expect(component.profileForm.controls.name.touched).toBe(true);
+      expect(component.profileForm.controls.pseudo.touched).toBe(true);
       expect(authSvc.updateCurrentUserProfile).not.toHaveBeenCalled();
       expect(component.saveMessage).toBe('');
     });
 
     it('updates the user profile and sets a success message when form is valid', async () => {
       await setup(mkUser(Role.User));
-      component.profileForm.setValue({ name: 'NewName', email: 'new@email.com' });
+      component.profileForm.setValue({ pseudo: 'NewName', mail: 'new@email.com' });
       component.onSubmit();
       expect(authSvc.updateCurrentUserProfile).toHaveBeenCalledWith({
-        name: 'NewName',
-        email: 'new@email.com',
+        pseudo: 'NewName',
+        mail: 'new@email.com',
       });
       expect(component.saveMessage).toBe('Modifications enregistrees.');
     });
@@ -95,10 +95,10 @@ describe('UserPage', () => {
     it('resets the form to the current user values', async () => {
       const user = mkUser(Role.User);
       await setup(user);
-      component.profileForm.setValue({ name: 'Changed', email: 'changed@test.com' });
+      component.profileForm.setValue({ pseudo: 'Changed', mail: 'changed@test.com' });
       component.onReset();
-      expect(component.profileForm.value.name).toBe(user.name);
-      expect(component.profileForm.value.email).toBe(user.email);
+      expect(component.profileForm.value.pseudo).toBe(user.pseudo);
+      expect(component.profileForm.value.mail).toBe(user.mail);
     });
 
     it('clears the save message', async () => {
