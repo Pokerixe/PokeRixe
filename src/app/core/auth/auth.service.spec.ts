@@ -8,7 +8,7 @@ import { TeamService } from '../team/team.service';
 import { Role, User } from '../models/user.model';
 import { Team } from '../team/team.model';
 
-const mockUser: User = { id: '1', name: 'Test User', mail: 'test@gmail.com', role: Role.User };
+const mockUser: User = { id: '1', pseudo: 'Test User', mail: 'test@gmail.com', role: Role.User };
 
 const mockTeam: Team = { userId: '1', firstPokemon: 0, slots: Array(6).fill(null) };
 
