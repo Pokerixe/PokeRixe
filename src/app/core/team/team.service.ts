@@ -144,6 +144,7 @@ export class TeamService {
     ]).pipe(
       map(([poke, moves]) => ({
         slotIndex,
+        id: poke.id,
         pokedexId: poke.id,
         name: poke.name,
         sprite: poke.sprite,
@@ -162,6 +163,7 @@ export class TeamService {
       map(moveDto => {
         const frenchEntry = (moveDto.names as any[])?.find((n: any) => n.language?.name === 'fr');
         return {
+          id: moveDto.id,
           apiUrl: dto.apiUrl,
           slot,
           name: moveDto.name ?? '',
@@ -200,11 +202,13 @@ export class TeamService {
     const pokemons = team.slots
       .filter((s): s is TeamSlot => s !== null)
       .map(slot => ({
+        id: slot.pokedexId,
         apiUrl: `https://pokeapi.co/api/v2/pokemon/${slot.pokedexId}/`,
         attacks: slot.moves
           .filter(m => m.name !== '')
           .map(m => ({
-            apiUrl: m.apiUrl ?? `https://pokeapi.co/api/v2/move/${m.name}/`,
+            id: m.id,
+            apiUrl: m.apiUrl ?? `https://pokeapi.co/api/v2/move/${m.id ?? m.name}/`,
           } as AttackDto)),
       } as PokemonDto));
     return {pokemons};
