@@ -6,9 +6,12 @@ import { Role, User } from '../../core/models/user.model';
 
 const mkUser = (role: Role): User => ({
   id: '1',
-  pseudo: 'TestUser',        
+  pseudo: 'TestUser',
   mail: 'test@test.com',
   role,
+  password: '',
+  roles: [role],
+  team: null
 });
 
 function buildAuthSvc(user: User | null = null) {
