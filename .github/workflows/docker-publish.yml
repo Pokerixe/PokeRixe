@@ -23,8 +23,8 @@ jobs:
 
       - name: Build & Push image
         run: |
-          docker build -t ghcr.io/baptouk/pokerixe-front:latest .
-          docker push ghcr.io/baptouk/pokerixe-front:latest
+          docker build -t ghcr.io/pokerixe/pokerixe-front:latest .
+          docker push ghcr.io/pokerixe/pokerixe-front:latest
 
 #      - name: Déployer sur le serveur
 #        run: |
