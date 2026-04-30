@@ -26,14 +26,14 @@ jobs:
           docker build -t ghcr.io/baptouk/pokerixe-front:latest .
           docker push ghcr.io/baptouk/pokerixe-front:latest
 
-      - name: Déployer sur le serveur
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
-          chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
-            docker pull ghcr.io/baptouk/pokerixe-front:latest &&
-            cd ~/pokerixe/ &&
-            docker compose down &&
-            docker compose up -d
-          "
-          rm private_key
+#      - name: Déployer sur le serveur
+#        run: |
+#          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+#          chmod 600 private_key
+#          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
+#            docker pull ghcr.io/baptouk/pokerixe-front:latest &&
+#            cd ~/pokerixe/ &&
+#            docker compose down &&
+#            docker compose up -d
+#          "
+#          rm private_key
