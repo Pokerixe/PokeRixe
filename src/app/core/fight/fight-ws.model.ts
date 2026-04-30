@@ -21,19 +21,15 @@ export type SwitchData = {
 
 export type JoinData = {
   userId: string;
-};
-
-export type ErrorData = {
-  message: string;
+  username: string;
 };
 
 export interface PacketMap {
   AttackPacket: AttackData;
   SwitchPacket: SwitchData;
   JoinPacket: JoinData;
-  WaitingOpponentPacket: {};
   FullStatePacket: FightState;
-  ErrorPacket: ErrorData;
+  GameStartPacket: {};
 }
 
 export type Message = {

@@ -1,12 +1,15 @@
-import { Injectable, signal } from '@angular/core';
-import { encode, decode } from '@msgpack/msgpack';
-import { ConnectionStatus, FightWsService } from './fight-ws.service';
-import { FightPhase, FightPokemonState, FightState, TurnEvent } from './fight.model';
+import {inject, Injectable, signal} from '@angular/core';
+import {encode, decode} from '@msgpack/msgpack';
+import {ConnectionStatus, FightWsService} from './fight-ws.service';
+import {FightPhase, FightPokemonState, FightState, TurnEvent} from './fight.model';
 import {Message, Packet, PacketMap} from './fight-ws.model';
 import {environment} from '../../../environments/environment';
+import {AuthService} from '../auth/auth.service';
 
 @Injectable()
 export class FightWsServiceImpl extends FightWsService {
+
+  private readonly authService = inject(AuthService);
 
   private readonly BASE = environment.apiUrl;
 
@@ -76,20 +79,23 @@ export class FightWsServiceImpl extends FightWsService {
 
   sendJoin(): void {
     console.log("Sending join message")
-    if (this.userId == null) return
-    this.sendPacket('JoinPacket', { userId:  this.userId});
+
+    const user = this.authService.currentUser();
+    if (!user) return;
+
+    this.sendPacket('JoinPacket', {userId: user.id, username: user.pseudo});
   }
 
   sendAttack(moveSlot: number, pokemonSlot: number): void {
     this._isPendingAction.set(true);
 
-    this.sendPacket('AttackPacket', { moveSlot, pokemonSlot });
+    this.sendPacket('AttackPacket', {moveSlot, pokemonSlot});
   }
 
   sendSwitch(slotIndex: number): void {
     this._isPendingAction.set(true);
 
-    this.sendPacket('SwitchPacket', { switchToSlotIndex: slotIndex });
+    this.sendPacket('SwitchPacket', {switchToSlotIndex: slotIndex});
   }
 
   reset(): void {
@@ -161,18 +167,13 @@ export class FightWsServiceImpl extends FightWsService {
 
   private handleMessage(msg: Message): void {
     switch (msg.type) {
-      case 'WaitingOpponentPacket':
-        this._connectionStatus.set('waiting');
+      case 'GameStartPacket':
+        this._connectionStatus.set('playing');
         break;
 
       case 'FullStatePacket':
         this.applyState(msg.data);
         this._connectionStatus.set('playing');
-        this._isPendingAction.set(false);
-        break;
-
-      case 'ErrorPacket':
-        this._error.set(msg.data.message);
         this._isPendingAction.set(false);
         break;
 
@@ -186,7 +187,7 @@ export class FightWsServiceImpl extends FightWsService {
         /*
          * Un utilisateur vient de rejoindre la partie, on en déduit que c'est le joueur numéro 2
          */
-        this._opponentName.set(`Joueur ${joinUserId}`); // TODO
+        this._opponentName.set(msg.data.username);
 
         break;
 
