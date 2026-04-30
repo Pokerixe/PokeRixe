@@ -1,4 +1,5 @@
 FROM node:20-alpine AS build
+ENV NODE_ENV=production
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -7,8 +8,8 @@ COPY . .
 ARG PROD_API_URL
 ENV PROD_API_URL=$PROD_API_URL
 
-RUN npm run build -- --configuration staging
-#RUN npm run build -- --configuration production
+#RUN npm run build -- --configuration staging
+RUN npm run build -- --configuration production
 
 FROM nginx:alpine
 
