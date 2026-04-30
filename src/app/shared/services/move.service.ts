@@ -58,6 +58,7 @@ export class MoveService {
       map(moveDto => {
         const frenchNameEntry = (moveDto.names as any[])?.find((n: any) => n.language?.name === 'fr');
         return {
+          id : moveDto.id,
           name: moveDto.name,
           frenchName: frenchNameEntry?.name ?? moveDto.name,
           type: moveDto.type?.name ?? 'normal',

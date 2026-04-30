@@ -1,3 +1,5 @@
+import { TeamDto } from "../team/team.dto";
+
 /**
  * Niveaux de permission dans l'application.
  *
@@ -13,13 +15,6 @@ export enum Role {
   Guest
 }
 
-/** Modèle de données pour un utilisateur
- * - id : Identifiant unique de l'utilisateur
- * - name : Nom de l'utilisateur
- * - email : Adresse e-mail de l'utilisateur
- * - role : Rôle de l'utilisateur (Admin, User, Guest)
- * Modèle d'un utilisateur interne a l'application
- */
 export interface User {
   mail: string;
   password: string;
@@ -27,19 +22,6 @@ export interface User {
   pseudo: string;
   role: Role;
   roles: Role[];
-  team: null;
+  team: TeamDto;
 }
 
-
-/**
- * {
-    "mail": "tatata@test.com",
-    "password": "$2a$10$DRNMhzO6U10qUCfoNariBeemKAN8XbuqIjvNW9YwDSvRHioUV8PLO",
-    "pseudo": "baptouk",
-    "id": "5bbb835b-de3a-4cf0-9160-88298663e353",
-    "roles": [
-        "ROLE_USER"
-    ],
-    "team": null
-}
- */

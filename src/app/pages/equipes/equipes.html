@@ -6,6 +6,7 @@
         <app-pokemon-information
           (changeToMoveMode)="changeToMoveMode($event)"
           [pokemon_id]="team()[selected_card()-1]?.pokedexId ?? 0"
+          [slot_index]="selected_card()-1"
           (removePokemon)="removePokemon()"
           (movesLoaded)="onMovesLoaded($event)"
         ></app-pokemon-information>
@@ -43,6 +44,11 @@
   </div>
 
   <div class="right">
+    <div class="right-header">
+      <button class="save-btn" type="button" (click)="saveTeam()" [disabled]="isSaving()">
+        {{ isSaving() ? 'Sauvegarde...' : 'Sauvegarder l\'équipe' }}
+      </button>
+    </div>
     <div class="cards-grid" role="list">
       <app-card
         [cardNumber]="1"

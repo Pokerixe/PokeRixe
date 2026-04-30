@@ -45,7 +45,7 @@ export class UserPage {
 
     const values = this.profileForm.value;
     this.auth.updateCurrentUserProfile({
-      pseudo: values.pseudo!,
+      pseudo: values.pseudo!,         
       mail: values.mail!,
     });
     this.saveMessage = 'Modifications enregistrees.';

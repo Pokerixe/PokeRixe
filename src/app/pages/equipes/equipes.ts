@@ -37,6 +37,7 @@ export enum EquipeMode {
   templateUrl: './equipes.html',
   styleUrl: './equipes.css',
 })
+
 /**
  * Page de gestion de l'équipe Pokémon du joueur.
  *
@@ -60,6 +61,7 @@ export class Equipes {
 
   /** Signal des 6 slots de l'équipe, synchronisé avec `TeamService`. */
   readonly team = this.teamService.slots;
+  readonly isSaving = this.teamService.isSaving;
 
   /** Index du slot d'attaque en cours d'édition (1-4). */
   public idFocusMove = signal<number>(0);
@@ -138,7 +140,6 @@ export class Equipes {
     };
 
     this.teamService.setSlot(slotIndex, teamSlot);
-    this.teamService.saveTeam();
 
     this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
   }
@@ -165,7 +166,9 @@ export class Equipes {
     const moveSlotIndex = moveIndex - 1; // 0-based pour TeamMove[]
 
     const teamMove: TeamMove = {
-      slot: moveIndex as 0| 1 | 2 | 3,
+      id: move.id,
+      apiUrl: `https://pokeapi.co/api/v2/move/${move.name}/`,
+      slot: moveSlotIndex as 0 | 1 | 2 | 3,
       name: move.name,
       frenchName: move.frenchName,
       type: move.type,
@@ -175,11 +178,14 @@ export class Equipes {
     };
 
     this.teamService.setMove(slotIndex, moveSlotIndex, teamMove);
-    this.teamService.saveTeam();
 
     this.selectedMode.set(EquipeMode.AFFICHAGE_POKEMON);
   }
 
+
+  saveTeam() {
+    this.teamService.saveTeam();
+  }
 
   protected removePokemon() {
     const slot = this.selected_card();
@@ -187,7 +193,6 @@ export class Equipes {
 
     const slotIndex = slot - 1;
     this.teamService.clearSlot(slotIndex);
-    this.teamService.saveTeam();
 
     this.selectedMode.set(EquipeMode.AUCUN);
     this.selected_card.set(0);

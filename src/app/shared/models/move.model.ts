@@ -8,6 +8,7 @@
  * @property damageClass - Classe de dégâts : `"physical"`, `"special"` ou `"status"`
  */
 export interface Move {
+  id?: number;
   name: string;
   frenchName: string;
   type: string;
