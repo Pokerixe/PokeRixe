@@ -8,6 +8,7 @@ import { FightWsService } from '../../core/fight/fight-ws.service';
 import { TeamService } from '../../core/team/team.service';
 import { TeamMove } from '../../core/team/team.model';
 import { FightPokemonState } from '../../core/fight/fight.model';
+import {AuthService} from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-fight',
@@ -16,6 +17,8 @@ import { FightPokemonState } from '../../core/fight/fight.model';
   styleUrl: './fight.css',
 })
 export class Fight implements OnDestroy {
+
+  private readonly authService = inject(AuthService);
   private readonly fightWsService = inject(FightWsService);
   private readonly teamService = inject(TeamService);
   private readonly route = inject(ActivatedRoute);
@@ -52,8 +55,12 @@ export class Fight implements OnDestroy {
   });
 
   constructor() {
-    if (!this.fightWsService.isConnected(this.gameId)) {
-      this.fightWsService.connect(this.gameId);
+    if (!this.fightWsService.isConnected()) {
+      const user = this.authService.currentUser();
+
+      if (!user) return;
+
+      this.fightWsService.connect(user.id);
     }
 
     effect(() => {
@@ -88,7 +95,7 @@ export class Fight implements OnDestroy {
 
   /** Actions */
   retryConnect(): void {
-    this.fightWsService.connect(this.gameId);
+    // this.fightWsService.connect();
   }
 
   onMoveClick(move: TeamMove): void {

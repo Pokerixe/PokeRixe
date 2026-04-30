@@ -1,9 +1,11 @@
-import {Injectable, signal} from '@angular/core';
-import {Game, GameCreationData} from './game.model';
-import {HttpClient} from '@angular/common/http';
+import {inject, Injectable, signal} from '@angular/core';
+import {GameCreationData, GamePlay} from './game.model';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, map, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response.model';
+import {User} from '../models/user.model';
+import {AuthService} from '../auth/auth.service';
 
 /**
  * Service de gestion des parties multijoueur.
@@ -17,8 +19,8 @@ export class GameService {
 
   constructor(private readonly http: HttpClient) {}
 
-  private readonly _games = signal<Game[]>([]);
-  private readonly _currentGame = signal<Game | null>(null);
+  private readonly _games = signal<GamePlay[]>([]);
+  private readonly _currentGame = signal<GamePlay | null>(null);
   private readonly _isLoading = signal(false);
 
   /** Signal en lecture seule exposant la liste des parties disponibles. */
@@ -31,10 +33,9 @@ export class GameService {
   /**
    * Récupère la liste des parties en attente depuis le backend et met à jour le signal.
    */
-  loadGames(): Observable<Game[]> {
+  loadGames(): Observable<GamePlay[]> {
     this._isLoading.set(true);
-    return this.http.get<ApiResponse<Game[]>>(`${this.BASE}games`).pipe(
-      map(r => r.data),
+    return this.http.get<GamePlay[]>(`${this.BASE}games/available`).pipe(
       tap({
         next: (games) => {
           this._games.set(games);
@@ -50,7 +51,8 @@ export class GameService {
    * Le backend retourne la partie créée avec son id et player1 résolu.
    */
   createGame(description: string): Observable<GameCreationData> {
-    return this.http.post<GameCreationData>(`${this.BASE}games`, description).pipe(
+    const params = new HttpParams().set('description', description);
+    return this.http.post<GameCreationData>(`${this.BASE}games`, {}, {params}).pipe(
       tap((game) => {
         localStorage.setItem('fightToken', game.token);
       }),
@@ -61,8 +63,13 @@ export class GameService {
    * Rejoint une partie existante en tant que player2.
    * Met à jour la partie dans la liste et la définit comme partie courante.
    */
-  joinGame(gameId: number): Observable<string> {
-    return this.http.post<string>(`${this.BASE}games/${gameId}/join`, {}).pipe(
+  joinGame(gameId: string, selectSlotPokemon: number): Observable<string> {
+    const params = new HttpParams().set('selectSlotPokemon', selectSlotPokemon);
+
+    return this.http.post(`${this.BASE}games/${gameId}/join`, {}, {
+      params,
+      responseType: 'text'
+    }).pipe(
       tap((token) => {
         localStorage.setItem('fightToken', token);
       })

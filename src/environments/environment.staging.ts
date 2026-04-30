@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  useMockApi: false, 
-  apiUrl: '/api/'
+  useMockApi: false,
+  apiUrl: 'https://pokerixe.baptouk.live/api/'
 };

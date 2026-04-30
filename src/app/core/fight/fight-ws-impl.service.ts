@@ -2,10 +2,14 @@ import { Injectable, signal } from '@angular/core';
 import { encode, decode } from '@msgpack/msgpack';
 import { ConnectionStatus, FightWsService } from './fight-ws.service';
 import { FightPhase, FightPokemonState, FightState, TurnEvent } from './fight.model';
-import { Message } from './fight-ws.model';
+import {Message, Packet, PacketMap} from './fight-ws.model';
+import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class FightWsServiceImpl extends FightWsService {
+
+  private readonly BASE = environment.apiUrl;
+
   private readonly _phase = signal<FightPhase | null>(null);
   private readonly _playerActivePokemon = signal<FightPokemonState | null>(null);
   private readonly _opponentActivePokemon = signal<FightPokemonState | null>(null);
@@ -39,47 +43,53 @@ export class FightWsServiceImpl extends FightWsService {
   readonly isPendingAction = this._isPendingAction.asReadonly();
 
   private ws: WebSocket | null = null;
-  private currentGameId: number | null = null;
+  private userId: string | null = null;
+
+  // Reconnection TODO
   private reconnectAttempts = 0;
   private readonly MAX_RECONNECT = 3;
 
   private getToken(): string {
-    return localStorage.getItem('fight_token') ?? '';
+    return localStorage.getItem('fightToken') ?? '';
   }
 
-  connect(gameId: number): void {
-    this.currentGameId = gameId;
+  connect(userId: string): void {
+    this.userId = userId;
     this.reconnectAttempts = 0;
     this._connectionStatus.set('connecting');
-    this.openSocket(gameId);
+    this.openSocket();
   }
 
-  isConnected(gameId: number): boolean {
-    return this.currentGameId === gameId && this.ws?.readyState === WebSocket.OPEN;
+  isConnected(): boolean {
+    return this.ws?.readyState === WebSocket.OPEN;
+  }
+
+  sendPacket<T extends keyof PacketMap>(type: T, data: PacketMap[T]): void {
+    const msg: Packet<T, PacketMap[T]> = {
+      token: this.getToken(),
+      type,
+      data
+    };
+
+    this.ws?.send(encode(msg));
+  }
+
+  sendJoin(): void {
+    console.log("Sending join message")
+    if (this.userId == null) return
+    this.sendPacket('JoinPacket', { userId:  this.userId});
   }
 
   sendAttack(moveSlot: number, pokemonSlot: number): void {
     this._isPendingAction.set(true);
 
-    const msg: Extract<Message, { type: 'AttackPacket' }> = {
-      token: this.getToken(),
-      type: 'AttackPacket',
-      data: { moveSlot, pokemonSlot }
-    };
-
-    this.ws?.send(encode(msg));
+    this.sendPacket('AttackPacket', { moveSlot, pokemonSlot });
   }
 
   sendSwitch(slotIndex: number): void {
     this._isPendingAction.set(true);
 
-    const msg: Extract<Message, { type: 'SwitchPacket' }> = {
-      token: this.getToken(),
-      type: 'SwitchPacket',
-      data: { switchToSlotIndex: slotIndex }
-    };
-
-    this.ws?.send(encode(msg));
+    this.sendPacket('SwitchPacket', { switchToSlotIndex: slotIndex });
   }
 
   reset(): void {
@@ -87,7 +97,7 @@ export class FightWsServiceImpl extends FightWsService {
       this.ws.close(1000);
     }
     this.ws = null;
-    this.currentGameId = null;
+    localStorage.removeItem('fightToken');
     this.reconnectAttempts = 0;
     this._phase.set(null);
     this._playerActivePokemon.set(null);
@@ -106,17 +116,31 @@ export class FightWsServiceImpl extends FightWsService {
     this._isPendingAction.set(false);
   }
 
-  private openSocket(gameId: number): void {
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${protocol}://${window.location.host}/api/ws`;
+  private openSocket(): void {
+    const protocol = this.BASE.startsWith('https') ? 'wss' : 'ws';
+    const url = `${protocol}://${this.BASE.replace(/^https?:\/\//, '')}ws`;
     const ws = new WebSocket(url);
     ws.binaryType = 'arraybuffer';
     this.ws = ws;
 
+
+    ws.onopen = () => {
+      console.log("WS connected");
+      this._connectionStatus.set('waiting');
+
+      /*
+       * Le protocole demande à ce que chaque client qui rejoint le websocket, doit envoyer un JoinPacket avec son token
+       * pour le faire rejoindre une partie.
+       *
+       * Le websocket est partagé entre tout le monde mais ce qui identifie les joueurs c'est le token qui est donné par le serveur
+       */
+      this.sendJoin();
+    };
+
     ws.onmessage = (event: MessageEvent<ArrayBuffer>) => {
       try {
-        const msg = decode(event.data) as Message;
-        this.handleMessage(msg);
+        const message = decode(event.data) as Message;
+        this.handleMessage(message);
       } catch {
         this._error.set('Message serveur invalide');
       }
@@ -154,8 +178,16 @@ export class FightWsServiceImpl extends FightWsService {
 
       case 'AttackPacket':
       case 'SwitchPacket':
+        break;
       case 'JoinPacket':
-        // TODO : Handle
+        const joinUserId = msg.data.userId;
+        if (joinUserId === this.userId) return;
+
+        /*
+         * Un utilisateur vient de rejoindre la partie, on en déduit que c'est le joueur numéro 2
+         */
+        this._opponentName.set(`Joueur ${joinUserId}`); // TODO
+
         break;
 
       default: {
@@ -181,17 +213,17 @@ export class FightWsServiceImpl extends FightWsService {
   }
 
   private handleUnexpectedClose(): void {
-    this._isPendingAction.set(false);
-    if (this.reconnectAttempts < this.MAX_RECONNECT && this.currentGameId !== null) {
-      const delay = Math.pow(2, this.reconnectAttempts) * 1000;
-      this.reconnectAttempts++;
-      setTimeout(() => {
-        if (this.currentGameId !== null) {
-          this.openSocket(this.currentGameId);
-        }
-      }, delay);
-    } else {
-      this._connectionStatus.set('disconnected');
-    }
+    // this._isPendingAction.set(false); FIXME
+    // if (this.reconnectAttempts < this.MAX_RECONNECT && this.token !== null) {
+    //   const delay = Math.pow(2, this.reconnectAttempts) * 1000;
+    //   this.reconnectAttempts++;
+    //   setTimeout(() => {
+    //     if (this.token !== null) {
+    //       this.openSocket(this.token);
+    //     }
+    //   }, delay);
+    // } else {
+    //   this._connectionStatus.set('disconnected');
+    // }
   }
 }

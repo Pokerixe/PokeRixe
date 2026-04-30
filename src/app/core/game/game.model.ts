@@ -1,33 +1,86 @@
+import {Team} from '../team/team.model';
+import {Pokemon} from '../../shared/models/pokemon.model';
+
 /**
  * Statut d'une partie multijoueur.
  *
  * - `Waiting` : en attente d'un deuxième joueur
  * - `InProgress` : combat en cours
- * - `Finished` : combat terminé
  */
 export enum GameStatus {
-  Waiting = 'waiting',
-  InProgress = 'in_progress',
-  Finished = 'finished',
+  Waiting = 'WAITING',
+  InProgress = 'PLAYING',
+}
+
+
+/**
+ * Représente une partie de combat entre deux joueurs.
+ *
+ * @property id - Identifiant unique de la partie
+ * @property description - Description optionnelle saisie par le créateur
+ * @property pokemonCount - Nombre de Pokémon engagés dans la partie
+ * @property status - État actuel de la partie (`waiting`, `in_progress`, `finished`)
+ */
+export interface GamePlay {
+  id: string;
+  description?: string;
+  analysis?: GameAnalysis;
+  players: GamePlayer[];
+  turns: Turn[];
 }
 
 /**
  * Représente une partie de combat entre deux joueurs.
  *
  * @property id - Identifiant unique de la partie
- * @property player1 - Identifiant ou nom du joueur 1 (créateur)
- * @property player2 - Identifiant ou nom du joueur 2, `null` si la partie attend un adversaire
  * @property description - Description optionnelle saisie par le créateur
- * @property nombrePokemon - Nombre de Pokémon engagés dans la partie
+ * @property pokemonCount - Nombre de Pokémon engagés dans la partie
  * @property status - État actuel de la partie (`waiting`, `in_progress`, `finished`)
  */
-export interface Game {
-  id: number;
-  player1: string;
-  player2: string | null;
+export interface GamePlay {
+  id: string;
   description?: string;
-  nombrePokemon?: number;
+  pokemonCount?: number;
+  analysis?: GameAnalysis;
   status: GameStatus;
+  players: GamePlayer[];
+  turns: Turn[];
+}
+
+export interface Turn {
+  actions: Action[];
+}
+
+type Action = Attack | Switch;
+
+export interface BaseAction<T extends string> {
+  name: T;
+}
+
+export interface Attack extends BaseAction<'Attaque'> {
+  apiUrl: string;
+  attacker: Pokemon;
+  target: Pokemon;
+}
+
+export interface Switch extends BaseAction<'switch'> {
+  player: GamePlayer;
+  nextPokemon: Pokemon;
+}
+
+
+export interface GamePlayer {
+  id: string;
+  pseudo: string;
+  team: Team;
+  selectedPokemon: Pokemon | null;
+}
+
+export interface GameAnalysis {
+  id: string;
+  score: number;
+  scoresByTurn: Record<number, number>;
+  advice: string;
 }
 
 /**

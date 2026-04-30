@@ -79,8 +79,8 @@ export class FightWsMockService extends FightWsService {
   private connectedGameId: number | null = null;
   private timers: ReturnType<typeof setTimeout>[] = [];
 
-  connect(gameId: number): void {
-    this.connectedGameId = gameId;
+  connect(userId: string): void {
+    // this.connectedGameId = gameId;
     this._connectionStatus.set('connecting');
     this.clearTimers();
 
@@ -95,8 +95,8 @@ export class FightWsMockService extends FightWsService {
     }, 1500);
   }
 
-  isConnected(gameId: number): boolean {
-    return this.connectedGameId === gameId;
+  isConnected(): boolean {
+    return this.connectedGameId !== null;
   }
 
   sendAttack(moveSlot: number, _pokemonSlot: number): void {

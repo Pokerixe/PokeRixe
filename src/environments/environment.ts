@@ -3,4 +3,3 @@ export const environment = {
   useMockApi: false,
   apiUrl: 'http://localhost:8080/'
 };
-

@@ -22,8 +22,8 @@ export abstract class FightWsService {
   abstract readonly opponentRemainingCount: Signal<number>;
   abstract readonly isPendingAction: Signal<boolean>;
 
-  abstract connect(gameId: number): void;
-  abstract isConnected(gameId: number): boolean;
+  abstract connect(userId: string): void;
+  abstract isConnected(): boolean;
   abstract sendAttack(moveSlot: number, pokemonSlot: number): void;
   abstract sendSwitch(slotIndex: number): void;
   abstract reset(): void;
